@@ -2,11 +2,19 @@
 import os
 from functools import wraps
 
+ROOT = os.path.dirname(os.path.abspath(__file__))
+
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(os.path.join(ROOT, ".env"))
+except ImportError:
+    pass
+
 from flask import Flask, jsonify, redirect, request, send_from_directory, session, url_for
 
 from ai_service import chat as ai_chat
-
-ROOT = os.path.dirname(os.path.abspath(__file__))
+from quiz_service import generate_quiz
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "scholarly-dev-secret-change-me")
@@ -124,6 +132,24 @@ def quiz():
 @login_required
 def ai_page():
     return send_page("AI_page.html")
+
+
+@app.route("/api/quiz/generate", methods=["POST"])
+@login_required
+def api_quiz_generate():
+    data = request.get_json(silent=True) or {}
+    topic = (data.get("topic") or "").strip()
+    difficulty = (data.get("difficulty") or "moderate").strip().lower()
+    try:
+        count = int(data.get("count") or 15)
+    except (TypeError, ValueError):
+        count = 15
+    try:
+        return jsonify(generate_quiz(topic, difficulty, count))
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
 
 
 @app.route("/api/ai/chat", methods=["POST"])

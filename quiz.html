@@ -126,85 +126,81 @@
 </div>
 </header>
 <main class="app-content-inner py-8 pb-40 max-w-3xl">
-<!-- Progress Section -->
+<section id="quiz-setup">
+<h1 class="text-headline-lg-mobile font-headline-lg-mobile text-primary mb-unit-2">Focus Quiz</h1>
+<p class="text-body-md text-on-surface-variant mb-unit-8">Enter a topic, pick a difficulty, and generate 10-30 multiple-choice questions.</p>
+<form id="quiz-form" class="space-y-unit-6">
+<div>
+<label class="text-label-md font-label-md text-on-surface-variant block mb-unit-2" for="quiz-topic">Topic</label>
+<input id="quiz-topic" type="text" required minlength="2" placeholder="e.g. Photosynthesis, World War II, Calculus" class="w-full px-unit-4 py-unit-3 rounded-xl border border-outline-variant bg-surface-container-lowest text-body-md focus:ring-2 focus:ring-secondary focus:border-secondary outline-none"/>
+</div>
+<div>
+<span class="text-label-md font-label-md text-on-surface-variant block mb-unit-3">Difficulty</span>
+<div class="flex flex-wrap gap-unit-3">
+<label class="cursor-pointer"><input type="radio" name="difficulty" value="easy" class="peer sr-only"/><span class="inline-flex px-unit-4 py-unit-2 rounded-full border border-outline-variant bg-surface-container-lowest text-label-md peer-checked:bg-secondary-container peer-checked:border-on-secondary-container peer-checked:text-on-secondary-container transition-colors">Easy</span></label>
+<label class="cursor-pointer"><input type="radio" name="difficulty" value="moderate" class="peer sr-only" checked/><span class="inline-flex px-unit-4 py-unit-2 rounded-full border border-outline-variant bg-surface-container-lowest text-label-md peer-checked:bg-secondary-container peer-checked:border-on-secondary-container peer-checked:text-on-secondary-container transition-colors">Moderate</span></label>
+<label class="cursor-pointer"><input type="radio" name="difficulty" value="hard" class="peer sr-only"/><span class="inline-flex px-unit-4 py-unit-2 rounded-full border border-outline-variant bg-surface-container-lowest text-label-md peer-checked:bg-secondary-container peer-checked:border-on-secondary-container peer-checked:text-on-secondary-container transition-colors">Hard</span></label>
+</div>
+</div>
+<div>
+<label class="text-label-md font-label-md text-on-surface-variant block mb-unit-2" for="quiz-count">Number of questions</label>
+<select id="quiz-count" class="w-full px-unit-4 py-unit-3 rounded-xl border border-outline-variant bg-surface-container-lowest text-body-md focus:ring-2 focus:ring-secondary outline-none">
+<option value="10">10 questions</option>
+<option value="15" selected>15 questions</option>
+<option value="20">20 questions</option>
+<option value="25">25 questions</option>
+<option value="30">30 questions</option>
+</select>
+</div>
+<p id="quiz-setup-error" class="hidden text-body-sm text-error"></p>
+<button id="quiz-generate" type="submit" class="w-full py-4 rounded-full bg-primary text-on-primary font-label-md shadow-lg hover:opacity-90 transition-all active:scale-[0.98]">Generate Quiz</button>
+</form>
+</section>
+<section id="quiz-play" class="hidden">
 <section class="mb-unit-8">
 <div class="flex justify-between items-end mb-unit-2">
-<span class="text-label-md font-label-md text-on-surface-variant">QUESTION 7 OF 12</span>
-<span class="text-label-md font-label-md text-secondary">58% Complete</span>
+<span id="quiz-progress-label" class="text-label-md font-label-md text-on-surface-variant">QUESTION 1 OF 15</span>
+<span id="quiz-progress-pct" class="text-label-md font-label-md text-secondary">0% Complete</span>
 </div>
 <div class="w-full h-3 bg-surface-container rounded-full overflow-hidden">
-<div class="h-full bg-secondary w-[58%] rounded-full"></div>
+<div id="quiz-progress-bar" class="h-full bg-secondary rounded-full transition-all duration-300" style="width:0%"></div>
 </div>
 </section>
-<!-- Question Section -->
 <section class="mb-unit-8">
 <div class="bg-surface-container-lowest p-unit-6 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-surface-container-high">
-<h1 class="text-headline-lg-mobile font-headline-lg-mobile text-primary mb-unit-4">
-                    How does the principle of "Active Recall" differ from "Passive Recognition" in long-term memory consolidation?
-                </h1>
+<h2 id="quiz-question" class="text-headline-lg-mobile font-headline-lg-mobile text-primary mb-unit-4"></h2>
 <div class="flex items-center gap-unit-2 text-on-surface-variant">
-<span class="material-symbols-outlined text-[18px]" data-icon="psychology">psychology</span>
-<span class="text-label-sm font-label-sm">COGNITIVE SCIENCE</span>
+<span class="material-symbols-outlined text-[18px]">quiz</span>
+<span id="quiz-topic-badge" class="text-label-sm font-label-sm"></span>
 </div>
 </div>
 </section>
-<!-- Options Grid (Bento-style list) -->
-<section class="space-y-unit-4">
-<!-- Option A -->
-<button class="w-full text-left group">
-<div class="bg-surface-container-lowest p-unit-4 rounded-xl border border-surface-container-high shadow-sm hover:border-secondary transition-all active:scale-[0.98] flex items-start gap-unit-4">
-<div class="flex-shrink-0 w-8 h-8 rounded-lg bg-surface-container-high text-primary font-bold flex items-center justify-center text-label-md group-hover:bg-secondary group-hover:text-on-secondary transition-colors">A</div>
-<p class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors pt-1">
-                        Active recall involves retrieving information from memory without cues, strengthening neural pathways.
-                    </p>
-</div>
-</button>
-<!-- Option B -->
-<button class="w-full text-left group">
-<div class="bg-secondary-container p-unit-4 rounded-xl border-2 border-on-secondary-container shadow-sm flex items-start gap-unit-4">
-<div class="flex-shrink-0 w-8 h-8 rounded-lg bg-on-secondary-container text-white font-bold flex items-center justify-center text-label-md">B</div>
-<div class="flex-1">
-<p class="text-body-md font-body-md text-on-surface pt-1">
-                            Passive recognition is more effective for high-stakes examinations because it requires less mental energy.
-                        </p>
-</div>
-<span class="material-symbols-outlined text-on-secondary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-</div>
-</button>
-<!-- Option C -->
-<button class="w-full text-left group">
-<div class="bg-surface-container-lowest p-unit-4 rounded-xl border border-surface-container-high shadow-sm hover:border-secondary transition-all active:scale-[0.98] flex items-start gap-unit-4">
-<div class="flex-shrink-0 w-8 h-8 rounded-lg bg-surface-container-high text-primary font-bold flex items-center justify-center text-label-md group-hover:bg-secondary group-hover:text-on-secondary transition-colors">C</div>
-<p class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors pt-1">
-                        Recognition builds conceptual depth while recall focuses only on surface-level terminology.
-                    </p>
-</div>
-</button>
-<!-- Option D -->
-<button class="w-full text-left group">
-<div class="bg-surface-container-lowest p-unit-4 rounded-xl border border-surface-container-high shadow-sm hover:border-secondary transition-all active:scale-[0.98] flex items-start gap-unit-4">
-<div class="flex-shrink-0 w-8 h-8 rounded-lg bg-surface-container-high text-primary font-bold flex items-center justify-center text-label-md group-hover:bg-secondary group-hover:text-on-secondary transition-colors">D</div>
-<p class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors pt-1">
-                        Both methods are identical in terms of synaptic plasticity and neurogenesis in the hippocampus.
-                    </p>
-</div>
-</button>
+<section id="quiz-options" class="space-y-unit-4"></section>
+<div id="quiz-feedback" class="hidden mt-unit-4 p-unit-4 rounded-xl bg-surface-container-low"></div>
+</section>
+<section id="quiz-results" class="hidden text-center py-unit-8">
+<span class="material-symbols-outlined text-[64px] text-secondary mb-unit-4" style="font-variation-settings:'FILL' 1">emoji_events</span>
+<h2 class="text-headline-md font-headline-md text-primary mb-unit-2">Quiz Complete</h2>
+<p id="quiz-final-score" class="text-headline-lg font-headline-lg text-secondary mb-unit-4">0 / 0</p>
+<p id="quiz-final-summary" class="text-body-md text-on-surface-variant mb-unit-8 max-w-md mx-auto"></p>
+<button id="quiz-restart" type="button" class="px-unit-8 py-unit-4 rounded-full bg-primary text-on-primary font-label-md hover:opacity-90 transition-all">New Quiz</button>
 </section>
 </main>
 <!-- Bottom Action Shell -->
-<footer class="fixed bottom-0 left-[260px] right-0 bg-surface z-50 p-container-margin shadow-[0_-8px_24px_rgba(0,0,0,0.06)] border-t border-outline-variant">
+<footer id="quiz-footer" class="hidden fixed bottom-0 left-[260px] right-0 bg-surface z-50 p-container-margin shadow-[0_-8px_24px_rgba(0,0,0,0.06)] border-t border-outline-variant">
 <div class="max-w-3xl mx-auto">
 <div class="flex gap-unit-4">
-<button class="flex-1 py-4 px-unit-6 rounded-full bg-surface-container-high text-on-surface font-label-md hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-unit-2">
-<span class="material-symbols-outlined text-[18px]" data-icon="skip_next">skip_next</span>
+<button id="quiz-skip" type="button" class="flex-1 py-4 px-unit-6 rounded-full bg-surface-container-high text-on-surface font-label-md hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-unit-2">
+<span class="material-symbols-outlined text-[18px]">skip_next</span>
                 Skip
             </button>
-<button class="flex-[2] py-4 px-unit-6 rounded-full bg-primary text-on-primary font-label-md hover:opacity-90 transition-all active:scale-95 flex items-center justify-center gap-unit-2 shadow-lg">
+<button id="quiz-submit" type="button" class="flex-[2] py-4 px-unit-6 rounded-full bg-primary text-on-primary font-label-md hover:opacity-90 transition-all active:scale-95 flex items-center justify-center gap-unit-2 shadow-lg">
                 Submit Answer
-                <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
 </button>
 </div>
 </div>
 </footer>
 <script src="/js/app.js" defer></script>
+<script src="/js/quiz.js" defer></script>
 </body></html>
