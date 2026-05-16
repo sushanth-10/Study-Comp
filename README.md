@@ -10,11 +10,11 @@ Scholarly is a modern, all-in-one study companion designed to help university st
 
 | Dashboard | Interactive Roadmap |
 | :---: | :---: |
-| ![Dashboard](https://via.placeholder.com/400x250?text=Dashboard+Screenshot) | ![Roadmap](https://via.placeholder.com/400x250?text=Roadmap+Screenshot) |
+| ![Dashboard](screenshots/dashboard.png) | ![Roadmap](screenshots/roadmap.png) |
 
 | AI Assistant | Focus Timer |
 | :---: | :---: |
-| ![AI Assistant](https://via.placeholder.com/400x250?text=AI+Assistant+Screenshot) | ![Focus Timer](https://via.placeholder.com/400x250?text=Focus+Timer+Screenshot) |
+| ![AI Assistant](screenshots/ai.png) | ![Focus Timer](screenshots/focus.png) |
 
 > **Note:** To add your own screenshots, upload your images to a folder named `screenshots/` in this repository and replace the links above with their paths (e.g., `screenshots/dashboard.png`).
 
