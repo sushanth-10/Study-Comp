@@ -74,7 +74,7 @@
     const url = '/api/notes/list' + (q ? '?q=' + encodeURIComponent(q) : '');
     const res = await fetch(url);
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Could not load PDFs');
+    if (!res.ok) throw new Error(data.error || data.detail || 'Could not load PDFs');
     render(data.pdfs || []);
   }
 
@@ -166,7 +166,7 @@
       try {
         const res = await fetch('/api/notes/upload', { method: 'POST', body: form });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Upload failed');
+        if (!res.ok) throw new Error(data.error || data.detail || 'Upload failed');
         ok += 1;
       } catch (err) {
         setStatus(err.message, true);
@@ -188,7 +188,7 @@
     try {
       const res = await fetch('/api/notes/' + encodeURIComponent(id), { method: 'DELETE' });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Delete failed');
+      if (!res.ok) throw new Error(data.error || data.detail || 'Delete failed');
       await fetchList();
     } catch (err) {
       setStatus(err.message, true);

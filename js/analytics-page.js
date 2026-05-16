@@ -305,6 +305,95 @@
     ];
   }
 
+  function localAnalyticsDataset() {
+    let usage = {};
+    try {
+      usage = JSON.parse(localStorage.getItem('scholarly_usage_analytics') || '{}') || {};
+    } catch (error) {
+      return null;
+    }
+    const days = usage.days || {};
+    const dayKeys = Object.keys(days).sort().slice(-7);
+    const quizzes = Array.isArray(usage.quizzes) ? usage.quizzes.slice(-12) : [];
+    if (!dayKeys.length && !quizzes.length) return null;
+
+    const totalSeconds = dayKeys.reduce(function (sum, key) {
+      return sum + Number(days[key].seconds || 0);
+    }, 0);
+    const avgQuiz = quizzes.length
+      ? Math.round(quizzes.reduce(function (sum, q) { return sum + Number(q.percent || 0); }, 0) / quizzes.length)
+      : 76;
+    const completion = quizzes.length
+      ? Math.round(quizzes.reduce(function (sum, q) { return sum + ((Number(q.total || 0) - Number(q.skipped || 0)) / Math.max(1, Number(q.total || 1))) * 100; }, 0) / quizzes.length)
+      : 80;
+    const focusQuality = Math.max(55, Math.min(95, Math.round(68 + Math.min(22, totalSeconds / 900))));
+    const line = dayKeys.length ? dayKeys.map(function (key) {
+      return { label: key.slice(5), value: Math.min(100, Math.round(Number(days[key].seconds || 0) / 60)) };
+    }) : [{ label: 'Today', value: Math.round(totalSeconds / 60) }];
+    const quizTopics = quizzes.reduce(function (acc, q) {
+      const topic = q.topic || 'Quiz';
+      acc[topic] = acc[topic] || { total: 0, count: 0 };
+      acc[topic].total += Number(q.percent || 0);
+      acc[topic].count += 1;
+      return acc;
+    }, {});
+    const heatmap = Object.keys(quizTopics).slice(-6).map(function (topic) {
+      const value = Math.round(quizTopics[topic].total / quizTopics[topic].count);
+      return { topic: topic, value: value, confidence: Math.max(45, value - 5) };
+    });
+    while (heatmap.length < 6) {
+      heatmap.push([
+        { topic: 'Focus time', value: focusQuality, confidence: 78 },
+        { topic: 'Study rhythm', value: Math.min(92, completion), confidence: 74 },
+        { topic: 'Review habit', value: Math.min(88, avgQuiz), confidence: 70 },
+        { topic: 'Quiz accuracy', value: avgQuiz, confidence: 76 },
+        { topic: 'Consistency', value: Math.min(95, dayKeys.length * 12), confidence: 72 },
+        { topic: 'Planning', value: 81, confidence: 68 },
+      ][heatmap.length]);
+    }
+
+    return [
+      { user: { name: 'Scholar' } },
+      {
+        accuracy: avgQuiz,
+        masteryScore: Math.round((avgQuiz + completion) / 2),
+        focusQuality: focusQuality,
+        weeklyImprovement: Math.max(1, quizzes.length),
+        learningVelocity: Math.min(95, Math.round(totalSeconds / 120) + 60),
+        charts: { line: line },
+      },
+      {
+        completionRate: completion,
+        responseSpeed: quizzes.length ? 14.5 : 18,
+        charts: { accuracyLine: quizzes.length ? quizzes.map(function (q, index) { return { label: 'Q' + (index + 1), value: q.percent }; }) : line },
+        hesitationPatterns: { deepThinkingRate: Math.min(0.85, 0.45 + totalSeconds / 20000), fastGuessRate: Math.max(0.08, 0.25 - totalSeconds / 50000) },
+        predictive: {
+          bestStudyTiming: 'Based on your active website time',
+          examReadiness: Math.round((avgQuiz + completion + focusQuality) / 3),
+          weakFutureTopics: heatmap.filter(function (h) { return h.value < 75; }).map(function (h) { return h.topic; }),
+        },
+      },
+      { distractedSessions: Math.max(0, 4 - dayKeys.length) },
+      { weakTopics: heatmap.filter(function (h) { return h.value < 75; }).map(function (h) { return h.topic; }), charts: { heatmap: heatmap } },
+      {
+        burnoutRisk: Math.min(55, Math.round(totalSeconds / 1200) + 12),
+        recommendedAction: totalSeconds > 7200 ? 'take_long_break' : 'take_short_breaks',
+        fatigueLevel: totalSeconds > 7200 ? 'medium' : 'low',
+        frustrationIndex: Math.max(8, 30 - Math.round(avgQuiz / 5)),
+        charts: { fatigueTrend: line.map(function (item) { return { label: item.label, value: Math.min(55, Math.round(item.value / 2) + 12) }; }) },
+      },
+      { consistencyScore: Math.min(100, dayKeys.length * 14), engagementPrediction: Math.min(96, focusQuality + 4) },
+      { items: heatmap.filter(function (h) { return h.value < 80; }).slice(0, 3).map(function (h) {
+        return { recommendedTopic: h.topic, recommendedSessionLength: 25, reason: 'Your recent quiz/time data shows this area can improve.' };
+      }) },
+      { items: [
+        { severity: 'success', title: 'Website time is being tracked', message: 'Analytics now updates from time spent inside the app.', metric: Math.round(totalSeconds / 60) + ' min' },
+        { severity: avgQuiz >= 75 ? 'success' : 'warning', title: 'Quiz performance', message: 'Recent quiz results are reflected in mastery and accuracy.', metric: avgQuiz + '%' },
+        { severity: 'info', title: 'Consistency signal', message: 'Streak and engagement improve as you use the app across more days.', metric: dayKeys.length + ' days' },
+      ] },
+    ];
+  }
+
   function isEmptyAnalytics(results) {
     const overview = results[1] || {};
     const performance = results[2] || {};
@@ -397,10 +486,11 @@
       fetchJson('/api/analytics/recommendations' + query),
       fetchJson('/api/dashboard/insights')
     ]).then(function (results) {
-      const useDemo = shouldUseDemoAnalytics(results);
-      renderAnalytics(useDemo ? demoDataset() : results, useDemo);
+      const local = localAnalyticsDataset();
+      const useDemo = !local && shouldUseDemoAnalytics(results);
+      renderAnalytics(local || (useDemo ? demoDataset() : results), useDemo);
     }).catch(function () {
-      renderAnalytics(demoDataset(), true);
+      renderAnalytics(localAnalyticsDataset() || demoDataset(), !localAnalyticsDataset());
     });
   }
 

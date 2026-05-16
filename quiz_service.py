@@ -170,6 +170,54 @@ def _questions_from_wikipedia(
     return questions[:count]
 
 
+def _context_sentences(context: str) -> list[str]:
+    raw = re.sub(r"\s+", " ", context or "").strip()
+    return [
+        s.strip()
+        for s in re.split(r"(?<=[.!?])\s+", raw)
+        if 45 <= len(s.strip()) <= 260
+    ]
+
+
+def _questions_from_context(topic: str, difficulty: str, count: int, context: str) -> list[dict[str, Any]]:
+    sentences = _context_sentences(context)
+    if len(sentences) < 3:
+        return []
+    random.shuffle(sentences)
+    questions: list[dict[str, Any]] = []
+    cursor = 0
+    while len(questions) < count and cursor < count * 2:
+        sent = sentences[cursor % len(sentences)]
+        cursor += 1
+        words = [
+            w for w in re.findall(r"\b[A-Za-z][A-Za-z\-]{4,}\b", sent)
+            if w.lower() not in {"which", "their", "there", "about", "these", "those", "because", "should"}
+        ]
+        if difficulty == "easy" and words:
+            term = random.choice(words[:8])
+            blanked = sent.replace(term, "______", 1)
+            options = [term] + [w for w in words if w != term][:3]
+            while len(options) < 4:
+                options.append(random.choice(["concept", "process", "example", "definition"]))
+            random.shuffle(options)
+            questions.append({
+                "question": f"From the uploaded material on {topic}, fill in the blank: {blanked}" + (f" ({len(questions) + 1})" if cursor > len(sentences) else ""),
+                "options": options[:4],
+                "correct_index": options[:4].index(term),
+                "explanation": f"The uploaded document states this point using the term {term}.",
+            })
+        else:
+            options = [sent] + _distractors(sent, sentences, 3)
+            random.shuffle(options)
+            questions.append({
+                "question": f"According to the uploaded material, which statement about {topic} is most accurate?" + (f" ({len(questions) + 1})" if cursor > len(sentences) else ""),
+                "options": options[:4],
+                "correct_index": options[:4].index(sent),
+                "explanation": "This answer is taken from the uploaded document context.",
+            })
+    return questions[:count]
+
+
 def _generate_llm(topic: str, difficulty: str, count: int, context: str = "") -> list[dict[str, Any]] | None:
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
     if not api_key:
@@ -310,6 +358,12 @@ def generate_quiz(topic: str, difficulty: str, count: int = 15, context: str = "
 
     questions = _generate_llm(topic, difficulty, count, context)
     source = "ai"
+
+    if context.strip() and (not questions or len(questions) < 10):
+        context_q = _questions_from_context(topic, difficulty, count, context)
+        if context_q:
+            questions = context_q
+            source = "document"
 
     if not questions or len(questions) < 10:
         wiki_q = _questions_from_wikipedia(topic, difficulty, count)

@@ -21,10 +21,31 @@
     return date.toISOString().slice(0, 10);
   }
 
+  function makeId() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+      return window.crypto.randomUUID();
+    }
+    return 'task-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+  }
+
+  function normalizeTask(task, index) {
+    const safeTask = task && typeof task === 'object' ? task : {};
+    return {
+      id: safeTask.id || makeId(),
+      title: String(safeTask.title || 'Untitled study task').trim(),
+      subject: String(safeTask.subject || 'General').trim(),
+      date: /^\d{4}-\d{2}-\d{2}$/.test(String(safeTask.date || '')) ? safeTask.date : isoDate(index === 2 ? tomorrow : today),
+      time: /^\d{2}:\d{2}$/.test(String(safeTask.time || '')) ? safeTask.time : '09:00',
+      minutes: Math.max(5, Number(safeTask.minutes || 45)),
+      priority: ['high', 'medium', 'low'].includes(safeTask.priority) ? safeTask.priority : 'medium',
+      completed: Boolean(safeTask.completed),
+    };
+  }
+
   function defaultTasks() {
     return [
       {
-        id: crypto.randomUUID(),
+        id: makeId(),
         title: 'Review Calculus - Derivatives',
         subject: 'Mathematics',
         date: isoDate(today),
@@ -34,7 +55,7 @@
         completed: false,
       },
       {
-        id: crypto.randomUUID(),
+        id: makeId(),
         title: 'Practice Organic Chemistry',
         subject: 'Chemistry',
         date: isoDate(today),
@@ -44,7 +65,7 @@
         completed: false,
       },
       {
-        id: crypto.randomUUID(),
+        id: makeId(),
         title: 'Read Physics Chapter 7',
         subject: 'Physics',
         date: isoDate(tomorrow),
@@ -59,7 +80,11 @@
   function loadTasks() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-      if (Array.isArray(saved)) return saved;
+      if (Array.isArray(saved)) {
+        const normalized = saved.map(normalizeTask);
+        saveTasks(normalized);
+        return normalized;
+      }
     } catch (error) {}
     const seeded = defaultTasks();
     saveTasks(seeded);
@@ -126,7 +151,7 @@
 
   function renderTasks() {
     const sorted = tasks.slice().sort(function (a, b) {
-      return (a.date + a.time).localeCompare(b.date + b.time);
+      return String(a.date + a.time).localeCompare(String(b.date + b.time));
     });
     const groups = sorted.reduce(function (result, task) {
       result[task.date] = result[task.date] || [];
@@ -203,7 +228,12 @@
     modalEl.classList.remove('flex');
   }
 
-  openBtn.addEventListener('click', openModal);
+  document.addEventListener('click', function (event) {
+    if (event.target.closest('#planner-add-open')) {
+      event.preventDefault();
+      openModal();
+    }
+  });
   closeBtn.addEventListener('click', closeModal);
   modalEl.addEventListener('click', function (event) {
     if (event.target === modalEl) closeModal();
@@ -211,8 +241,8 @@
 
   formEl.addEventListener('submit', function (event) {
     event.preventDefault();
-    tasks.push({
-      id: crypto.randomUUID(),
+    tasks.push(normalizeTask({
+      id: makeId(),
       title: titleInput.value.trim(),
       subject: subjectInput.value.trim(),
       date: dateInput.value,
@@ -220,7 +250,7 @@
       minutes: Number(minutesInput.value),
       priority: priorityInput.value,
       completed: false,
-    });
+    }));
     saveTasks(tasks);
     closeModal();
     renderTasks();

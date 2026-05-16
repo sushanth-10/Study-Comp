@@ -45,6 +45,25 @@
     skipped: 0,
   };
 
+  function saveLocalQuizResult(total, pct) {
+    try {
+      const key = 'scholarly_usage_analytics';
+      const usage = JSON.parse(localStorage.getItem(key) || '{}') || {};
+      usage.quizzes = Array.isArray(usage.quizzes) ? usage.quizzes : [];
+      usage.quizzes.push({
+        topic: state.topic,
+        difficulty: state.difficulty,
+        score: state.score,
+        total: total,
+        percent: pct,
+        skipped: state.skipped,
+        timestamp: new Date().toISOString(),
+      });
+      usage.quizzes = usage.quizzes.slice(-50);
+      localStorage.setItem(key, JSON.stringify(usage));
+    } catch (error) {}
+  }
+
   function show(view) {
     setupEl.classList.toggle('hidden', view !== 'setup');
     playEl.classList.toggle('hidden', view !== 'play');
@@ -153,6 +172,7 @@
       '). ' +
       (state.skipped ? state.skipped + ' skipped. ' : '') +
       'Keep practicing to improve retention!';
+    saveLocalQuizResult(total, pct);
     fetch('/api/analytics/update', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

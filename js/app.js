@@ -1,6 +1,7 @@
 (function () {
   const AUTH_KEY = 'scholarly_logged_in';
   const PROFILE_KEY = 'scholarly_profile';
+  const ANALYTICS_KEY = 'scholarly_usage_analytics';
 
   const NAV_ITEMS = [
     { id: 'dashboard', href: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
@@ -171,6 +172,44 @@
     return button;
   }
 
+  function readUsage() {
+    try {
+      const value = JSON.parse(localStorage.getItem(ANALYTICS_KEY) || '{}');
+      return value && typeof value === 'object' ? value : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function writeUsage(data) {
+    localStorage.setItem(ANALYTICS_KEY, JSON.stringify(data));
+  }
+
+  function todayKey() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function trackTimeOnSite() {
+    const page = document.body.dataset.page || 'app';
+    const startedAt = Date.now();
+    function commitTime() {
+      const seconds = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
+      const usage = readUsage();
+      const key = todayKey();
+      usage.days = usage.days || {};
+      usage.days[key] = usage.days[key] || { seconds: 0, pages: {}, sessions: 0 };
+      usage.days[key].seconds += seconds;
+      usage.days[key].sessions += 1;
+      usage.days[key].pages[page] = (usage.days[key].pages[page] || 0) + seconds;
+      usage.lastSeen = new Date().toISOString();
+      writeUsage(usage);
+    }
+    window.addEventListener('pagehide', commitTime, { once: true });
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') commitTime();
+    }, { once: true });
+  }
+
   function installProfileButton() {
     ensureProfileModal();
     const topbar = document.querySelector('.desktop-topbar');
@@ -311,6 +350,7 @@
     if (document.body.classList.contains('app-layout')) {
       wrapWithAppShell();
       installProfileButton();
+      trackTimeOnSite();
     }
   });
 })();

@@ -15,6 +15,10 @@ EXPLAIN_TRIGGERS = re.compile(
     r"\b(explain|what is|what are|define|summary|summarize|summarise|describe|meaning of|how does)\b",
     re.I,
 )
+GREETING_TRIGGERS = re.compile(
+    r"^\s*((hi|hello|hey)\s*)?(how are you|what'?s up|whats up)\s*[!.?]*\s*$|^\s*(hi|hello|hey|good morning|good afternoon|good evening)\s*[!.?]*\s*$",
+    re.I,
+)
 PLAN_TRIGGERS = re.compile(
     r"\b(study plan|schedule|organize|organise|exam prep|revision plan|how (to|should i) study)\b",
     re.I,
@@ -25,6 +29,8 @@ def _intent(message: str) -> str:
     text = message.strip()
     if not text:
         return "general"
+    if GREETING_TRIGGERS.search(text):
+        return "chat"
     if YOUTUBE_TRIGGERS.search(text):
         return "youtube"
     if PLAN_TRIGGERS.search(text):
@@ -33,7 +39,7 @@ def _intent(message: str) -> str:
         return "explain"
     if SEARCH_TRIGGERS.search(text):
         return "search"
-    if "?" in text or len(text.split()) <= 6:
+    if "?" in text:
         return "explain"
     return "general"
 
@@ -194,20 +200,29 @@ def chat(message: str) -> dict[str, Any]:
     reply_parts: list[str] = []
     context_parts: list[str] = []
 
-    if intent in ("explain", "general", "youtube", "search"):
+    if intent == "chat":
+        return {
+            "reply": "Hi! I am doing well and ready to help. Ask me to explain a topic, create a study plan, search for sources, or find videos when you need them.",
+            "status": "",
+            "tags": ["Study helper"],
+            "youtube": [],
+            "search_results": [],
+        }
+
+    if intent in ("explain", "youtube", "search"):
         status = "Researching your topic…"
         summary, tags = _wikipedia_summary(query)
         if summary:
             reply_parts.append(summary)
             context_parts.append(f"Wikipedia: {summary}")
 
-    if intent in ("youtube", "general", "explain"):
+    if intent == "youtube":
         status = status or "Finding study videos…"
         youtube = _search_youtube(query)
         if youtube:
             context_parts.append("Videos: " + ", ".join(v["title"] for v in youtube[:3]))
 
-    if intent in ("search", "general", "explain"):
+    if intent == "search":
         status = status or "Searching the web…"
         search_results = _search_web(query)
         if search_results:
@@ -228,16 +243,6 @@ def chat(message: str) -> dict[str, Any]:
             reply += "\n\nI found these videos that may help your study session:"
         elif intent == "search" and search_results:
             reply += "\n\nHere are some sources to explore:"
-        elif intent == "general":
-            if youtube:
-                reply += "\n\n**Suggested videos** are listed below."
-            if search_results:
-                reply += "\n\n**Web results** may give you deeper reading."
-            if not youtube and not search_results:
-                reply += (
-                    "\n\nTry asking me to *explain* a concept, *search* for sources, "
-                    "or *find videos* on a topic."
-                )
     else:
         if youtube:
             reply = f"Here are study videos related to **{query}**:"
