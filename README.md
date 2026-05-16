@@ -2,7 +2,11 @@
 
 Scholarly is a modern, all-in-one study companion designed to help university students organize their learning, track progress, and leverage AI for deeper understanding. From interactive roadmaps to adaptive quizzes, Scholarly turns study material into actionable learning paths.
 
+<<<<<<< HEAD
 ![Scholarly](https://scholarly-mcso.onrender.com) 
+=======
+![Scholarly Dashboard](https://raw.githubusercontent.com/Bhanu/Study-Comp/main/screenshot.png) *(Placeholder for your project screenshot)*
+>>>>>>> 92f64c2b848129e3130cd269ebeb2c989d87376c
 
 ## 🚀 Key Features
 
