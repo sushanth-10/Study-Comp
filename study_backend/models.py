@@ -1,7 +1,7 @@
 """SQLAlchemy models for adaptive learning telemetry."""
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlalchemy import JSON, Boolean, Date, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -151,7 +151,7 @@ class StudyPlan(TimestampMixin, Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
-    exam_date: Mapped[Date | None] = mapped_column(Date, nullable=True)
+    exam_date: Mapped[date] = mapped_column(Date, nullable=True)
     available_hours: Mapped[float] = mapped_column(Float, default=2.0)
     weak_topics: Mapped[list] = mapped_column(JSON, default=list)
     schedule: Mapped[list] = mapped_column(JSON, default=list)
@@ -198,7 +198,7 @@ class FocusLog(TimestampMixin, Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
-    session_id: Mapped[int | None] = mapped_column(ForeignKey("study_sessions.id"), nullable=True)
+    session_id: Mapped[int] = mapped_column(ForeignKey("study_sessions.id"), nullable=True)
     uninterrupted_minutes: Mapped[float] = mapped_column(Float, default=25)
     interruptions: Mapped[int] = mapped_column(Integer, default=0)
     idle_seconds: Mapped[int] = mapped_column(Integer, default=0)
@@ -215,7 +215,7 @@ class FatigueLog(TimestampMixin, Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
-    session_id: Mapped[int | None] = mapped_column(ForeignKey("study_sessions.id"), nullable=True)
+    session_id: Mapped[int] = mapped_column(ForeignKey("study_sessions.id"), nullable=True)
     fatigue_score: Mapped[float] = mapped_column(Float, default=30)
     burnout_risk: Mapped[float] = mapped_column(Float, default=20)
     frustration_index: Mapped[float] = mapped_column(Float, default=18)
