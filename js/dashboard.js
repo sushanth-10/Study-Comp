@@ -15,6 +15,7 @@
 
   const RECENT_NOTES_KEY = 'scholarly_recent_opened_notes';
   const PLANNER_KEY = 'scholarly_planner_tasks';
+  const PROFILE_KEY = 'scholarly_profile';
 
   if (!greetingEl) return;
 
@@ -69,6 +70,15 @@
       return Array.isArray(tasks) ? tasks : [];
     } catch (error) {
       return [];
+    }
+  }
+
+  function localProfileName(fallback) {
+    try {
+      const profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}');
+      return profile.name || fallback;
+    } catch (error) {
+      return fallback;
     }
   }
 
@@ -182,7 +192,7 @@
     fetchJson('/api/notes/list'),
   ])
     .then(function ([session, overview, activity, insights, notes]) {
-      const firstName = (session.user.name || 'Scholar').split(' ')[0];
+      const firstName = localProfileName(session.user.name || 'Scholar').split(' ')[0];
       greetingEl.textContent = 'Hello, ' + firstName + '!';
       subtitleEl.textContent =
         fmtHours(overview.studyHours) +

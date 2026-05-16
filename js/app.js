@@ -1,5 +1,6 @@
 (function () {
   const AUTH_KEY = 'scholarly_logged_in';
+  const PROFILE_KEY = 'scholarly_profile';
 
   const NAV_ITEMS = [
     { id: 'dashboard', href: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
@@ -27,6 +28,179 @@
   function logout() {
     setLoggedIn(false);
     window.location.href = '/logout';
+  }
+
+  function readProfile() {
+    try {
+      return JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}') || {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function writeProfile(profile) {
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  }
+
+  function profileInitial(name) {
+    const value = (name || 'Scholar').trim();
+    return value ? value.charAt(0).toUpperCase() : 'S';
+  }
+
+  function profileName() {
+    return readProfile().name || 'Scholar';
+  }
+
+  function profileAvatarHtml(profile, sizeClass) {
+    if (profile.photo) {
+      return '<img alt="Profile photo" class="w-full h-full object-cover" src="' + profile.photo + '"/>';
+    }
+    return '<span class="' + (sizeClass || 'text-label-md') + ' font-label-md">' + profileInitial(profile.name) + '</span>';
+  }
+
+  function renderProfileButtons() {
+    const profile = readProfile();
+    profile.name = profile.name || 'Scholar';
+    document.querySelectorAll('.scholarly-profile-button').forEach(function (button) {
+      button.innerHTML = profileAvatarHtml(profile, 'text-label-md');
+      button.setAttribute('aria-label', 'Edit profile for ' + profile.name);
+      button.title = 'Edit profile';
+    });
+    const preview = document.getElementById('profile-preview');
+    if (preview) preview.innerHTML = profileAvatarHtml(profile, 'text-headline-sm');
+    const nameInput = document.getElementById('profile-name-input');
+    if (nameInput && document.activeElement !== nameInput) nameInput.value = profile.name;
+    const greetingEl = document.getElementById('dashboard-greeting');
+    if (greetingEl) greetingEl.textContent = 'Hello, ' + profile.name.split(' ')[0] + '!';
+  }
+
+  function ensureProfileModal() {
+    if (document.getElementById('profile-modal')) return;
+    const modal = document.createElement('div');
+    modal.id = 'profile-modal';
+    modal.className = 'profile-modal hidden';
+    modal.innerHTML = `
+      <form id="profile-form" class="profile-card">
+        <div class="profile-card-header">
+          <div>
+            <h2>Edit Profile</h2>
+            <p>Update your display name and profile photo.</p>
+          </div>
+          <button id="profile-close" class="profile-icon-button" type="button" aria-label="Close profile editor">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="profile-photo-row">
+          <div id="profile-preview" class="profile-preview"></div>
+          <div>
+            <label class="profile-upload-button" for="profile-photo-input">
+              <span class="material-symbols-outlined">add_a_photo</span>
+              Choose Photo
+            </label>
+            <input id="profile-photo-input" type="file" accept="image/*" hidden/>
+            <button id="profile-remove-photo" class="profile-remove-button" type="button">Remove photo</button>
+          </div>
+        </div>
+        <label class="profile-field">
+          Name
+          <input id="profile-name-input" type="text" placeholder="Your name" maxlength="80"/>
+        </label>
+        <button class="profile-save-button" type="submit">Save Profile</button>
+      </form>
+    `;
+    document.body.appendChild(modal);
+
+    const form = document.getElementById('profile-form');
+    const close = document.getElementById('profile-close');
+    const nameInput = document.getElementById('profile-name-input');
+    const fileInput = document.getElementById('profile-photo-input');
+    const removePhoto = document.getElementById('profile-remove-photo');
+
+    close.addEventListener('click', closeProfileModal);
+    modal.addEventListener('click', function (event) {
+      if (event.target === modal) closeProfileModal();
+    });
+    fileInput.addEventListener('change', function () {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function () {
+        const profile = readProfile();
+        profile.name = nameInput.value.trim() || profile.name || 'Scholar';
+        profile.photo = reader.result;
+        writeProfile(profile);
+        renderProfileButtons();
+      };
+      reader.readAsDataURL(file);
+    });
+    removePhoto.addEventListener('click', function () {
+      const profile = readProfile();
+      delete profile.photo;
+      writeProfile(profile);
+      fileInput.value = '';
+      renderProfileButtons();
+    });
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const profile = readProfile();
+      profile.name = nameInput.value.trim() || 'Scholar';
+      writeProfile(profile);
+      renderProfileButtons();
+      closeProfileModal();
+    });
+  }
+
+  function openProfileModal() {
+    ensureProfileModal();
+    renderProfileButtons();
+    const modal = document.getElementById('profile-modal');
+    modal.classList.remove('hidden');
+    document.getElementById('profile-name-input').focus();
+  }
+
+  function closeProfileModal() {
+    const modal = document.getElementById('profile-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function makeProfileButton(extraClass) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'scholarly-profile-button ' + (extraClass || '');
+    button.addEventListener('click', openProfileModal);
+    return button;
+  }
+
+  function installProfileButton() {
+    ensureProfileModal();
+    const topbar = document.querySelector('.desktop-topbar');
+    if (topbar) {
+      topbar.querySelectorAll('img[alt*="User"], img[alt*="Profile"], .w-10.h-10.rounded-full').forEach(function (node) {
+        const wrapper = node.closest('.w-10.h-10.rounded-full') || node;
+        if (!wrapper.classList.contains('scholarly-profile-button')) wrapper.remove();
+      });
+      const button = makeProfileButton('profile-topbar-button');
+      const target = topbar.querySelector('.flex.justify-between') || topbar;
+      target.appendChild(button);
+    } else if (!document.querySelector('.profile-floating-button')) {
+      const button = makeProfileButton('profile-floating-button');
+      document.body.appendChild(button);
+    }
+    renderProfileButtons();
+
+    fetch('/api/session')
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (session) {
+        if (!session || !session.user) return;
+        const profile = readProfile();
+        if (!profile.name || profile.name === 'Scholar') {
+          profile.name = session.user.name || 'Scholar';
+          if (session.user.avatarUrl && !profile.photo) profile.photo = session.user.avatarUrl;
+          writeProfile(profile);
+          renderProfileButtons();
+        }
+      })
+      .catch(function () {});
   }
 
   function buildSidebar(currentPage, dark) {
@@ -136,6 +310,7 @@
 
     if (document.body.classList.contains('app-layout')) {
       wrapWithAppShell();
+      installProfileButton();
     }
   });
 })();

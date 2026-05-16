@@ -122,6 +122,178 @@
   padding: 0 32px;
 }
 
+.scholarly-profile-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  border: 1px solid #c5c6ce;
+  background: #c6e8cd;
+  color: #4b6954;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(4, 22, 50, 0.08);
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.scholarly-profile-button:hover {
+  transform: translateY(-1px);
+  border-color: #476550;
+}
+
+.profile-floating-button {
+  position: fixed;
+  top: 24px;
+  right: 32px;
+  z-index: 120;
+}
+
+.profile-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(4, 22, 50, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.profile-modal.hidden {
+  display: none;
+}
+
+.profile-card {
+  width: min(440px, 100%);
+  background: #ffffff;
+  color: #191c1e;
+  border: 1px solid #c5c6ce;
+  border-radius: 12px;
+  box-shadow: 0 24px 80px rgba(4, 22, 50, 0.25);
+  padding: 24px;
+  font-family: Lexend, sans-serif;
+}
+
+.profile-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.profile-card h2 {
+  margin: 0;
+  color: #041632;
+  font-family: Literata, serif;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.profile-card p {
+  margin: 4px 0 0;
+  color: #44474d;
+  font-size: 14px;
+}
+
+.profile-icon-button {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 9999px;
+  background: #f2f4f6;
+  color: #44474d;
+  cursor: pointer;
+}
+
+.profile-photo-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.profile-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 9999px;
+  background: #c6e8cd;
+  color: #4b6954;
+  border: 1px solid #c5c6ce;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-upload-button,
+.profile-save-button,
+.profile-remove-button {
+  font-family: Lexend, sans-serif;
+  cursor: pointer;
+}
+
+.profile-upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #041632;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.profile-remove-button {
+  display: block;
+  margin-top: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #ba1a1a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.profile-field {
+  display: block;
+  color: #041632;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.profile-field input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #c5c6ce;
+  background: #ffffff;
+  color: #191c1e;
+  outline: none;
+}
+
+.profile-field input:focus {
+  border-color: #476550;
+  box-shadow: 0 0 0 3px rgba(71, 101, 80, 0.15);
+}
+
+.profile-save-button {
+  width: 100%;
+  margin-top: 24px;
+  border: 0;
+  border-radius: 8px;
+  background: #476550;
+  color: #ffffff;
+  padding: 13px 16px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .desktop-topbar-title {
   font-family: Literata, serif;
   font-size: 20px;
