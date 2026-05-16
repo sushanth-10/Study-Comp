@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Scholarly - Deep Work Focus</title>
+<title>Scholarly - Focus Timer</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400..700;1,400..700&amp;family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
@@ -16,69 +14,29 @@
             "colors": {
                     "on-secondary-container": "#4b6954",
                     "error": "#ba1a1a",
-                    "on-secondary-fixed-variant": "#304d39",
                     "on-background": "#191c1e",
                     "surface-container-highest": "#e0e3e5",
                     "outline": "#75777e",
                     "outline-variant": "#c5c6ce",
-                    "tertiary": "#06172a",
-                    "inverse-on-surface": "#eff1f3",
-                    "surface-dim": "#d8dadc",
-                    "on-tertiary": "#ffffff",
-                    "surface-container-low": "#f2f4f6",
-                    "surface-container-high": "#e6e8ea",
                     "background": "#f7f9fb",
                     "secondary-container": "#c6e8cd",
-                    "on-tertiary-fixed-variant": "#38485d",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#8393b5",
+                    "surface-container-low": "#f2f4f6",
                     "primary-container": "#1b2b48",
                     "on-surface": "#191c1e",
-                    "on-primary-container": "#8393b5",
-                    "on-secondary": "#ffffff",
                     "on-surface-variant": "#44474d",
                     "on-primary": "#ffffff",
-                    "inverse-primary": "#b7c7eb",
-                    "surface-bright": "#f7f9fb",
-                    "on-tertiary-fixed": "#0b1c30",
-                    "error-container": "#ffdad6",
-                    "on-error-container": "#93000a",
                     "surface": "#f7f9fb",
-                    "on-primary-fixed-variant": "#374765",
-                    "on-error": "#ffffff",
-                    "tertiary-fixed-dim": "#b7c8e1",
                     "secondary": "#476550",
-                    "inverse-surface": "#2d3133",
-                    "on-tertiary-container": "#8393ac",
-                    "surface-variant": "#e0e3e5",
-                    "on-secondary-fixed": "#032110",
-                    "secondary-fixed-dim": "#adcfb5",
-                    "tertiary-fixed": "#d3e4fe",
                     "primary": "#041632",
-                    "on-primary-fixed": "#091b37",
                     "secondary-fixed": "#c9ebd0",
-                    "primary-fixed-dim": "#b7c7eb",
-                    "surface-container": "#eceef0",
-                    "surface-tint": "#4f5e7e",
-                    "tertiary-container": "#1c2c40",
+                    "secondary-fixed-dim": "#adcfb5",
                     "primary-fixed": "#d7e2ff",
                     "surface-container-lowest": "#ffffff"
             },
-            "borderRadius": {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-            },
-            "spacing": {
-                    "gutter": "16px",
-                    "unit-6": "24px",
-                    "unit-3": "12px",
-                    "unit-2": "8px",
-                    "unit-8": "32px",
-                    "container-margin": "20px",
-                    "unit-1": "4px",
-                    "base": "4px",
-                    "unit-4": "16px"
-            },
+            "borderRadius": {"lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            "spacing": {"unit-1": "4px", "unit-2": "8px", "unit-3": "12px", "unit-4": "16px", "unit-6": "24px", "unit-8": "32px", "container-margin": "20px"},
             "fontFamily": {
                     "headline-lg-mobile": ["Literata"],
                     "body-lg": ["Lexend"],
@@ -93,9 +51,9 @@
             "fontSize": {
                     "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
                     "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
-                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "1", "fontWeight": "600"}],
                     "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
-                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
                     "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
                     "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
                     "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
@@ -106,83 +64,115 @@
       }
     </script>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .timer-glow {
-            box-shadow: 0 0 60px 0 rgba(183, 199, 235, 0.1);
-        }
-        .bg-focus-gradient {
-            background: radial-gradient(circle at center, #091b37 0%, #041632 100%);
-        }
-    </style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .timer-glow { filter: drop-shadow(0 0 18px rgba(173, 207, 181, 0.35)); }
+  .bg-focus-gradient { background: radial-gradient(circle at center, #091b37 0%, #041632 100%); }
+</style>
 <link href="/css/desktop.css" rel="stylesheet"/>
-  </head>
-<body class="app-layout bg-focus-gradient min-h-screen text-on-primary flex flex-col items-center justify-between px-container-margin py-unit-8 overflow-hidden" data-page="focus" data-theme="dark">
-<!-- Top Status / Task Information -->
-<header class="w-full max-w-4xl flex flex-col items-center space-y-unit-2">
-<div class="flex items-center space-x-unit-2 py-1 px-3 bg-primary-container rounded-full opacity-90 border border-outline-variant/10">
-<span class="material-symbols-outlined text-[18px] text-secondary-fixed">auto_awesome</span>
-<span class="font-label-md text-label-md text-secondary-fixed uppercase tracking-widest">Deep Work</span>
+</head>
+<body class="app-layout bg-focus-gradient min-h-screen text-on-primary font-body-md text-body-md" data-page="focus" data-theme="dark">
+<main class="app-content-inner min-h-screen py-unit-8 flex flex-col">
+<header class="flex flex-col md:flex-row md:items-start md:justify-between gap-unit-6 mb-unit-8">
+<div>
+<div class="inline-flex items-center gap-unit-2 py-unit-2 px-unit-3 bg-primary-container rounded-full border border-outline-variant/10">
+<span class="material-symbols-outlined text-[18px] text-secondary-fixed">timer</span>
+<span class="font-label-md text-label-md text-secondary-fixed uppercase tracking-wide">Focus Timer</span>
 </div>
-<h1 id="focus-title" class="font-headline-md text-headline-md text-center text-primary-fixed">Organic Chemistry Finals</h1>
-<p id="focus-subtitle" class="font-body-sm text-body-sm text-on-primary-container opacity-80">Module 4: Carbon Synthesis</p>
+<h1 id="focus-title" class="font-headline-lg text-headline-lg text-primary-fixed mt-unit-4">Deep Work Focus</h1>
+<p id="focus-subtitle" class="font-body-md text-body-md text-on-primary-container mt-unit-1">Open-ended focus timer</p>
+</div>
+<div class="grid grid-cols-2 gap-unit-3 w-full md:w-auto">
+<div class="bg-primary-container/50 border border-outline-variant/10 rounded-xl p-unit-4 min-w-[140px]">
+<span class="text-label-sm font-label-sm text-on-primary-container">Completed</span>
+<strong id="focus-completed" class="block text-headline-sm font-headline-sm text-primary-fixed mt-unit-2">0</strong>
+</div>
+<div class="bg-primary-container/50 border border-outline-variant/10 rounded-xl p-unit-4 min-w-[140px]">
+<span class="text-label-sm font-label-sm text-on-primary-container">Average</span>
+<strong id="focus-average" class="block text-headline-sm font-headline-sm text-primary-fixed mt-unit-2">0m</strong>
+</div>
+</div>
 </header>
-<!-- Main Timer Area -->
-<main class="flex-grow flex flex-col items-center justify-center w-full max-w-4xl relative">
-<!-- Minimalist Circular Progress -->
+
+<section class="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-unit-8 flex-1 items-center">
+<div class="flex flex-col items-center justify-center">
+<div class="flex items-center justify-center gap-unit-3 mb-unit-8 bg-primary-container/50 rounded-full p-unit-2 border border-outline-variant/10">
+<button class="px-unit-4 py-unit-3 rounded-full text-label-md font-label-md transition-colors" data-focus-mode="focus" type="button">
+<span class="inline-flex items-center gap-unit-2"><span class="material-symbols-outlined text-[18px]">center_focus_strong</span>Focus</span>
+</button>
+<button class="px-unit-4 py-unit-3 rounded-full text-label-md font-label-md transition-colors" data-focus-mode="break" type="button">
+<span class="inline-flex items-center gap-unit-2"><span class="material-symbols-outlined text-[18px]">coffee</span>Long Break</span>
+</button>
+</div>
+
 <div class="relative w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center">
-<!-- Background Ring -->
 <svg class="absolute inset-0 w-full h-full -rotate-90" viewbox="0 0 100 100">
 <circle class="text-primary-container" cx="50" cy="50" fill="transparent" r="46" stroke="currentColor" stroke-width="2"></circle>
-<!-- Active Progress Ring (Sage Green Accent) -->
-<circle id="focus-ring" class="timer-glow transition-all duration-1000" cx="50" cy="50" fill="transparent" r="46" stroke="#adcfb5" stroke-dasharray="289" stroke-dashoffset="80" stroke-linecap="round" stroke-width="2.5"></circle>
+<circle id="focus-ring" class="timer-glow transition-all duration-500" cx="50" cy="50" fill="transparent" r="46" stroke="#adcfb5" stroke-dasharray="289" stroke-dashoffset="289" stroke-linecap="round" stroke-width="2.5"></circle>
 </svg>
-<!-- Timer Text -->
 <div class="flex flex-col items-center">
-<span id="focus-time" class="font-headline-lg-mobile text-headline-lg-mobile text-[64px] sm:text-[72px] text-primary-fixed leading-none tracking-tight">24:42</span>
-<span id="focus-phase" class="font-label-md text-label-md text-on-primary-container mt-unit-1 opacity-60">minutes remaining</span>
+<span id="focus-time" class="font-headline-lg-mobile text-[68px] sm:text-[78px] text-primary-fixed leading-none">00:00</span>
+<span id="focus-phase" class="font-label-md text-label-md text-on-primary-container mt-unit-2 opacity-70">Focus mode ready</span>
 </div>
 </div>
-<!-- Quote / Focus Prompt -->
-<div class="mt-unit-8 text-center px-unit-6">
-<p class="font-body-md text-body-md italic text-on-primary-container opacity-70">"Concentration is the root of all the higher abilities in man."</p>
-</div>
-</main>
-<!-- Footer Controls -->
-<footer class="w-full max-w-4xl flex flex-col items-center space-y-unit-6 pb-unit-4">
-<!-- Ambient Sound Toggle -->
-<div class="flex items-center justify-center space-x-unit-4 bg-primary-container/40 backdrop-blur-sm px-unit-6 py-unit-3 rounded-full border border-outline-variant/5">
-<div class="flex items-center space-x-unit-2">
-<span class="material-symbols-outlined text-on-primary-container" data-icon="water_drop">water_drop</span>
-<span class="font-label-md text-label-md text-on-primary-container">Soft Rain</span>
-</div>
-<div class="h-4 w-[1px] bg-outline-variant/20"></div>
-<button class="flex items-center justify-center p-1 rounded-full bg-secondary-container/20 text-secondary-fixed hover:bg-secondary-container/30 transition-all">
-<span class="material-symbols-outlined" data-icon="volume_up">volume_up</span>
+
+<div class="mt-unit-8 flex items-center justify-center gap-unit-6">
+<button id="focus-start" class="flex flex-col items-center gap-unit-2 group" type="button">
+<span class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shadow-lg group-active:scale-95 transition-transform">
+<span id="focus-start-icon" class="material-symbols-outlined text-[32px]">play_arrow</span>
+</span>
+<span id="focus-start-label" class="font-label-md text-label-md text-on-primary-container group-hover:text-primary-fixed">Start</span>
 </button>
-</div>
-<!-- Primary Actions -->
-<div class="flex items-center justify-center space-x-unit-6 w-full">
-<button id="focus-pause" class="flex flex-col items-center space-y-unit-1 group">
-<div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shadow-lg group-active:scale-95 transition-transform duration-150">
-<span class="material-symbols-outlined text-[32px]" data-icon="pause">pause</span>
-</div>
-<span id="focus-pause-label" class="font-label-md text-label-md text-on-primary-container group-hover:text-primary-fixed">Pause</span>
+<button id="focus-reset" class="flex flex-col items-center gap-unit-2 group" type="button">
+<span class="w-16 h-16 rounded-full border-2 border-outline-variant/30 flex items-center justify-center text-primary-fixed hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-[28px]">restart_alt</span>
+</span>
+<span class="font-label-md text-label-md text-on-primary-container group-hover:text-primary-fixed">Reset</span>
 </button>
-<a id="focus-end" class="flex flex-col items-center space-y-unit-1 group no-underline" href="/dashboard">
-<div class="w-16 h-16 rounded-full border-2 border-error/40 flex items-center justify-center text-error hover:bg-error/10 transition-colors group-active:scale-95 transition-transform duration-150">
-<span class="material-symbols-outlined text-[28px]" data-icon="close">close</span>
-</div>
-<span class="font-label-md text-label-md text-on-primary-container group-hover:text-error">End Session</span>
+<a id="focus-end" class="flex flex-col items-center gap-unit-2 group no-underline" href="/dashboard">
+<span class="w-16 h-16 rounded-full border-2 border-error/40 flex items-center justify-center text-error hover:bg-error/10 transition-colors">
+<span class="material-symbols-outlined text-[28px]">close</span>
+</span>
+<span class="font-label-md text-label-md text-on-primary-container group-hover:text-error">End</span>
 </a>
 </div>
-</footer>
-<!-- Background Subtle Texture Decor (Simplified to avoid large URIs) -->
-<div class="fixed inset-0 pointer-events-none z-[-1] opacity-5">
-<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-secondary-fixed-dim blur-[120px] rounded-full"></div>
-<div class="absolute bottom-[-5%] right-[-5%] w-[30%] h-[30%] bg-tertiary-fixed-dim blur-[100px] rounded-full"></div>
 </div>
+
+<aside class="bg-primary-container/50 border border-outline-variant/10 rounded-xl p-unit-6 w-full">
+<div class="flex items-center gap-unit-2 mb-unit-6">
+<span class="material-symbols-outlined text-secondary-fixed">settings</span>
+<h2 class="font-headline-sm text-headline-sm text-primary-fixed">Timer Settings</h2>
+</div>
+<form id="focus-settings-form" class="space-y-unit-4">
+<label class="block font-label-md text-label-md text-primary-fixed">
+Focus limit
+<span class="block text-body-sm text-on-primary-container font-body-sm mt-unit-1">Use 0 for a normal open-ended timer.</span>
+<div class="grid grid-cols-2 gap-unit-3 mt-unit-2">
+<input id="focus-limit" class="w-full rounded-lg border border-outline-variant/20 bg-primary/40 text-primary-fixed px-unit-4 py-unit-3 focus:ring-2 focus:ring-secondary outline-none" min="0" max="240" type="number" value="0" aria-label="Focus minutes"/>
+<input id="focus-seconds" class="w-full rounded-lg border border-outline-variant/20 bg-primary/40 text-primary-fixed px-unit-4 py-unit-3 focus:ring-2 focus:ring-secondary outline-none" min="0" max="59" type="number" value="0" aria-label="Focus seconds"/>
+</div>
+<span class="block text-label-sm text-on-primary-container mt-unit-1">Minutes and seconds</span>
+</label>
+<label class="block font-label-md text-label-md text-primary-fixed">
+Long break
+<div class="grid grid-cols-2 gap-unit-3 mt-unit-2">
+<input id="break-limit" class="w-full rounded-lg border border-outline-variant/20 bg-primary/40 text-primary-fixed px-unit-4 py-unit-3 focus:ring-2 focus:ring-secondary outline-none" min="0" max="120" type="number" value="25" aria-label="Long break minutes"/>
+<input id="break-seconds" class="w-full rounded-lg border border-outline-variant/20 bg-primary/40 text-primary-fixed px-unit-4 py-unit-3 focus:ring-2 focus:ring-secondary outline-none" min="0" max="59" type="number" value="0" aria-label="Long break seconds"/>
+</div>
+<span class="block text-label-sm text-on-primary-container mt-unit-1">Minutes and seconds</span>
+</label>
+<button class="w-full bg-secondary-container text-on-secondary-container rounded-lg py-unit-3 text-label-md font-label-md hover:opacity-90 transition-opacity" type="submit">
+Apply Timer
+</button>
+</form>
+<div class="mt-unit-6 border-t border-outline-variant/10 pt-unit-6">
+<div class="flex items-center gap-unit-2 text-on-primary-container">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="text-body-sm">A loud alarm plays when a custom focus limit or long break finishes.</span>
+</div>
+</div>
+</aside>
+</section>
+</main>
 <script src="/js/app.js" defer></script>
 <script src="/js/focus-session.js" defer></script>
 </body></html>

@@ -4,6 +4,7 @@
   const NAV_ITEMS = [
     { id: 'dashboard', href: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
     { id: 'analytics', href: '/analytics', icon: 'monitoring', label: 'Analytics' },
+    { id: 'planner', href: '/planner', icon: 'event_note', label: 'Study Planner' },
     { id: 'focus', href: '/focus', icon: 'timer', label: 'Focus' },
     { id: 'notes', href: '/notes', icon: 'description', label: 'Notes' },
     { id: 'streak', href: '/streak', icon: 'local_fire_department', label: 'Streak' },

@@ -44,6 +44,7 @@ app.mount("/js", StaticFiles(directory=str(ROOT / "js")), name="js")
 PROTECTED_PAGES = {
     "/dashboard": "dashboard.html",
     "/analytics": "analytics.html",
+    "/planner": "planner.html",
     "/focus": "focus.html",
     "/notes": "notes.html",
     "/streak": "streak.html",

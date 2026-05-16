@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Scholarly Study Planner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;600;700&amp;family=Lexend:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#4b6954",
+                    "error": "#ba1a1a",
+                    "on-background": "#191c1e",
+                    "surface-container-highest": "#e0e3e5",
+                    "outline": "#75777e",
+                    "outline-variant": "#c5c6ce",
+                    "background": "#f7f9fb",
+                    "secondary-container": "#c6e8cd",
+                    "primary-container": "#1b2b48",
+                    "on-surface": "#191c1e",
+                    "on-primary-container": "#8393b5",
+                    "on-surface-variant": "#44474d",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "surface": "#f7f9fb",
+                    "secondary": "#476550",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-container": "#eceef0",
+                    "primary": "#041632",
+                    "primary-fixed": "#d7e2ff",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {"lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            "spacing": {"unit-1": "4px", "unit-2": "8px", "unit-3": "12px", "unit-4": "16px", "unit-6": "24px", "unit-8": "32px"},
+            "fontFamily": {
+                    "headline-lg-mobile": ["Literata"],
+                    "label-md": ["Lexend"],
+                    "body-md": ["Lexend"],
+                    "headline-lg": ["Literata"],
+                    "label-sm": ["Lexend"],
+                    "headline-sm": ["Literata"],
+                    "body-sm": ["Lexend"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "1", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  body { background-color: #f7f9fb; color: #191c1e; }
+</style>
+<link href="/css/desktop.css" rel="stylesheet"/>
+</head>
+<body class="app-layout flex flex-col min-h-screen font-body-md text-body-md" data-page="planner">
+<header class="desktop-topbar">
+<div class="flex items-center gap-unit-2">
+<span class="material-symbols-outlined text-primary">event_note</span>
+<h1 class="text-headline-sm font-headline-sm font-bold text-primary">Study Planner</h1>
+</div>
+</header>
+<main class="app-content-inner flex-grow py-8">
+<section class="mb-unit-8">
+<span class="text-label-sm font-label-sm uppercase tracking-wide text-on-secondary-container">Plan the next study block</span>
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-primary mt-unit-1">Study Planner</h2>
+<p class="text-on-surface-variant font-body-md mt-unit-1">Organize subjects, timing, and priority without leaving your dashboard flow.</p>
+<button id="planner-add-open" class="mt-unit-6 inline-flex items-center gap-unit-2 bg-primary text-on-primary px-unit-4 py-unit-3 rounded-lg text-label-md font-label-md hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span>
+Add Task
+</button>
+</section>
+
+<section class="grid grid-cols-1 md:grid-cols-3 gap-unit-4 mb-unit-8">
+<article class="bg-surface-container-lowest p-unit-4 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-on-secondary-container/10">
+<div class="flex justify-between items-start">
+<span class="text-label-md font-label-md text-on-surface-variant">Total Tasks</span>
+<span class="material-symbols-outlined text-primary">assignment</span>
+</div>
+<strong id="planner-total" class="block text-headline-lg font-headline-lg text-primary mt-unit-6">0</strong>
+</article>
+<article class="bg-surface-container-lowest p-unit-4 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-on-secondary-container/10">
+<div class="flex justify-between items-start">
+<span class="text-label-md font-label-md text-on-surface-variant">Completed</span>
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+</div>
+<strong id="planner-completed" class="block text-headline-lg font-headline-lg text-primary mt-unit-6">0/0</strong>
+</article>
+<article class="bg-surface-container-lowest p-unit-4 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-on-secondary-container/10">
+<div class="flex justify-between items-start">
+<span class="text-label-md font-label-md text-on-surface-variant">Total Time</span>
+<span class="material-symbols-outlined text-on-secondary-container">schedule</span>
+</div>
+<strong id="planner-hours" class="block text-headline-lg font-headline-lg text-primary mt-unit-6">0h</strong>
+</article>
+</section>
+
+<section class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-unit-6">
+<div>
+<div class="flex items-center justify-between mb-unit-4">
+<h3 class="text-headline-sm font-headline-sm text-primary">Upcoming Tasks</h3>
+<span id="planner-pending-label" class="text-label-md font-label-md text-on-surface-variant">0 pending</span>
+</div>
+<div id="planner-task-list" class="space-y-unit-4"></div>
+</div>
+
+<aside class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-unit-4 h-fit">
+<div class="flex items-center gap-unit-2 mb-unit-4">
+<span class="material-symbols-outlined text-secondary">tips_and_updates</span>
+<h3 class="text-headline-sm font-headline-sm text-primary">Priority Mix</h3>
+</div>
+<div id="planner-priority-list" class="space-y-unit-3"></div>
+<div class="mt-unit-6 p-unit-4 rounded-lg bg-secondary-container text-on-secondary-container">
+<p class="text-label-md font-label-md">Tip</p>
+<p class="text-body-sm font-body-sm mt-unit-2">Put the hardest task before a long break so your recovery time has a clear purpose.</p>
+</div>
+</aside>
+</section>
+</main>
+
+<div id="planner-modal" class="fixed inset-0 z-[200] hidden items-center justify-center bg-primary/50 px-unit-4">
+<form id="planner-form" class="w-full max-w-xl bg-surface-container-lowest rounded-xl shadow-2xl border border-outline-variant p-unit-6">
+<div class="flex items-start justify-between mb-unit-6">
+<div>
+<h2 class="text-headline-sm font-headline-sm text-primary">Add study task</h2>
+<p class="text-body-sm text-on-surface-variant mt-unit-1">Choose a subject, time, and priority.</p>
+</div>
+<button id="planner-add-close" type="button" class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-unit-4">
+<label class="md:col-span-2 text-label-md font-label-md text-primary">Task title
+<input id="planner-title" class="mt-unit-2 w-full px-unit-4 py-unit-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-secondary outline-none" placeholder="Review calculus derivatives" required/>
+</label>
+<label class="text-label-md font-label-md text-primary">Subject
+<input id="planner-subject" class="mt-unit-2 w-full px-unit-4 py-unit-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-secondary outline-none" placeholder="Mathematics" required/>
+</label>
+<label class="text-label-md font-label-md text-primary">Date
+<input id="planner-date" class="mt-unit-2 w-full px-unit-4 py-unit-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-secondary outline-none" type="date" required/>
+</label>
+<label class="text-label-md font-label-md text-primary">Start time
+<input id="planner-time" class="mt-unit-2 w-full px-unit-4 py-unit-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-secondary outline-none" type="time" required/>
+</label>
+<label class="text-label-md font-label-md text-primary">Minutes
+<input id="planner-minutes" class="mt-unit-2 w-full px-unit-4 py-unit-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-secondary outline-none" type="number" min="5" max="240" value="45" required/>
+</label>
+<label class="md:col-span-2 text-label-md font-label-md text-primary">Priority
+<select id="planner-priority" class="mt-unit-2 w-full px-unit-4 py-unit-3 rounded-lg border border-outline-variant bg-surface-container-lowest focus:ring-2 focus:ring-secondary outline-none">
+<option value="high">High</option>
+<option value="medium" selected>Medium</option>
+<option value="low">Low</option>
+</select>
+</label>
+</div>
+<button class="mt-unit-6 w-full bg-primary text-on-primary py-unit-3 rounded-lg text-label-md font-label-md hover:bg-primary-container transition-colors" type="submit">Save Task</button>
+</form>
+</div>
+
+<script src="/js/app.js" defer></script>
+<script src="/js/planner.js" defer></script>
+</body></html>

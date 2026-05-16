@@ -11,6 +11,7 @@
   const viewerFrame = document.getElementById('notes-viewer-frame');
   const viewerTitle = document.getElementById('notes-viewer-title');
   const viewerClose = document.getElementById('notes-viewer-close');
+  const RECENT_KEY = 'scholarly_recent_opened_notes';
 
   if (!dropZone || !grid) return;
 
@@ -33,6 +34,25 @@
     } catch (e) {
       return '';
     }
+  }
+
+  function rememberOpenedNote(pdf) {
+    let recent = [];
+    try {
+      recent = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+    } catch (e) {}
+    recent = recent.filter(function (item) {
+      return item.id !== pdf.id;
+    });
+    recent.unshift({
+      id: pdf.id,
+      name: pdf.name,
+      filename: pdf.filename,
+      uploaded_at: pdf.uploaded_at,
+      opened_at: new Date().toISOString(),
+      size_label: pdf.size_label || '',
+    });
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recent.slice(0, 12)));
   }
 
   function setStatus(msg, isError) {
@@ -93,7 +113,7 @@
         '<div class="flex gap-unit-3">' +
         '<a href="/api/notes/pdf/' +
         encodeURIComponent(pdf.id) +
-        '" target="_blank" rel="noopener" class="text-label-sm font-label-md text-secondary hover:underline">Open</a>' +
+        '" target="_blank" rel="noopener" class="notes-open-link text-label-sm font-label-md text-secondary hover:underline">Open</a>' +
         '<button type="button" class="notes-open text-label-sm font-label-md text-primary hover:underline">View</button>' +
         '</div></div>';
 
@@ -102,7 +122,11 @@
       card.querySelector('.notes-open').dataset.name = pdf.name;
 
       card.querySelector('.notes-open').addEventListener('click', function () {
+        rememberOpenedNote(pdf);
         openViewer(pdf.id, pdf.name);
+      });
+      card.querySelector('.notes-open-link').addEventListener('click', function () {
+        rememberOpenedNote(pdf);
       });
       card.querySelector('.notes-delete').addEventListener('click', function () {
         removePdf(pdf.id, pdf.name);
