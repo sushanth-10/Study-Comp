@@ -6,7 +6,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 STORAGE_DIR = ROOT / "storage" / "pdfs"
 INDEX_PATH = ROOT / "storage" / "notes_index.json"
 MAX_BYTES = 25 * 1024 * 1024  # 25 MB per file

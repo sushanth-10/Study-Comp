@@ -15,10 +15,10 @@ except ImportError:
 
 from flask import Flask, jsonify, redirect, request, send_file, send_from_directory, session, url_for, make_response
 
-from ai_service import chat as ai_chat
-from ai_service import scan_file_for_topic
-from notes_service import delete_pdf, get_pdf_path, get_pdf_record, list_pdfs, save_pdf
-from quiz_service import generate_quiz
+from study_backend.services.ai_engine import chat as ai_chat
+from study_backend.services.ai_engine import scan_file_for_topic
+from study_backend.services.notes_engine import delete_pdf, get_pdf_path, get_pdf_record, list_pdfs, save_pdf
+from study_backend.services.quiz_engine import generate_quiz
 from study_backend.services.quiz import concept_map
 
 app = Flask(__name__)

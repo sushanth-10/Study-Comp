@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 
-from quiz_service import generate_quiz as legacy_generate_quiz
+from study_backend.services.quiz_engine import generate_quiz as legacy_generate_quiz
 from study_backend.models import AdaptiveState, Flashcard, Note, QuizAttempt, StudyPlan, User
 from study_backend.schemas import FlashcardGenerateRequest, QuizGenerateRequest, SmartNotesRequest, StudyPlanRequest
 from study_backend.services.openrouter import structured_completion
