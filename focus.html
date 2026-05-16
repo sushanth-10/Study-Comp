@@ -116,15 +116,11 @@
             background: radial-gradient(circle at center, #091b37 0%, #041632 100%);
         }
     </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
+<link href="/css/desktop.css" rel="stylesheet"/>
   </head>
-<body class="bg-focus-gradient min-h-screen text-on-primary flex flex-col items-center justify-between px-container-margin py-unit-8 overflow-hidden">
+<body class="app-layout bg-focus-gradient min-h-screen text-on-primary flex flex-col items-center justify-between px-container-margin py-unit-8 overflow-hidden" data-page="focus" data-theme="dark">
 <!-- Top Status / Task Information -->
-<header class="w-full max-w-[600px] flex flex-col items-center space-y-unit-2">
+<header class="w-full max-w-4xl flex flex-col items-center space-y-unit-2">
 <div class="flex items-center space-x-unit-2 py-1 px-3 bg-primary-container rounded-full opacity-90 border border-outline-variant/10">
 <span class="material-symbols-outlined text-[18px] text-secondary-fixed">auto_awesome</span>
 <span class="font-label-md text-label-md text-secondary-fixed uppercase tracking-widest">Deep Work</span>
@@ -133,7 +129,7 @@
 <p class="font-body-sm text-body-sm text-on-primary-container opacity-80">Module 4: Carbon Synthesis</p>
 </header>
 <!-- Main Timer Area -->
-<main class="flex-grow flex flex-col items-center justify-center w-full max-w-[600px] relative">
+<main class="flex-grow flex flex-col items-center justify-center w-full max-w-4xl relative">
 <!-- Minimalist Circular Progress -->
 <div class="relative w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center">
 <!-- Background Ring -->
@@ -154,7 +150,7 @@
 </div>
 </main>
 <!-- Footer Controls -->
-<footer class="w-full max-w-[600px] flex flex-col items-center space-y-unit-6 pb-unit-4">
+<footer class="w-full max-w-4xl flex flex-col items-center space-y-unit-6 pb-unit-4">
 <!-- Ambient Sound Toggle -->
 <div class="flex items-center justify-center space-x-unit-4 bg-primary-container/40 backdrop-blur-sm px-unit-6 py-unit-3 rounded-full border border-outline-variant/5">
 <div class="flex items-center space-x-unit-2">
@@ -174,12 +170,12 @@
 </div>
 <span class="font-label-md text-label-md text-on-primary-container group-hover:text-primary-fixed">Pause</span>
 </button>
-<button class="flex flex-col items-center space-y-unit-1 group">
+<a class="flex flex-col items-center space-y-unit-1 group no-underline" href="/dashboard">
 <div class="w-16 h-16 rounded-full border-2 border-error/40 flex items-center justify-center text-error hover:bg-error/10 transition-colors group-active:scale-95 transition-transform duration-150">
 <span class="material-symbols-outlined text-[28px]" data-icon="close">close</span>
 </div>
 <span class="font-label-md text-label-md text-on-primary-container group-hover:text-error">End Session</span>
-</button>
+</a>
 </div>
 </footer>
 <!-- Background Subtle Texture Decor (Simplified to avoid large URIs) -->
@@ -187,4 +183,5 @@
 <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-secondary-fixed-dim blur-[120px] rounded-full"></div>
 <div class="absolute bottom-[-5%] right-[-5%] w-[30%] h-[30%] bg-tertiary-fixed-dim blur-[100px] rounded-full"></div>
 </div>
+<script src="/js/app.js" defer></script>
 </body></html>

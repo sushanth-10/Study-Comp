@@ -119,15 +119,10 @@
             transform-origin: 50% 50%;
         }
     </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
+<link href="/css/desktop.css" rel="stylesheet"/>
   </head>
-<body class="flex flex-col min-h-screen font-body-md text-body-md">
-<!-- TopAppBar -->
-<header class="fixed top-0 left-0 w-full z-50 bg-surface shadow-sm h-16 max-w-[600px] left-1/2 -translate-x-1/2 flex justify-between items-center px-container-margin">
+<body class="app-layout flex flex-col min-h-screen font-body-md text-body-md" data-page="dashboard">
+<header class="desktop-topbar">
 <div class="flex items-center gap-unit-2">
 <span class="material-symbols-outlined text-primary" data-icon="menu_book">menu_book</span>
 <h1 class="text-headline-sm font-headline-sm font-bold text-primary">Scholarly</h1>
@@ -136,17 +131,14 @@
 <img alt="User avatar" class="w-full h-full object-cover" data-alt="A professional close-up studio portrait of a young adult student with a friendly expression. The lighting is soft and even, set against a minimalist light gray background that complements the Scholarly app's clean aesthetic. The focus is sharp on the face, conveying a sense of approachability and readiness for learning in a modern academic environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfAoMXqOmSGQpVpHCSBtEuUWIGN5v3djrRVGHpc1UjoJ4JjMCRWRpTOMek0UVp1_oQO1xMn_Br-XdmGistmtXvXrErTNZkDgcWcJFOPDHjfwBCgfQDindBUHN8sR-5u9OFCDEcS-bLhAG0IiwSIG0Pw_BF2rYUrqELKMuXYZxNWY7Rre4afqU-pM9jgb2ZgiGxqV8w6ucj3JvTb7mxbOqXvuJn7dVn994BVztxaHTxcXwkVLuKm90ERmPHb-T213Oh3jRCl4jeCOEM"/>
 </div>
 </header>
-<!-- Main Content Area -->
-<main class="flex-grow pt-24 pb-28 px-container-margin max-w-[600px] mx-auto w-full">
+<main class="app-content-inner flex-grow py-8">
 <!-- Greeting Section -->
 <section class="mb-unit-8">
 <h2 class="text-headline-lg-mobile font-headline-lg-mobile text-primary">Hello, Alex!</h2>
 <p class="text-on-surface-variant font-body-md mt-unit-1">Ready for your deep focus session today?</p>
 </section>
-<!-- Top Grid: Streak & Goals -->
-<div class="grid grid-cols-2 gap-unit-4 mb-unit-6">
-<!-- Current Streak Card -->
-<div class="bg-surface-container-lowest p-unit-4 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-on-secondary-container/10 flex flex-col justify-between">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-unit-4 mb-unit-6">
+<a class="bg-surface-container-lowest p-unit-4 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-on-secondary-container/10 flex flex-col justify-between hover:border-secondary transition-colors" href="/streak">
 <div class="flex justify-between items-start">
 <span class="text-label-md font-label-md text-on-surface-variant">Streak</span>
 <span class="material-symbols-outlined text-error" data-icon="local_fire_department" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
@@ -155,7 +147,7 @@
 <span class="text-headline-lg font-headline-lg text-primary">12</span>
 <span class="text-label-sm font-label-sm text-on-surface-variant block">Days running</span>
 </div>
-</div>
+</a>
 <!-- Study Progress Wheel -->
 <div class="bg-surface-container-lowest p-unit-4 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-on-secondary-container/10 flex flex-col items-center">
 <div class="relative w-20 h-20">
@@ -180,9 +172,9 @@
 <span class="material-symbols-outlined text-on-primary-container text-[18px]" data-icon="timer">timer</span>
 <span class="text-label-md font-label-md text-on-primary">Starts in 45 mins</span>
 </div>
-<button class="mt-unit-6 w-full bg-secondary-container text-on-secondary-container font-label-md text-label-md py-unit-3 rounded-lg hover:opacity-90 transition-opacity">
+<a class="mt-unit-6 w-full bg-secondary-container text-on-secondary-container font-label-md text-label-md py-unit-3 rounded-lg hover:opacity-90 transition-opacity block text-center" href="/quiz">
                         Quick Review
-                    </button>
+                    </a>
 </div>
 <!-- Abstract Decorative Shape -->
 <div class="absolute -right-8 -top-8 w-32 h-32 bg-on-primary-container/10 rounded-full blur-2xl"></div>
@@ -192,7 +184,7 @@
 <section>
 <div class="flex justify-between items-center mb-unit-4">
 <h3 class="text-headline-sm font-headline-sm text-primary">Recent Notes</h3>
-<button class="text-label-md font-label-md text-on-secondary-container">View all</button>
+<a class="text-label-md font-label-md text-on-secondary-container" href="/notes">View all</a>
 </div>
 <div class="space-y-unit-4">
 <!-- Note Item 1 -->
@@ -231,31 +223,8 @@
 </div>
 </section>
 </main>
-<!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface shadow-[0_-4px_12px_rgba(0,0,0,0.04)] max-w-[600px] left-1/2 -translate-x-1/2 rounded-t-xl">
-<!-- Dashboard (Active) -->
-<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 scale-95 transition-transform duration-150" href="#">
-<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
-<span class="text-label-sm font-label-sm">Dashboard</span>
+<a class="fixed right-8 bottom-8 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center z-40 hover:scale-105 transition-transform" href="/focus" title="Start focus session">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
 </a>
-<!-- Focus -->
-<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="timer">timer</span>
-<span class="text-label-sm font-label-sm">Focus</span>
-</a>
-<!-- Notes -->
-<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="description">description</span>
-<span class="text-label-sm font-label-sm">Notes</span>
-</a>
-<!-- Streak -->
-<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="local_fire_department">local_fire_department</span>
-<span class="text-label-sm font-label-sm">Streak</span>
-</a>
-</nav>
-<!-- Contextual FAB for mobile study sessions -->
-<button class="fixed right-6 bottom-24 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center z-40 active:scale-95 transition-transform">
-<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
-</button>
+<script src="/js/app.js" defer></script>
 </body></html>

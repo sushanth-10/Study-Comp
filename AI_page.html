@@ -116,15 +116,10 @@
             height: calc(100vh - 64px - 80px - 72px); /* Header - Footer - Nav */
         }
     </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
+<link href="/css/desktop.css" rel="stylesheet"/>
   </head>
-<body class="font-body-md text-on-surface">
-<!-- TopAppBar -->
-<header class="bg-surface dark:bg-on-background shadow-sm fixed top-0 z-50 flex justify-between items-center w-full px-container-margin h-16 max-w-[600px] left-1/2 -translate-x-1/2">
+<body class="app-layout font-body-md text-on-surface" data-page="ai">
+<header class="desktop-topbar">
 <div class="flex items-center gap-unit-3">
 <span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="menu_book">menu_book</span>
 <h1 class="text-headline-sm font-headline-sm font-bold text-primary dark:text-primary-fixed">Scholarly</h1>
@@ -133,8 +128,8 @@
 <img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a young student with a warm expression, photographed in a brightly lit modern library environment. The aesthetic is clean and academic, utilizing soft natural lighting that highlights the scholarly atmosphere. The image features high contrast with deep navy accents in the background, matching a modern light-mode interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqRm_d1P39m8-CVlykNDkx3CWaO1e2rjXy8Tj6xKczqYqcergq-JvOc0pLBJIYFkkWWHrfrl126YCQaMxKNS96I-s-gMVwggBwX8urHoLkLW8KyoFF-yAIr9MopRIhj2VxZqs_J-cznnpWOwOz6J2W6FS9U-JaqMPJkO-6eS0aqqykxoGmIrCykBJ226X5q5vkzNPibaEpJJokiyzRFfT3LrFZSiDmaqch9oB7Mdtk878LwqnJOM89gnLPIS2aKrCnA6FSnWATlnMx"/>
 </div>
 </header>
-<!-- Main Content Canvas -->
-<main class="max-w-[600px] mx-auto pt-16 pb-36 px-container-margin min-h-screen">
+<main class="app-content-inner ai-chat-main">
+<div class="ai-chat-scroll">
 <!-- Chat History -->
 <div class="flex flex-col gap-unit-6 py-unit-6">
 <!-- AI Message -->
@@ -181,9 +176,8 @@
 </div>
 </div>
 </div>
-</main>
-<!-- Bottom Input Area (Fixed above NavBar) -->
-<div class="fixed bottom-[72px] left-1/2 -translate-x-1/2 w-full max-w-[600px] bg-surface/80 backdrop-blur-md px-container-margin py-unit-3">
+</div>
+<div class="ai-input-bar">
 <div class="flex items-center gap-unit-3 bg-surface-container-lowest rounded-full p-unit-2 border border-outline-variant shadow-sm focus-within:border-secondary transition-colors">
 <button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors rounded-full">
 <span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
@@ -194,23 +188,6 @@
 </button>
 </div>
 </div>
-<!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface dark:bg-on-background max-w-[600px] left-1/2 -translate-x-1/2 rounded-t-xl shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">
-<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-high transition-all">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span class="text-label-sm font-label-sm mt-1">Dashboard</span>
-</div>
-<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-high transition-all">
-<span class="material-symbols-outlined" data-icon="timer">timer</span>
-<span class="text-label-sm font-label-sm mt-1">Focus</span>
-</div>
-<div class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-fixed-variant text-on-secondary-container dark:text-secondary-fixed rounded-full px-4 py-1 scale-95 transition-transform duration-150">
-<span class="material-symbols-outlined" data-icon="description">description</span>
-<span class="text-label-sm font-label-sm mt-1">Notes</span>
-</div>
-<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-high transition-all">
-<span class="material-symbols-outlined" data-icon="local_fire_department">local_fire_department</span>
-<span class="text-label-sm font-label-sm mt-1">Streak</span>
-</div>
-</nav>
+</main>
+<script src="/js/app.js" defer></script>
 </body></html>

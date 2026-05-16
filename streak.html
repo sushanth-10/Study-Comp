@@ -117,16 +117,11 @@
           },
         }
     </script>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
+<link href="/css/desktop.css" rel="stylesheet"/>
   </head>
-<body class="bg-surface text-on-surface min-h-screen pb-32">
-<!-- TopAppBar -->
-<header class="bg-surface dark:bg-on-background shadow-sm docked full-width top-0 fixed top-0 left-0 right-0 z-50">
-<div class="flex justify-between items-center w-full px-container-margin h-16 max-w-[600px] mx-auto">
+<body class="app-layout bg-surface text-on-surface min-h-screen" data-page="streak">
+<header class="desktop-topbar">
+<div class="flex justify-between items-center w-full">
 <div class="flex items-center gap-unit-2">
 <span class="material-symbols-outlined text-primary dark:text-primary-fixed">menu_book</span>
 <h1 class="text-headline-sm font-headline-sm font-bold text-primary dark:text-primary-fixed">Scholarly</h1>
@@ -136,7 +131,7 @@
 </div>
 </div>
 </header>
-<main class="max-w-[600px] mx-auto pt-20 px-container-margin space-y-unit-8">
+<main class="app-content-inner py-8 space-y-unit-8">
 <!-- Hero Streak Section -->
 <section class="flex flex-col items-center justify-center py-unit-8 space-y-unit-4">
 <div class="relative">
@@ -254,24 +249,5 @@
 <p class="font-headline-sm text-headline-sm italic text-primary opacity-80">"Consistency is the companion of excellence."</p>
 </section>
 </main>
-<!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface dark:bg-on-background max-w-[600px] left-1/2 -translate-x-1/2 rounded-t-xl shadow-lg">
-<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-high dark:hover:bg-primary-container transition-all">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="text-label-sm font-label-sm">Dashboard</span>
-</div>
-<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-high dark:hover:bg-primary-container transition-all">
-<span class="material-symbols-outlined">timer</span>
-<span class="text-label-sm font-label-sm">Focus</span>
-</div>
-<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-high dark:hover:bg-primary-container transition-all">
-<span class="material-symbols-outlined">description</span>
-<span class="text-label-sm font-label-sm">Notes</span>
-</div>
-<!-- Active Tab: Streak -->
-<div class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-fixed-variant text-on-secondary-container dark:text-secondary-fixed rounded-full px-4 py-1 scale-95 transition-transform duration-150">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
-<span class="text-label-sm font-label-sm">Streak</span>
-</div>
-</nav>
+<script src="/js/app.js" defer></script>
 </body></html>

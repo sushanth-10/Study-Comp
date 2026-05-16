@@ -111,16 +111,11 @@
             background-color: #f7f9fb; /* Soft slate background */
         }
     </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
+<link href="/css/desktop.css" rel="stylesheet"/>
   </head>
-<body class="bg-surface text-on-surface font-body-md antialiased">
-<!-- Top Navigation Shell -->
-<header class="bg-surface dark:bg-on-background shadow-sm docked full-width top-0 z-50">
-<div class="flex justify-between items-center w-full px-container-margin h-16 max-w-[600px] mx-auto">
+<body class="app-layout bg-surface text-on-surface font-body-md antialiased" data-page="quiz">
+<header class="desktop-topbar">
+<div class="flex justify-between items-center w-full">
 <div class="flex items-center gap-unit-2">
 <span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="menu_book">menu_book</span>
 <span class="text-headline-sm font-headline-sm font-bold text-primary dark:text-primary-fixed">Scholarly</span>
@@ -130,7 +125,7 @@
 </div>
 </div>
 </header>
-<main class="max-w-[600px] mx-auto px-container-margin pt-unit-6 pb-32">
+<main class="app-content-inner py-8 pb-40 max-w-3xl">
 <!-- Progress Section -->
 <section class="mb-unit-8">
 <div class="flex justify-between items-end mb-unit-2">
@@ -197,7 +192,8 @@
 </section>
 </main>
 <!-- Bottom Action Shell -->
-<footer class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[600px] bg-surface dark:bg-on-background z-50 p-container-margin shadow-[0_-8px_24px_rgba(0,0,0,0.06)] rounded-t-xl">
+<footer class="fixed bottom-0 left-[260px] right-0 bg-surface z-50 p-container-margin shadow-[0_-8px_24px_rgba(0,0,0,0.06)] border-t border-outline-variant">
+<div class="max-w-3xl mx-auto">
 <div class="flex gap-unit-4">
 <button class="flex-1 py-4 px-unit-6 rounded-full bg-surface-container-high text-on-surface font-label-md hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-unit-2">
 <span class="material-symbols-outlined text-[18px]" data-icon="skip_next">skip_next</span>
@@ -208,7 +204,7 @@
                 <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
 </button>
 </div>
+</div>
 </footer>
-<!-- Bottom Navigation Shell (Persistent Context) -->
-<!-- Hidden because it is a "Task-Focused" screen according to the Shell Visibility Rule -->
+<script src="/js/app.js" defer></script>
 </body></html>
