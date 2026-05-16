@@ -128,6 +128,57 @@
         .child-node:last-child::before { width: 50%; left: 0; transform: none; }
         .child-node:only-child::before { display: none; }
 
+        .node-description {
+            margin-top: 8px;
+            color: #94a3b8;
+            font-size: 0.72rem;
+            line-height: 1.45;
+            max-width: 210px;
+        }
+
+        .node-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(59, 130, 246, 0.14);
+            color: #93c5fd;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .node-box.root {
+            min-width: 260px;
+            border-color: rgba(59, 130, 246, 0.65);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.28), rgba(30, 41, 59, 0.98));
+        }
+
+        .node-box.level2 { border-color: rgba(34, 197, 94, 0.45); }
+        .node-box.level3 { border-color: rgba(245, 158, 11, 0.45); }
+        .node-box.level4 { border-color: rgba(168, 85, 247, 0.45); }
+        .node-box.level5 { border-color: rgba(244, 63, 94, 0.45); }
+
+        @media (max-width: 900px) {
+            #roadmap-content {
+                align-items: flex-start;
+                min-width: max-content;
+                padding: 120px 32px 80px;
+            }
+
+            .children-container {
+                gap: 22px;
+            }
+
+            .node-box {
+                min-width: 150px;
+                padding: 14px 16px;
+            }
+        }
+
         /* Controls */
         .controls {
             position: fixed;
@@ -170,6 +221,7 @@
             border: 1px solid var(--line);
         }
 
+        .hidden,
         .hidden-node { display: none !important; }
         .collapsed .children-container { display: none !important; }
         .collapsed .node-box::after { background: var(--primary); height: 10px; width: 10px; border-radius: 50%; bottom: -15px; }
@@ -177,6 +229,10 @@
         #loading {
             position: fixed; inset: 0; background: var(--bg-dark); z-index: 1000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        #loading.is-hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -257,28 +313,185 @@
         // Data Rendering
         async function loadRoadmap() {
             const urlParams = new URLSearchParams(window.location.search);
-            const topic = urlParams.get('topic') || 'Study Topic';
+            const topic = cleanTopic(urlParams.get('topic') || 'Study Topic');
             document.getElementById('topic-title').textContent = topic;
+            content.innerHTML = '';
+            renderTree(createFallbackRoadmap(topic), content);
+            hideLoading();
 
             try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 5000);
                 const response = await fetch('/api/concept-map/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ topic: topic.replace(/[()]/g, ''), notes: '' })
+                    body: JSON.stringify({ topic, notes: '' }),
+                    signal: controller.signal
                 });
+                clearTimeout(timeout);
 
                 if (response.ok) {
                     const data = await response.json();
-                    renderTree(data, content);
-                } else {
-                    content.innerHTML = `<p class="text-red-400">Failed to generate roadmap. Please try again.</p>`;
+                    content.innerHTML = '';
+                    renderTree(normalizeRoadmap(data, topic), content);
                 }
             } catch (err) {
                 console.error(err);
-                content.innerHTML = `<p class="text-red-400">Connection error. Check your backend.</p>`;
             } finally {
-                document.getElementById('loading').classList.add('hidden');
+                hideLoading();
             }
+        }
+
+        function hideLoading() {
+            const loading = document.getElementById('loading');
+            if (!loading) return;
+            loading.classList.add('hidden', 'is-hidden');
+            loading.style.display = 'none';
+        }
+
+        function cleanTopic(value) {
+            return String(value || 'Study Topic')
+                .replace(/[<>]/g, '')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .slice(0, 80) || 'Study Topic';
+        }
+
+        function normalizeRoadmap(data, topic) {
+            if (data && data.label) {
+                return normalizeTreeNode(data, topic, 1);
+            }
+            if (data && Array.isArray(data.nodes) && data.nodes.length) {
+                return graphToTree(data, topic);
+            }
+            return createFallbackRoadmap(topic);
+        }
+
+        function normalizeTreeNode(node, topic, depth) {
+            const children = Array.isArray(node.children) ? node.children : [];
+            return {
+                label: cleanTopic(node.label || (depth === 1 ? topic : 'Study Step')),
+                type: node.type || `level${Math.min(depth, 5)}`,
+                description: String(node.description || descriptionFor(node.label || topic, depth)).slice(0, 130),
+                children: children.slice(0, 5).map(child => normalizeTreeNode(child, topic, depth + 1))
+            };
+        }
+
+        function graphToTree(data, topic) {
+            const sourceNodes = data.nodes.map((node, index) => ({
+                label: cleanTopic(node.label || `Step ${index + 1}`),
+                type: node.type || `level${Math.min(index + 1, 5)}`,
+                description: String(node.description || descriptionFor(node.label || topic, index + 1)).slice(0, 130),
+                children: []
+            }));
+            const grouped = {
+                level2: [],
+                level3: [],
+                level4: [],
+                level5: []
+            };
+            sourceNodes.forEach((node, index) => {
+                const level = node.type && grouped[node.type] ? node.type : `level${Math.min(Math.floor(index / 3) + 2, 5)}`;
+                if (grouped[level]) grouped[level].push(node);
+            });
+            return {
+                label: topic,
+                type: 'level1',
+                description: `Start here, then move through the main ideas, applications, and practice for ${topic}.`,
+                children: [
+                    branch('Fundamentals', grouped.level2, topic, 2),
+                    branch('Core Concepts', grouped.level3, topic, 3),
+                    branch('Advanced Links', grouped.level4, topic, 4),
+                    branch('Practice Plan', grouped.level5, topic, 5)
+                ].filter(node => node.children.length)
+            };
+        }
+
+        function branch(label, children, topic, depth) {
+            return {
+                label,
+                type: `level${depth}`,
+                description: descriptionFor(label, depth, topic),
+                children: children.slice(0, 4)
+            };
+        }
+
+        function createFallbackRoadmap(topic) {
+            return {
+                label: topic,
+                type: 'level1',
+                description: `A focused learning path for ${topic}.`,
+                children: [
+                    {
+                        label: 'Fundamentals',
+                        type: 'level2',
+                        description: `Understand the basic meaning and purpose of ${topic}.`,
+                        children: [
+                            leaf(`${topic} Basics`, 3),
+                            leaf('Key Terms', 3),
+                            leaf('Quick Summary', 3)
+                        ]
+                    },
+                    {
+                        label: 'Core Ideas',
+                        type: 'level2',
+                        description: 'Break the topic into its most important concepts.',
+                        children: [
+                            leaf('Main Principles', 3),
+                            leaf('How It Works', 3),
+                            leaf('Important Examples', 3)
+                        ]
+                    },
+                    {
+                        label: 'Applications',
+                        type: 'level2',
+                        description: 'Connect the concept to questions, problems, and real use.',
+                        children: [
+                            leaf('Solved Problems', 3),
+                            leaf('Use Cases', 3),
+                            leaf('Common Mistakes', 3)
+                        ]
+                    },
+                    {
+                        label: 'Practice',
+                        type: 'level2',
+                        description: 'Test recall and improve weak areas.',
+                        children: [
+                            leaf('Easy Questions', 3),
+                            leaf('Mixed Review', 3),
+                            leaf('Timed Test', 3)
+                        ]
+                    },
+                    {
+                        label: 'Revision',
+                        type: 'level2',
+                        description: 'Revisit the topic until it becomes exam ready.',
+                        children: [
+                            leaf('Flashcards', 3),
+                            leaf('One Page Notes', 3),
+                            leaf('Final Checklist', 3)
+                        ]
+                    }
+                ]
+            };
+        }
+
+        function leaf(label, depth) {
+            return {
+                label,
+                type: `level${Math.min(depth, 5)}`,
+                description: descriptionFor(label, depth),
+                children: []
+            };
+        }
+
+        function descriptionFor(label, depth, topic) {
+            const text = cleanTopic(label || topic || 'this topic');
+            if (depth <= 1) return `Follow this roadmap to study ${text} in a clear order.`;
+            if (depth === 2) return `A major section to learn before moving deeper.`;
+            if (depth === 3) return `Study this part, write short notes, then answer a few questions.`;
+            if (depth === 4) return `Use this to connect ideas and handle harder questions.`;
+            return `Practice, check mistakes, and revise until confident.`;
         }
 
         function renderTree(node, parentEl) {
@@ -286,8 +499,14 @@
             nodeDiv.className = 'tree-node' + (node.children && node.children.length ? ' has-children' : '');
             
             const box = document.createElement('div');
-            box.className = 'node-box';
-            box.innerHTML = `<div class="node-label">${node.label}</div>`;
+            const levelClass = node.type === 'level1' ? 'root' : node.type;
+            box.className = `node-box ${levelClass || ''}`;
+            const chip = node.type ? node.type.replace('level', 'level ') : 'step';
+            box.innerHTML = `
+                <div class="node-chip">${escapeHtml(chip)}</div>
+                <div class="node-label">${escapeHtml(node.label)}</div>
+                <div class="node-description">${escapeHtml(node.description || '')}</div>
+            `;
             
             box.onclick = (e) => {
                 e.stopPropagation();
@@ -309,6 +528,12 @@
             }
 
             parentEl.appendChild(nodeDiv);
+        }
+
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value == null ? '' : String(value);
+            return div.innerHTML;
         }
 
         loadRoadmap();

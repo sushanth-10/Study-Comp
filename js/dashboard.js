@@ -29,6 +29,12 @@
     return Number(value || 0).toFixed(1).replace('.0', '');
   }
 
+  function openRoadmap(topic) {
+    const cleanTopic = (topic || '').trim();
+    if (!cleanTopic) return;
+    window.location.href = '/visual?topic=' + encodeURIComponent(cleanTopic) + '&v=' + Date.now();
+  }
+
   function strokeOffset(percent) {
     const circumference = 201;
     return circumference - (Math.max(0, Math.min(100, percent)) / 100) * circumference;
@@ -258,23 +264,17 @@
         const topic = li.getAttribute('data-topic');
         searchInput.value = topic;
         suggestionsBox.classList.add('hidden');
-        window.location.href = '/visual?topic=' + encodeURIComponent(topic);
+        openRoadmap(topic);
       }
     });
 
     searchBtn.addEventListener('click', function() {
-      const topic = searchInput.value.trim();
-      if (topic) {
-        window.location.href = '/visual?topic=' + encodeURIComponent(topic);
-      }
+      openRoadmap(searchInput.value);
     });
 
     searchInput.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
-        const topic = searchInput.value.trim();
-        if (topic) {
-          window.location.href = '/visual?topic=' + encodeURIComponent(topic);
-        }
+        openRoadmap(searchInput.value);
       }
     });
   }

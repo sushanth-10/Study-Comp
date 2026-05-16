@@ -146,37 +146,58 @@ def _heuristic_payload(task: str, payload: dict[str, Any]) -> dict[str, Any]:
         }
     if task == "concept_map":
         topic = str(payload.get("topic", "Topic")).strip() or "Topic"
-        levels = [
-            ["Fundamentals", f"{topic} Basics", "Key Terms"],
-            ["Core Concepts", "Main Principles", "Working Mechanics"],
-            ["Intermediate", "Applied Methods", "Contextual Analysis"],
-            ["Advanced", "Optimization", "Edge Cases"],
-            ["Projects", "Real-world Project", "Case Study"]
-        ]
-        
-        nodes = []
-        edges = []
-        node_count = 0
-        
-        for i, level_topics in enumerate(levels):
-            level_id = i + 1
-            for j, label in enumerate(level_topics):
-                node_id = f"n{node_count}"
-                nodes.append({
-                    "id": node_id,
-                    "label": label,
-                    "type": f"level{level_id}"
-                })
-                if node_count > 0:
-                    # Simple chain for heuristic
-                    edges.append({
-                        "source": f"n{node_count-1}",
-                        "target": node_id,
-                        "label": "next" if j == 0 else "includes"
-                    })
-                node_count += 1
-                
-        return {"nodes": nodes, "edges": edges}
+        return {
+            "id": "root",
+            "label": topic,
+            "type": "level1",
+            "description": f"A focused study path for {topic}.",
+            "children": [
+                {
+                    "id": "fundamentals",
+                    "label": "Fundamentals",
+                    "type": "level2",
+                    "description": "Learn the base meaning, vocabulary, and purpose first.",
+                    "children": [
+                        {"id": "basics", "label": f"{topic} Basics", "type": "level3", "description": "Write a short definition and simple example.", "children": []},
+                        {"id": "terms", "label": "Key Terms", "type": "level3", "description": "List the words you must remember.", "children": []},
+                        {"id": "summary", "label": "Quick Summary", "type": "level3", "description": "Explain the idea in your own words.", "children": []},
+                    ],
+                },
+                {
+                    "id": "core",
+                    "label": "Core Ideas",
+                    "type": "level2",
+                    "description": "Break the topic into the main concepts that usually appear in questions.",
+                    "children": [
+                        {"id": "principles", "label": "Main Principles", "type": "level3", "description": "Study the rules and patterns.", "children": []},
+                        {"id": "mechanics", "label": "How It Works", "type": "level3", "description": "Trace the step-by-step process.", "children": []},
+                        {"id": "examples", "label": "Examples", "type": "level3", "description": "Connect the concept to solved examples.", "children": []},
+                    ],
+                },
+                {
+                    "id": "practice",
+                    "label": "Practice",
+                    "type": "level2",
+                    "description": "Use questions to turn understanding into recall.",
+                    "children": [
+                        {"id": "easy", "label": "Easy Questions", "type": "level3", "description": "Start with direct recall.", "children": []},
+                        {"id": "mixed", "label": "Mixed Review", "type": "level3", "description": "Combine old and new ideas.", "children": []},
+                        {"id": "timed", "label": "Timed Test", "type": "level3", "description": "Check speed and accuracy.", "children": []},
+                    ],
+                },
+                {
+                    "id": "revision",
+                    "label": "Revision",
+                    "type": "level2",
+                    "description": "Revisit mistakes until the topic is exam ready.",
+                    "children": [
+                        {"id": "flashcards", "label": "Flashcards", "type": "level3", "description": "Review key terms daily.", "children": []},
+                        {"id": "mistakes", "label": "Mistake Log", "type": "level3", "description": "Fix repeated weak points.", "children": []},
+                        {"id": "checklist", "label": "Final Checklist", "type": "level3", "description": "Confirm every section is complete.", "children": []},
+                    ],
+                },
+            ],
+        }
 
     return {}
 
