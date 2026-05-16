@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 from functools import wraps
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-
+UPLOAD_FOLDER = 'static/uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 try:
     from dotenv import load_dotenv
 
