@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { api } from '../../lib/api';
+import { toast } from 'sonner';
 import { Smile, Meh, Frown, TrendingUp, Brain, Battery, Zap } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -38,9 +40,22 @@ export default function MoodTracker() {
     return '😊';
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selectedMood === 0 || selectedEnergy === 0 || selectedFocus === 0 || selectedStress === 0) {
       return;
+    }
+    const moods = ['', 'Great', 'Good', 'Okay', 'Low', 'Stressed'];
+    try {
+      await api.createMood({
+        mood: moods[selectedMood] || 'Okay',
+        energy: selectedEnergy,
+        focus: selectedFocus,
+        stress: selectedStress,
+        notes: notes || undefined,
+      });
+      toast.success('Mood logged!');
+    } catch {
+      toast.error('Failed to save mood');
     }
     setSubmitted(true);
     setTimeout(() => {

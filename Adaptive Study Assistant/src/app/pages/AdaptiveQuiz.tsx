@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Brain, Clock, Zap, TrendingUp, TrendingDown, CheckCircle2, XCircle, Lightbulb } from 'lucide-react';
+import { api } from '../../lib/api';
 
 type QuestionType = {
   id: number;
@@ -129,6 +130,13 @@ export default function AdaptiveQuiz() {
     setLearningState(state);
 
     setPerformanceData([...performanceData, { correct, time: timeTaken, difficulty }]);
+    api.createQuizAttempt({
+      topic: currentQ.question.slice(0, 100),
+      subject: currentQ.topic,
+      correct,
+      response_time_ms: Math.round(timeTaken * 1000),
+      difficulty,
+    }).catch(() => {});
   };
 
   const nextQuestion = () => {

@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { Flame, Trophy, Target, Award, Calendar, TrendingUp, Star, Zap } from 'lucide-react';
+import { api, StreakData } from '../../lib/api';
 
 type Achievement = {
   id: string;
@@ -86,9 +88,20 @@ const calendarDays = Array.from({ length: 90 }, (_, i) => {
 });
 
 export default function StudyStreak() {
-  const currentStreak = 12;
-  const longestStreak = 15;
-  const totalDays = 67;
+  const [streakData, setStreakData] = useState<StreakData | null>(null);
+  useEffect(() => { api.getStreak().then(setStreakData).catch(() => {}); }, []);
+
+  const currentStreak = streakData?.current_streak ?? 0;
+  const longestStreak = streakData?.longest_streak ?? 0;
+  const totalDays = streakData?.total_days ?? 0;
+  const calendarDays = (streakData?.calendar_days || []).map(d => ({
+    date: d.date,
+    hasStudied: d.active,
+    hours: d.hours,
+  }));
+  const achievements = streakData?.achievements || [];
+  const todayMinutes = streakData?.today_minutes ?? 0;
+  const dailyGoal = streakData?.daily_goal_minutes ?? 120;
 
   const getStreakColor = (hours: number) => {
     if (hours === 0) return 'bg-gray-100';
@@ -216,11 +229,11 @@ export default function StudyStreak() {
                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden mb-1">
                       <div
                         className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
-                        style={{ width: `${(achievement.progress / achievement.total!) * 100}%` }}
+                        style={{ width: `${(achievement.progress / (achievement.target || 1)) * 100}%` }}
                       />
                     </div>
                     <p className="text-xs text-gray-600">
-                      {achievement.progress}/{achievement.total}
+                      {achievement.progress}/{achievement.target}
                     </p>
                   </div>
                 )}
@@ -244,16 +257,16 @@ export default function StudyStreak() {
             <Target className="text-green-600" size={32} />
             <div>
               <h3 className="font-bold text-lg">Today's Goal</h3>
-              <p className="text-sm text-gray-600">Study for at least 2 hours</p>
+              <p className="text-sm text-gray-600">Study for at least {dailyGoal} minutes</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-3xl font-bold text-green-600">1.5h</p>
-            <p className="text-sm text-gray-600">30 min to go!</p>
+            <p className="text-3xl font-bold text-green-600">{(todayMinutes / 60).toFixed(1)}h</p>
+            <p className="text-sm text-gray-600">{Math.max(0, dailyGoal - todayMinutes)} min to go</p>
           </div>
         </div>
         <div className="mt-4 h-3 bg-gray-200 rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-green-500 to-emerald-500" style={{ width: '75%' }} />
+          <div className="h-full bg-gradient-to-r from-green-500 to-emerald-500" style={{ width: `${Math.min(100, (todayMinutes / dailyGoal) * 100)}%` }} />
         </div>
       </div>
     </div>

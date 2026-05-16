@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Save, Trash2, FileText, Search, Lightbulb, Tag, Star } from 'lucide-react';
+import { api, NoteData } from '../../lib/api';
+import { toast } from 'sonner';
 
 type Note = {
   id: number;
@@ -44,8 +46,25 @@ const initialNotes: Note[] = [
 ];
 
 export default function NoteTaking() {
-  const [notes, setNotes] = useState<Note[]>(initialNotes);
-  const [selectedNote, setSelectedNote] = useState<Note | null>(notes[0]);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+  useEffect(() => {
+    api.getNotes().then((data) => {
+      const mapped: Note[] = data.map((n) => ({
+        id: n.id,
+        title: n.title,
+        content: n.content,
+        subject: n.subject,
+        tags: n.tags,
+        starred: n.starred,
+        aiSuggestions: [],
+        createdAt: n.created_at.split('T')[0],
+      }));
+      setNotes(mapped);
+      if (mapped.length) setSelectedNote(mapped[0]);
+    }).catch(() => setNotes(initialNotes));
+  }, []);
   const [searchTerm, setSearchTerm] = useState('');
   const [editMode, setEditMode] = useState(false);
 
@@ -107,6 +126,7 @@ export default function NoteTaking() {
     <div className="flex gap-6 h-[calc(100vh-8rem)] max-w-7xl mx-auto">
       {/* Sidebar */}
       <div className="w-80 flex flex-col gap-4">
+        <h2 className="text-2xl font-bold text-white">Notes</h2>
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />

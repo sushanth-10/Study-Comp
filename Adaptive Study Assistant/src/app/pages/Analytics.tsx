@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { LineChart, Line, BarChart, Bar, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Clock, Target, Brain, Award, Calendar } from 'lucide-react';
+import { api, AnalyticsData } from '../../lib/api';
 
-const weeklyData = [
+const defaultWeekly = [
   { day: 'Mon', hours: 3.5, accuracy: 85, topics: 4 },
   { day: 'Tue', hours: 4.2, accuracy: 88, topics: 5 },
   { day: 'Wed', hours: 2.8, accuracy: 82, topics: 3 },
@@ -11,25 +13,14 @@ const weeklyData = [
   { day: 'Sun', hours: 4.5, accuracy: 89, topics: 5 },
 ];
 
-const subjectPerformance = [
-  { subject: 'Math', score: 92 },
-  { subject: 'Physics', score: 85 },
-  { subject: 'Chemistry', score: 78 },
-  { subject: 'Biology', score: 88 },
-  { subject: 'English', score: 81 },
-  { subject: 'History', score: 76 },
-];
-
-const timeOfDayData = [
-  { time: '6-9 AM', focus: 85, retention: 88 },
-  { time: '9-12 PM', focus: 92, retention: 95 },
-  { time: '12-3 PM', focus: 65, retention: 62 },
-  { time: '3-6 PM', focus: 78, retention: 75 },
-  { time: '6-9 PM', focus: 88, retention: 85 },
-  { time: '9-12 AM', focus: 45, retention: 42 },
-];
-
 export default function Analytics() {
+  const [data, setData] = useState<AnalyticsData | null>(null);
+  useEffect(() => { api.getAnalytics().then(setData).catch(() => {}); }, []);
+
+  const weeklyData = data?.weekly_data || defaultWeekly;
+  const subjectPerformance = data?.subject_performance || [{ subject: 'General', score: 0, fullMark: 100 }];
+  const timeOfDayData = (data?.time_of_day_data || []).map(d => ({ time: d.hour, focus: d.focus, retention: d.retention }));
+
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div>
@@ -45,7 +36,7 @@ export default function Analytics() {
             <TrendingUp className="text-green-600" size={20} />
           </div>
           <p className="text-sm text-gray-600">Avg Study Time</p>
-          <p className="text-3xl font-bold text-blue-600">4.3h</p>
+          <p className="text-3xl font-bold text-blue-600">{data?.total_hours ?? 0}h</p>
           <p className="text-xs text-green-600 mt-1">↑ 12% from last week</p>
         </div>
 
@@ -55,7 +46,7 @@ export default function Analytics() {
             <TrendingUp className="text-green-600" size={20} />
           </div>
           <p className="text-sm text-gray-600">Avg Accuracy</p>
-          <p className="text-3xl font-bold text-green-600">87.9%</p>
+          <p className="text-3xl font-bold text-green-600">{data?.avg_accuracy ?? 0}%</p>
           <p className="text-xs text-green-600 mt-1">↑ 5% from last week</p>
         </div>
 
@@ -65,7 +56,7 @@ export default function Analytics() {
             <TrendingUp className="text-green-600" size={20} />
           </div>
           <p className="text-sm text-gray-600">Topics Studied</p>
-          <p className="text-3xl font-bold text-purple-600">35</p>
+          <p className="text-3xl font-bold text-purple-600">{data?.topics_studied ?? 0}</p>
           <p className="text-xs text-green-600 mt-1">↑ 8 new this week</p>
         </div>
 
@@ -75,7 +66,7 @@ export default function Analytics() {
             <Calendar className="text-amber-600" size={20} />
           </div>
           <p className="text-sm text-gray-600">Current Streak</p>
-          <p className="text-3xl font-bold text-amber-600">12</p>
+          <p className="text-3xl font-bold text-amber-600">{data?.streak_days ?? 0}</p>
           <p className="text-xs text-gray-600 mt-1">days in a row</p>
         </div>
       </div>
