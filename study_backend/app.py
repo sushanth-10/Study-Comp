@@ -7,12 +7,13 @@ from pathlib import Path
 from typing import Callable
 
 import uvicorn
-from fastapi import Depends, FastAPI, Form, HTTPException, Query, Request, status
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Query, Request, UploadFile, status
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 from ai_service import chat as ai_chat
+from notes_service import delete_pdf, get_pdf_path, get_pdf_record, list_pdfs, save_pdf
 from study_backend.auth import attach_session, clear_session, get_current_user, google_login_url, maybe_current_user, upsert_google_user, verify_password, hash_password
 from study_backend.config import ROOT
 from study_backend.database import Base, engine, get_db
@@ -221,6 +222,47 @@ def streak_data(user: User = Depends(_api_user), db: Session = Depends(get_db)):
 @app.get("/api/notes")
 def notes_data(q: str = "", user: User = Depends(_api_user), db: Session = Depends(get_db)):
     return compute_notes_view(db, user, q)
+
+
+@app.get("/api/notes/list")
+def notes_pdf_list(q: str = "", user: User = Depends(_api_user)):
+    return {"pdfs": list_pdfs(user.email, q)}
+
+
+@app.post("/api/notes/upload")
+async def notes_pdf_upload(file: UploadFile = File(...), user: User = Depends(_api_user)):
+    class UploadAdapter:
+        def __init__(self, upload: UploadFile):
+            self.filename = upload.filename
+            self.content_type = upload.content_type
+            self._upload = upload
+
+        def read(self):
+            return self._upload.file.read()
+
+    try:
+        record = save_pdf(user.email, UploadAdapter(file))
+        return JSONResponse({"pdf": record}, status_code=201)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    finally:
+        await file.close()
+
+
+@app.get("/api/notes/pdf/{pdf_id}")
+def notes_pdf_view(pdf_id: str, user: User = Depends(_api_user)):
+    record = get_pdf_record(pdf_id, user.email)
+    path = get_pdf_path(pdf_id, user.email)
+    if not record or not path:
+        raise HTTPException(status_code=404, detail="PDF not found.")
+    return FileResponse(path, media_type="application/pdf", filename=record.get("filename", "document.pdf"))
+
+
+@app.delete("/api/notes/{pdf_id}")
+def notes_pdf_delete(pdf_id: str, user: User = Depends(_api_user)):
+    if delete_pdf(pdf_id, user.email):
+        return {"ok": True}
+    raise HTTPException(status_code=404, detail="PDF not found.")
 
 
 @app.post("/api/quiz/generate")

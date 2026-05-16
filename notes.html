@@ -121,82 +121,43 @@
 </div>
 </header>
 <main class="app-content-inner flex-1 py-unit-6">
-<!-- Search Section -->
-<div class="mb-unit-8">
+<div class="mb-unit-6">
+<h2 class="text-headline-md font-headline-md text-primary mb-unit-1">PDF Library</h2>
+<p class="text-body-sm text-on-surface-variant"><span id="notes-count">0 PDFs</span> stored on this device</p>
+</div>
+<div id="notes-drop-zone" class="notes-drop-zone mb-unit-8" tabindex="0" role="button" aria-label="Upload PDF files">
+<input id="notes-file-input" type="file" accept="application/pdf,.pdf" multiple class="hidden"/>
+<span class="material-symbols-outlined text-[48px] text-secondary mb-unit-3">upload_file</span>
+<p class="text-body-md text-on-surface font-label-md">Drop PDFs here or click to browse</p>
+<p class="text-body-sm text-on-surface-variant mt-unit-1">Up to 25 MB per file</p>
+<p id="notes-upload-status" class="hidden text-body-sm mt-unit-2"></p>
+</div>
+<div class="mb-unit-6">
 <div class="relative group">
-<span class="material-symbols-outlined absolute left-unit-4 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
-<input id="notes-search" class="w-full bg-surface-container-low border-none rounded-xl py-unit-4 pl-unit-8 pr-unit-4 text-body-md text-on-surface focus:ring-2 focus:ring-secondary transition-all placeholder:text-outline" placeholder="Search your knowledge..." type="text"/>
+<span class="material-symbols-outlined absolute left-unit-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input id="notes-search" class="w-full bg-surface-container-low border-none rounded-xl py-unit-4 pl-unit-8 pr-unit-4 text-body-md text-on-surface focus:ring-2 focus:ring-secondary transition-all placeholder:text-outline" placeholder="Search your PDFs..." type="search"/>
 </div>
 </div>
-<!-- Filter Chips (Bonus for scholarly UI) -->
-<div id="notes-filters" class="flex gap-unit-2 overflow-x-auto pb-unit-4 no-scrollbar mb-unit-6">
-<span class="bg-primary text-on-primary px-unit-4 py-unit-1 rounded-full text-label-sm font-label-sm whitespace-nowrap">All Notes</span>
-<span class="bg-surface-container-high text-on-surface-variant px-unit-4 py-unit-1 rounded-full text-label-sm font-label-sm whitespace-nowrap">Biology</span>
-<span class="bg-surface-container-high text-on-surface-variant px-unit-4 py-unit-1 rounded-full text-label-sm font-label-sm whitespace-nowrap">History</span>
-<span class="bg-surface-container-high text-on-surface-variant px-unit-4 py-unit-1 rounded-full text-label-sm font-label-sm whitespace-nowrap">Drafts</span>
+<div id="notes-empty" class="hidden text-center py-unit-8 text-on-surface-variant">
+<span class="material-symbols-outlined text-[56px] text-outline-variant mb-unit-3">folder_open</span>
+<p class="text-body-md">No PDFs yet. Drop your lecture slides or readings above.</p>
 </div>
-<div id="notes-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-unit-4">
-<!-- Note Card 1 -->
-<div class="bg-surface-container-lowest p-unit-6 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-outline-variant/30 hover:border-secondary transition-all cursor-pointer">
-<div class="flex justify-between items-start mb-unit-2">
-<h3 class="text-headline-sm font-headline-sm text-primary">Quantum Mechanics Intro</h3>
-<span class="material-symbols-outlined text-outline-variant" data-icon="more_vert">more_vert</span>
-</div>
-<p class="text-body-sm text-on-surface-variant mb-unit-4 line-clamp-3">
-                    Key concepts: wave-particle duality, Schrödinger's equation, and the uncertainty principle. Remember to review the double-slit experiment results before the lab session next week.
-                </p>
-<div class="flex items-center justify-between mt-auto pt-unit-4 border-t border-surface-container">
-<span class="text-label-sm font-label-sm text-outline">Oct 24, 2023</span>
-<span class="bg-secondary-container text-on-secondary-container px-unit-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Science</span>
-</div>
-</div>
-<!-- Note Card 2 -->
-<div class="bg-surface-container-lowest p-unit-6 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-outline-variant/30 hover:border-secondary transition-all cursor-pointer">
-<div class="flex justify-between items-start mb-unit-2">
-<h3 class="text-headline-sm font-headline-sm text-primary">Medieval Literature Themes</h3>
-<span class="material-symbols-outlined text-outline-variant" data-icon="more_vert">more_vert</span>
-</div>
-<p class="text-body-sm text-on-surface-variant mb-unit-4 line-clamp-3">
-                    Focus on the transition from oral traditions to written manuscripts. The role of the hero in Beowulf vs. Sir Gawain. Chivalry as a social construct in courtly love poems.
-                </p>
-<div class="flex items-center justify-between mt-auto pt-unit-4 border-t border-surface-container">
-<span class="text-label-sm font-label-sm text-outline">Oct 22, 2023</span>
-<span class="bg-secondary-container text-on-secondary-container px-unit-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Arts</span>
-</div>
-</div>
-<!-- Note Card 3 -->
-<div class="bg-surface-container-lowest p-unit-6 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-outline-variant/30 hover:border-secondary transition-all cursor-pointer">
-<div class="flex justify-between items-start mb-unit-2">
-<h3 class="text-headline-sm font-headline-sm text-primary">Thesis Outline: AI Ethics</h3>
-<span class="material-symbols-outlined text-outline-variant" data-icon="more_vert">more_vert</span>
-</div>
-<p class="text-body-sm text-on-surface-variant mb-unit-4 line-clamp-3">
-                    Section 1: The definition of algorithmic bias. Section 2: Case studies in facial recognition. Section 3: Proposed regulatory frameworks for LLMs in education.
-                </p>
-<div class="flex items-center justify-between mt-auto pt-unit-4 border-t border-surface-container">
-<span class="text-label-sm font-label-sm text-outline">Oct 19, 2023</span>
-<span class="bg-secondary-container text-on-secondary-container px-unit-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Philosophy</span>
-</div>
-</div>
-<!-- Note Card 4 -->
-<div class="bg-surface-container-lowest p-unit-6 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-outline-variant/30 hover:border-secondary transition-all cursor-pointer">
-<div class="flex justify-between items-start mb-unit-2">
-<h3 class="text-headline-sm font-headline-sm text-primary">Project Management Steps</h3>
-<span class="material-symbols-outlined text-outline-variant" data-icon="more_vert">more_vert</span>
-</div>
-<p class="text-body-sm text-on-surface-variant mb-unit-4 line-clamp-3">
-                    Need to organize the semester group project. 1. Define scope. 2. Assign roles (Sarah for research, Me for synthesis). 3. Set weekly sync schedule.
-                </p>
-<div class="flex items-center justify-between mt-auto pt-unit-4 border-t border-surface-container">
-<span class="text-label-sm font-label-sm text-outline">Oct 15, 2023</span>
-<span class="bg-secondary-container text-on-secondary-container px-unit-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Admin</span>
-</div>
-</div>
-</div>
+<div id="notes-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-unit-4 pb-unit-8"></div>
 </main>
-<button class="fixed right-8 bottom-8 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center z-40 hover:scale-105 transition-transform" type="button">
+<div id="notes-viewer" class="hidden fixed inset-0 z-[200] bg-black/60 flex flex-col p-unit-4 md:p-unit-8" style="left:260px">
+<div class="bg-surface-container-lowest rounded-xl shadow-2xl flex flex-col flex-1 max-w-5xl w-full mx-auto overflow-hidden">
+<div class="flex items-center justify-between p-unit-4 border-b border-outline-variant">
+<h3 id="notes-viewer-title" class="text-headline-sm font-headline-sm text-primary truncate"></h3>
+<button id="notes-viewer-close" type="button" class="p-unit-2 rounded-full hover:bg-surface-container text-on-surface-variant" aria-label="Close">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<iframe id="notes-viewer-frame" class="flex-1 w-full border-0 bg-white min-h-[60vh]" title="PDF viewer"></iframe>
+</div>
+</div>
+<button id="notes-add-btn" type="button" class="fixed right-8 bottom-8 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center z-40 hover:scale-105 transition-transform" aria-label="Add PDF">
 <span class="material-symbols-outlined text-[32px]">add</span>
 </button>
 <script src="/js/app.js" defer></script>
-<script src="/js/notes-page.js" defer></script>
+<script src="/js/notes.js" defer></script>
 </body></html>
