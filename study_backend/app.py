@@ -44,11 +44,13 @@ app.mount("/js", StaticFiles(directory=str(ROOT / "js")), name="js")
 PROTECTED_PAGES = {
     "/dashboard": "dashboard.html",
     "/analytics": "analytics.html",
+    "/planner": "planner.html",
     "/focus": "focus.html",
     "/notes": "notes.html",
     "/streak": "streak.html",
     "/quiz": "quiz.html",
     "/ai": "AI_page.html",
+    "/visual": "visual.html",
 }
 PUBLIC_PAGES = {"/login": "login.html", "/signup": "signup.html"}
 RATE_BUCKETS: dict[str, deque] = defaultdict(deque)

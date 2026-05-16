@@ -60,18 +60,49 @@
     return Math.max(0, Math.min(100, Number(value || 0)));
   }
 
-  function sparkBars(items, color) {
-    if (!items || !items.length) {
-      return '<div class="h-full flex items-center justify-center text-on-surface-variant text-body-sm">No chart data yet.</div>';
+  let performanceChartInstance = null;
+  let fatigueChartInstance = null;
+
+  function renderChart(container, dataItems, color, labelName) {
+    if (!dataItems || !dataItems.length) {
+      container.innerHTML = '<div class="h-full flex items-center justify-center text-on-surface-variant text-body-sm">No chart data yet.</div>';
+      return null;
     }
-    const max = Math.max.apply(null, items.map(function (item) { return Number(item.value || 0); })) || 1;
-    return '<div class="h-full flex items-end gap-2">' + items.map(function (item) {
-      const height = Math.max(10, Math.round((Number(item.value || 0) / max) * 100));
-      return '<div class="flex-1 min-w-0 flex flex-col justify-end items-center gap-2">' +
-        '<div class="w-full rounded-t-lg" style="height:' + height + '%; background:' + color + '; opacity:0.9"></div>' +
-        '<span class="text-[11px] text-on-surface-variant whitespace-nowrap">' + item.label + '</span>' +
-      '</div>';
-    }).join('') + '</div>';
+    container.innerHTML = '<canvas class="w-full h-full"></canvas>';
+    const canvas = container.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    const labels = dataItems.map(function(item) { return item.label; });
+    const data = dataItems.map(function(item) { return Number(item.value || 0); });
+
+    return new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: labelName,
+          data: data,
+          borderColor: color,
+          backgroundColor: color + '33',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointBackgroundColor: color
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true, grid: { color: '#e0e3e5' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
   }
 
   function gradientForScore(score) {
@@ -163,7 +194,8 @@
       els.burnout.textContent = fatigue.burnoutRisk + '%';
       els.burnoutNote.textContent = 'Recommended action: ' + fatigue.recommendedAction.replace(/_/g, ' ');
 
-      els.performanceChart.innerHTML = sparkBars(performance.charts.accuracyLine || overview.charts.line, '#041632');
+      if (performanceChartInstance) performanceChartInstance.destroy();
+      performanceChartInstance = renderChart(els.performanceChart, performance.charts.accuracyLine || overview.charts.line, '#041632', 'Accuracy');
       els.performancePrediction.textContent =
         (performance.predictive.bestStudyTiming || 'best timing') + ' · readiness ' + (performance.predictive.examReadiness || 0) + '%';
 
@@ -177,7 +209,8 @@
       renderHeatmap(mastery.charts.heatmap || []);
       els.masterySummary.textContent = (mastery.weakTopics || []).length + ' weak topics need revision';
 
-      els.fatigueChart.innerHTML = sparkBars(fatigue.charts.fatigueTrend || [], '#476550');
+      if (fatigueChartInstance) fatigueChartInstance.destroy();
+      fatigueChartInstance = renderChart(els.fatigueChart, fatigue.charts.fatigueTrend || [], '#ba1a1a', 'Fatigue');
       const tones = fatigueTone(fatigue.fatigueLevel);
       els.fatigueBadge.className = 'px-unit-3 py-unit-1 rounded-full text-label-sm ' + tones[0] + ' ' + tones[1];
       els.fatigueBadge.textContent = fatigue.fatigueLevel.toUpperCase();
