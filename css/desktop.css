@@ -235,6 +235,17 @@
   background: linear-gradient(transparent, #f7f9fb 24px);
 }
 
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+#ai-send:disabled {
+  cursor: not-allowed;
+}
+
 /* Dark focus session */
 body[data-theme="dark"].app-layout .app-content {
   background: transparent;

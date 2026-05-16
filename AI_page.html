@@ -130,9 +130,7 @@
 </header>
 <main class="app-content-inner ai-chat-main">
 <div class="ai-chat-scroll">
-<!-- Chat History -->
-<div class="flex flex-col gap-unit-6 py-unit-6">
-<!-- AI Message -->
+<div id="chat-messages" class="flex flex-col gap-unit-6 py-unit-6">
 <div class="flex flex-col items-start max-w-[85%]">
 <div class="flex items-center gap-unit-2 mb-unit-1">
 <span class="material-symbols-outlined text-primary text-body-sm" data-icon="auto_awesome">auto_awesome</span>
@@ -140,38 +138,13 @@
 </div>
 <div class="bg-surface-container-lowest p-unit-4 rounded-xl rounded-tl-none shadow-[12px_12px_24px_rgba(4,22,50,0.04)] border border-secondary-container/30">
 <p class="font-body-md text-body-md text-on-surface">
-                        Hello! I'm Scholar AI, your dedicated academic assistant. I'm here to help you summarize complex lecture notes, explain challenging concepts, or organize your study schedule. What topic can we explore together today?
-                    </p>
-</div>
-</div>
-<!-- User Message -->
-<div class="flex flex-col items-end max-w-[85%] self-end">
-<div class="flex items-center gap-unit-2 mb-unit-1">
-<span class="font-label-md text-label-md text-on-surface-variant">You</span>
-</div>
-<div class="bg-primary text-on-primary p-unit-4 rounded-xl rounded-tr-none shadow-lg">
-<p class="font-body-md text-body-md">
-                        Can you help me summarize the core principles of Neural Plasticity? I'm specifically interested in how it relates to long-term potentiation.
-                    </p>
-</div>
-</div>
-<!-- AI Response (Contextual) -->
-<div class="flex flex-col items-start max-w-[85%]">
-<div class="flex items-center gap-unit-2 mb-unit-1">
-<span class="material-symbols-outlined text-primary text-body-sm" data-icon="auto_awesome">auto_awesome</span>
-<span class="font-label-md text-label-md text-primary">Scholar AI</span>
-</div>
-<div class="bg-surface-container-lowest p-unit-4 rounded-xl rounded-tl-none shadow-[12px_12px_24px_rgba(4,22,50,0.04)] border border-secondary-container/30">
-<div class="flex items-center gap-unit-2 mb-unit-3 text-secondary">
-<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
-<span class="font-label-md text-label-md">Analyzing Neural Plasticity...</span>
-</div>
-<p class="font-body-md text-body-md text-on-surface">
-                        Neural plasticity, or neuroplasticity, refers to the brain's ability to reorganize itself by forming new neural connections throughout life. 
+                        Hello! I'm Scholar AI, your study companion. Ask me to <strong>explain</strong> a topic, <strong>search</strong> the web, or <strong>find YouTube videos</strong>. Try a quick action below or type your question.
                     </p>
 <div class="mt-unit-4 flex flex-wrap gap-unit-2">
-<span class="bg-secondary-container text-on-secondary-container px-unit-3 py-unit-1 rounded-full text-label-sm font-label-sm">Synaptic Pruning</span>
-<span class="bg-secondary-container text-on-secondary-container px-unit-3 py-unit-1 rounded-full text-label-sm font-label-sm">LTP Basics</span>
+<button type="button" data-ai-prompt="Explain photosynthesis in simple terms" class="bg-secondary-container text-on-secondary-container px-unit-3 py-unit-1 rounded-full text-label-sm font-label-sm hover:opacity-90 transition-opacity cursor-pointer border-0">Explain a topic</button>
+<button type="button" data-ai-prompt="Find YouTube videos on calculus derivatives" class="bg-secondary-container text-on-secondary-container px-unit-3 py-unit-1 rounded-full text-label-sm font-label-sm hover:opacity-90 transition-opacity cursor-pointer border-0">Find videos</button>
+<button type="button" data-ai-prompt="Search for articles on climate change" class="bg-secondary-container text-on-secondary-container px-unit-3 py-unit-1 rounded-full text-label-sm font-label-sm hover:opacity-90 transition-opacity cursor-pointer border-0">Web search</button>
+<button type="button" data-ai-prompt="Create a study plan for my biology exam next week" class="bg-secondary-container text-on-secondary-container px-unit-3 py-unit-1 rounded-full text-label-sm font-label-sm hover:opacity-90 transition-opacity cursor-pointer border-0">Study plan</button>
 </div>
 </div>
 </div>
@@ -182,12 +155,13 @@
 <button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors rounded-full">
 <span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
 </button>
-<input class="flex-grow bg-transparent border-none focus:ring-0 text-body-md font-body-md text-on-surface placeholder:text-on-surface-variant/60" placeholder="Ask about your notes..." type="text"/>
-<button class="bg-primary text-on-primary w-10 h-10 flex items-center justify-center rounded-full shadow-md hover:opacity-90 active:scale-95 transition-all">
+<input id="ai-input" class="flex-grow bg-transparent border-none focus:ring-0 text-body-md font-body-md text-on-surface placeholder:text-on-surface-variant/60" placeholder="Explain, search, or find videos…" type="text" autocomplete="off"/>
+<button id="ai-send" type="button" class="bg-primary text-on-primary w-10 h-10 flex items-center justify-center rounded-full shadow-md hover:opacity-90 active:scale-95 transition-all disabled:opacity-50">
 <span class="material-symbols-outlined" data-icon="send">send</span>
 </button>
 </div>
 </div>
 </main>
 <script src="/js/app.js" defer></script>
+<script src="/js/ai-assistant.js" defer></script>
 </body></html>

@@ -2,7 +2,9 @@
 import os
 from functools import wraps
 
-from flask import Flask, redirect, request, send_from_directory, session, url_for
+from flask import Flask, jsonify, redirect, request, send_from_directory, session, url_for
+
+from ai_service import chat as ai_chat
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -122,6 +124,19 @@ def quiz():
 @login_required
 def ai_page():
     return send_page("AI_page.html")
+
+
+@app.route("/api/ai/chat", methods=["POST"])
+@login_required
+def api_ai_chat():
+    data = request.get_json(silent=True) or {}
+    message = (data.get("message") or "").strip()
+    if not message:
+        return jsonify({"error": "Message is required."}), 400
+    try:
+        return jsonify(ai_chat(message))
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
 
 
 @app.route("/css/<path:filename>")

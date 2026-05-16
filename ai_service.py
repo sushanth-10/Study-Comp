@@ -1,0 +1,262 @@
+"""Scholar AI — study companion, web search, and YouTube suggestions."""
+import os
+import re
+from typing import Any
+
+YOUTUBE_TRIGGERS = re.compile(
+    r"\b(youtube|video|videos|watch|lecture|tutorial|documentary|playlist)\b",
+    re.I,
+)
+SEARCH_TRIGGERS = re.compile(
+    r"\b(search|find|lookup|look up|google|sources?|articles?|papers?|research)\b",
+    re.I,
+)
+EXPLAIN_TRIGGERS = re.compile(
+    r"\b(explain|what is|what are|define|summary|summarize|summarise|describe|meaning of|how does)\b",
+    re.I,
+)
+PLAN_TRIGGERS = re.compile(
+    r"\b(study plan|schedule|organize|organise|exam prep|revision plan|how (to|should i) study)\b",
+    re.I,
+)
+
+
+def _intent(message: str) -> str:
+    text = message.strip()
+    if not text:
+        return "general"
+    if YOUTUBE_TRIGGERS.search(text):
+        return "youtube"
+    if PLAN_TRIGGERS.search(text):
+        return "plan"
+    if EXPLAIN_TRIGGERS.search(text):
+        return "explain"
+    if SEARCH_TRIGGERS.search(text):
+        return "search"
+    if "?" in text or len(text.split()) <= 6:
+        return "explain"
+    return "general"
+
+
+def _clean_query(message: str) -> str:
+    q = message.strip()
+    for prefix in (
+        r"^(can you |could you |please |help me )",
+        r"^(search for |find |look up |lookup )",
+        r"^(explain |summarize |summarise |what is |what are |define )",
+        r"^(show me |get me )?(youtube )?(videos? on |videos? about |tutorials? (on|about) )",
+    ):
+        q = re.sub(prefix, "", q, flags=re.I).strip()
+    q = q.rstrip("?.!")
+    return q or message.strip()
+
+
+def _search_web(query: str, max_results: int = 5) -> list[dict[str, str]]:
+    try:
+        from duckduckgo_search import DDGS
+
+        with DDGS() as ddgs:
+            rows = list(ddgs.text(query, max_results=max_results))
+        return [
+            {
+                "title": r.get("title", ""),
+                "url": r.get("href", ""),
+                "snippet": r.get("body", ""),
+            }
+            for r in rows
+            if r.get("href")
+        ]
+    except Exception:
+        return []
+
+
+def _search_youtube(query: str, max_results: int = 5) -> list[dict[str, str]]:
+    try:
+        from duckduckgo_search import DDGS
+
+        with DDGS() as ddgs:
+            rows = list(ddgs.videos(f"{query} study tutorial", max_results=max_results))
+        out = []
+        for r in rows:
+            url = r.get("content") or r.get("embed_url") or ""
+            if not url:
+                continue
+            out.append(
+                {
+                    "title": r.get("title", "Video"),
+                    "url": url,
+                    "publisher": r.get("publisher", ""),
+                    "duration": r.get("duration", ""),
+                    "thumbnail": r.get("images", {}).get("large")
+                    if isinstance(r.get("images"), dict)
+                    else "",
+                }
+            )
+        return out
+    except Exception:
+        return []
+
+
+def _wikipedia_summary(query: str) -> tuple[str, list[str]]:
+    try:
+        import wikipedia
+
+        wikipedia.set_lang("en")
+        search_hits = wikipedia.search(query, results=3)
+        if not search_hits:
+            return "", []
+        title = search_hits[0]
+        page = wikipedia.page(title, auto_suggest=False)
+        summary = wikipedia.summary(title, sentences=6, auto_suggest=False)
+        tags = [w.replace("_", " ") for w in page.categories[:4] if "wiki" not in w.lower()][:4]
+        if not tags:
+            tags = title.split()[:3]
+        return summary, tags
+    except Exception:
+        return "", []
+
+
+def _study_plan_reply(topic: str) -> str:
+    subject = topic or "your topic"
+    return (
+        f"Here is a focused study plan for **{subject}**:\n\n"
+        "1. **Preview (15 min)** — Skim headings, key terms, and learning objectives.\n"
+        "2. **Active learning (45 min)** — Take notes in your own words; use the Feynman technique "
+        "(explain aloud as if teaching a friend).\n"
+        "3. **Practice (30 min)** — Do problems, flashcards, or a short quiz on what you just learned.\n"
+        "4. **Break (10 min)** — Step away; hydration helps retention.\n"
+        "5. **Review (20 min)** — Summarize the session in 5 bullet points; note what is still unclear.\n\n"
+        "Repeat this cycle 2–3 times per week, spacing sessions across days (spaced repetition). "
+        "Ask me to *explain* a concept or *find videos* when you hit a difficult section."
+    )
+
+
+def _optional_llm(message: str, context: str) -> str | None:
+    api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+    if not api_key:
+        return None
+    try:
+        import json
+        import urllib.request
+
+        payload = {
+            "model": os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+            "messages": [
+                {
+                    "role": "system",
+                    "content": (
+                        "You are Scholar AI, a concise academic study companion for university students. "
+                        "Explain clearly, use short paragraphs and bullet points when helpful, "
+                        "and suggest next study steps. Do not make up citations."
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": f"Context from tools:\n{context}\n\nStudent question: {message}",
+                },
+            ],
+            "max_tokens": 600,
+            "temperature": 0.5,
+        }
+        req = urllib.request.Request(
+            "https://api.openai.com/v1/chat/completions",
+            data=json.dumps(payload).encode(),
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode())
+        return data["choices"][0]["message"]["content"].strip()
+    except Exception:
+        return None
+
+
+def chat(message: str) -> dict[str, Any]:
+    message = (message or "").strip()
+    if not message:
+        return {
+            "reply": "Type a question, topic, or search query to get started.",
+            "status": "",
+            "tags": [],
+            "youtube": [],
+            "search_results": [],
+        }
+
+    intent = _intent(message)
+    query = _clean_query(message)
+    youtube: list[dict[str, str]] = []
+    search_results: list[dict[str, str]] = []
+    tags: list[str] = []
+    status = ""
+    reply_parts: list[str] = []
+    context_parts: list[str] = []
+
+    if intent in ("explain", "general", "youtube", "search"):
+        status = "Researching your topic…"
+        summary, tags = _wikipedia_summary(query)
+        if summary:
+            reply_parts.append(summary)
+            context_parts.append(f"Wikipedia: {summary}")
+
+    if intent in ("youtube", "general", "explain"):
+        status = status or "Finding study videos…"
+        youtube = _search_youtube(query)
+        if youtube:
+            context_parts.append("Videos: " + ", ".join(v["title"] for v in youtube[:3]))
+
+    if intent in ("search", "general", "explain"):
+        status = status or "Searching the web…"
+        search_results = _search_web(query)
+        if search_results:
+            context_parts.append(
+                "Web: " + "; ".join(f"{r['title']}: {r['snippet'][:120]}" for r in search_results[:3])
+            )
+
+    if intent == "plan":
+        status = "Building a study plan…"
+        reply_parts.append(_study_plan_reply(query))
+
+    llm_reply = _optional_llm(message, "\n".join(context_parts))
+    if llm_reply:
+        reply = llm_reply
+    elif reply_parts:
+        reply = reply_parts[0]
+        if intent == "youtube" and youtube:
+            reply += "\n\nI found these videos that may help your study session:"
+        elif intent == "search" and search_results:
+            reply += "\n\nHere are some sources to explore:"
+        elif intent == "general":
+            if youtube:
+                reply += "\n\n**Suggested videos** are listed below."
+            if search_results:
+                reply += "\n\n**Web results** may give you deeper reading."
+            if not youtube and not search_results:
+                reply += (
+                    "\n\nTry asking me to *explain* a concept, *search* for sources, "
+                    "or *find videos* on a topic."
+                )
+    else:
+        if youtube:
+            reply = f"Here are study videos related to **{query}**:"
+        elif search_results:
+            reply = f"Here are web results for **{query}**:"
+        else:
+            reply = (
+                f"I could not find detailed information on \"{query}\" right now. "
+                "Try rephrasing, using a more specific topic name, or ask me to "
+                "*find videos on [topic]* or *search for [topic]*."
+            )
+
+    if intent == "plan" and not tags:
+        tags = ["Study plan", "Spaced repetition", "Active recall"]
+
+    return {
+        "reply": reply,
+        "status": status,
+        "tags": tags,
+        "youtube": youtube,
+        "search_results": search_results,
+    }
