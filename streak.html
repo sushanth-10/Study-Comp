@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;family=Literata:wght@600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f7f9fb;
+            font-family: 'Lexend', sans-serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#4b6954",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed-variant": "#304d39",
+                      "on-background": "#191c1e",
+                      "surface-container-highest": "#e0e3e5",
+                      "outline": "#75777e",
+                      "outline-variant": "#c5c6ce",
+                      "tertiary": "#06172a",
+                      "inverse-on-surface": "#eff1f3",
+                      "surface-dim": "#d8dadc",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#f2f4f6",
+                      "surface-container-high": "#e6e8ea",
+                      "background": "#f7f9fb",
+                      "secondary-container": "#c6e8cd",
+                      "on-tertiary-fixed-variant": "#38485d",
+                      "primary-container": "#1b2b48",
+                      "on-surface": "#191c1e",
+                      "on-primary-container": "#8393b5",
+                      "on-secondary": "#ffffff",
+                      "on-surface-variant": "#44474d",
+                      "on-primary": "#ffffff",
+                      "inverse-primary": "#b7c7eb",
+                      "surface-bright": "#f7f9fb",
+                      "on-tertiary-fixed": "#0b1c30",
+                      "error-container": "#ffdad6",
+                      "on-error-container": "#93000a",
+                      "surface": "#f7f9fb",
+                      "on-primary-fixed-variant": "#374765",
+                      "on-error": "#ffffff",
+                      "tertiary-fixed-dim": "#b7c8e1",
+                      "secondary": "#476550",
+                      "inverse-surface": "#2d3133",
+                      "on-tertiary-container": "#8393ac",
+                      "surface-variant": "#e0e3e5",
+                      "on-secondary-fixed": "#032110",
+                      "secondary-fixed-dim": "#adcfb5",
+                      "tertiary-fixed": "#d3e4fe",
+                      "primary": "#041632",
+                      "on-primary-fixed": "#091b37",
+                      "secondary-fixed": "#c9ebd0",
+                      "primary-fixed-dim": "#b7c7eb",
+                      "surface-container": "#eceef0",
+                      "surface-tint": "#4f5e7e",
+                      "tertiary-container": "#1c2c40",
+                      "primary-fixed": "#d7e2ff",
+                      "surface-container-lowest": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "unit-6": "24px",
+                      "unit-3": "12px",
+                      "unit-2": "8px",
+                      "unit-8": "32px",
+                      "container-margin": "20px",
+                      "unit-1": "4px",
+                      "base": "4px",
+                      "unit-4": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Literata"],
+                      "body-lg": ["Lexend"],
+                      "label-md": ["Lexend"],
+                      "body-md": ["Lexend"],
+                      "headline-lg": ["Literata"],
+                      "label-sm": ["Lexend"],
+                      "headline-sm": ["Literata"],
+                      "headline-md": ["Literata"],
+                      "body-sm": ["Lexend"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                      "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-on-background shadow-sm docked full-width top-0 fixed top-0 left-0 right-0 z-50">
+<div class="flex justify-between items-center w-full px-container-margin h-16 max-w-[600px] mx-auto">
+<div class="flex items-center gap-unit-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed">menu_book</span>
+<h1 class="text-headline-sm font-headline-sm font-bold text-primary dark:text-primary-fixed">Scholarly</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border-2 border-primary-fixed">
+<img alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDRGc2m8TkFVtm6iC7SWkhesfh7bStbKUuSo_FABX44x47eCEp99e9CK2cPeJpwBGbu9glTgf20MXPm8YqndICLFX4SSK7QI3bF5OLors13bqeaqxAW_WZT79tu5CRZX-RPQO50tmqAoVFfFerZrcAxT0tSqMCfkdh5NDgHhEgNl5b9eZWw7tGM83VnLE2Xqfo3qgv6hdYWXs9hx01t3YC0e60m1cBdwjFYh7TYzkm6Rl3DRiwpCf2q3lvC4_QKmf1a-dr3veG536k"/>
+</div>
+</div>
+</header>
+<main class="max-w-[600px] mx-auto pt-20 px-container-margin space-y-unit-8">
+<!-- Hero Streak Section -->
+<section class="flex flex-col items-center justify-center py-unit-8 space-y-unit-4">
+<div class="relative">
+<!-- Glowing Flame Effect -->
+<div class="absolute inset-0 bg-secondary-container blur-3xl opacity-30 rounded-full animate-pulse"></div>
+<div class="relative bg-white rounded-full p-unit-8 shadow-lg border border-secondary-container flex flex-col items-center justify-center w-48 h-48">
+<span class="material-symbols-outlined text-[80px] text-on-secondary-container leading-none" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="text-headline-md font-headline-md text-primary mt-unit-2">12</span>
+</div>
+</div>
+<div class="text-center">
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-primary">12 Day Streak!</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">You're in the top 5% this week.</p>
+</div>
+</section>
+<!-- Calendar Study View -->
+<section class="bg-surface-container-lowest rounded-xl p-unit-6 shadow-sm border border-outline-variant">
+<div class="flex justify-between items-center mb-unit-4">
+<h3 class="text-headline-sm font-headline-sm text-primary">This Month</h3>
+<div class="flex gap-unit-2">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Studied</span>
+</div>
+</div>
+<div class="grid grid-cols-7 gap-unit-2 text-center">
+<!-- Calendar Header -->
+<div class="text-label-sm font-label-sm text-on-surface-variant py-unit-1">M</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant py-unit-1">T</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant py-unit-1">W</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant py-unit-1">T</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant py-unit-1">F</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant py-unit-1">S</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant py-unit-1">S</div>
+<!-- Week days - Mocking specific highlighted days for the streak -->
+<div class="p-unit-2 text-body-sm font-body-sm opacity-20">28</div>
+<div class="p-unit-2 text-body-sm font-body-sm opacity-20">29</div>
+<div class="p-unit-2 text-body-sm font-body-sm opacity-20">30</div>
+<div class="p-unit-2 text-body-sm font-body-sm opacity-20">31</div>
+<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">1</div>
+<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">2</div>
+<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">3</div>
+<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">4</div>
+<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">5</div>
+<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">6</div>
+<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">7</div>
+<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">8</div>
+<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">9</div>
+<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">10</div>
+<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">11</div>
+<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full border-2 border-on-secondary-container">12</div>
+<div class="p-unit-2 text-body-sm font-body-sm text-on-surface">13</div>
+<div class="p-unit-2 text-body-sm font-body-sm text-on-surface">14</div>
+<div class="p-unit-2 text-body-sm font-body-sm text-on-surface">15</div>
+<div class="p-unit-2 text-body-sm font-body-sm text-on-surface">16</div>
+<div class="p-unit-2 text-body-sm font-body-sm text-on-surface">17</div>
+</div>
+</section>
+<!-- Achievements Section -->
+<section class="space-y-unit-4">
+<h3 class="text-headline-sm font-headline-sm text-primary">Achievements</h3>
+<div class="grid grid-cols-2 gap-unit-4">
+<!-- Achievement 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-unit-4 border border-outline-variant flex flex-col items-center text-center space-y-unit-2">
+<div class="w-16 h-16 rounded-full bg-secondary-fixed flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-[32px] text-on-secondary-fixed" style="font-variation-settings: 'FILL' 1;">speed</span>
+</div>
+<span class="text-label-md font-label-md text-primary">7 Day Sprint</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Consistent work for a full week.</span>
+</div>
+<!-- Achievement 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-unit-4 border border-outline-variant flex flex-col items-center text-center space-y-unit-2">
+<div class="w-16 h-16 rounded-full bg-tertiary-fixed flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-[32px] text-on-tertiary-fixed" style="font-variation-settings: 'FILL' 1;">quiz</span>
+</div>
+<span class="text-label-md font-label-md text-primary">Quiz Master</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Aced 10 practice tests in a row.</span>
+</div>
+<!-- Achievement 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-unit-4 border border-outline-variant flex flex-col items-center text-center space-y-unit-2">
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-[32px] text-on-primary-fixed" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+</div>
+<span class="text-label-md font-label-md text-primary">Night Owl</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">3 sessions after 10 PM.</span>
+</div>
+<!-- Achievement 4 -->
+<div class="bg-surface-container-low rounded-xl p-unit-4 border border-dashed border-outline-variant flex flex-col items-center text-center space-y-unit-2 opacity-60">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-[32px] text-outline">lock</span>
+</div>
+<span class="text-label-md font-label-md text-on-surface-variant">Scholarly Elite</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">Keep going to unlock!</span>
+</div>
+</div>
+</section>
+<!-- Stats Grid (Bento Style) -->
+<section class="grid grid-cols-2 gap-unit-4">
+<div class="bg-primary text-on-primary rounded-xl p-unit-6 flex flex-col justify-between aspect-square">
+<span class="material-symbols-outlined text-primary-fixed">military_tech</span>
+<div>
+<span class="text-headline-md font-headline-md block">#12</span>
+<span class="text-label-sm font-label-sm">Class Rank</span>
+</div>
+</div>
+<div class="bg-secondary-container text-on-secondary-container rounded-xl p-unit-6 flex flex-col justify-between aspect-square">
+<span class="material-symbols-outlined">schedule</span>
+<div>
+<span class="text-headline-md font-headline-md block">42h</span>
+<span class="text-label-sm font-label-sm">Total Study Time</span>
+</div>
+</div>
+</section>
+<!-- Motivational Quote -->
+<section class="py-unit-8 text-center px-unit-6">
+<p class="font-headline-sm text-headline-sm italic text-primary opacity-80">"Consistency is the companion of excellence."</p>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface dark:bg-on-background max-w-[600px] left-1/2 -translate-x-1/2 rounded-t-xl shadow-lg">
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-high dark:hover:bg-primary-container transition-all">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-sm font-label-sm">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-high dark:hover:bg-primary-container transition-all">
+<span class="material-symbols-outlined">timer</span>
+<span class="text-label-sm font-label-sm">Focus</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-high dark:hover:bg-primary-container transition-all">
+<span class="material-symbols-outlined">description</span>
+<span class="text-label-sm font-label-sm">Notes</span>
+</div>
+<!-- Active Tab: Streak -->
+<div class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-fixed-variant text-on-secondary-container dark:text-secondary-fixed rounded-full px-4 py-1 scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="text-label-sm font-label-sm">Streak</span>
+</div>
+</nav>
+</body></html>

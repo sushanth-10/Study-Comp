@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Scholarly Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;600;700&amp;family=Lexend:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#4b6954",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#304d39",
+                    "on-background": "#191c1e",
+                    "surface-container-highest": "#e0e3e5",
+                    "outline": "#75777e",
+                    "outline-variant": "#c5c6ce",
+                    "tertiary": "#06172a",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-dim": "#d8dadc",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-container-high": "#e6e8ea",
+                    "background": "#f7f9fb",
+                    "secondary-container": "#c6e8cd",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "primary-container": "#1b2b48",
+                    "on-surface": "#191c1e",
+                    "on-primary-container": "#8393b5",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#44474d",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#b7c7eb",
+                    "surface-bright": "#f7f9fb",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "surface": "#f7f9fb",
+                    "on-primary-fixed-variant": "#374765",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "secondary": "#476550",
+                    "inverse-surface": "#2d3133",
+                    "on-tertiary-container": "#8393ac",
+                    "surface-variant": "#e0e3e5",
+                    "on-secondary-fixed": "#032110",
+                    "secondary-fixed-dim": "#adcfb5",
+                    "tertiary-fixed": "#d3e4fe",
+                    "primary": "#041632",
+                    "on-primary-fixed": "#091b37",
+                    "secondary-fixed": "#c9ebd0",
+                    "primary-fixed-dim": "#b7c7eb",
+                    "surface-container": "#eceef0",
+                    "surface-tint": "#4f5e7e",
+                    "tertiary-container": "#1c2c40",
+                    "primary-fixed": "#d7e2ff",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "unit-6": "24px",
+                    "unit-3": "12px",
+                    "unit-2": "8px",
+                    "unit-8": "32px",
+                    "container-margin": "20px",
+                    "unit-1": "4px",
+                    "base": "4px",
+                    "unit-4": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Literata"],
+                    "body-lg": ["Lexend"],
+                    "label-md": ["Lexend"],
+                    "body-md": ["Lexend"],
+                    "headline-lg": ["Literata"],
+                    "label-sm": ["Lexend"],
+                    "headline-sm": ["Literata"],
+                    "headline-md": ["Literata"],
+                    "body-sm": ["Lexend"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f7f9fb;
+            color: #191c1e;
+        }
+        .progress-ring {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen font-body-md text-body-md">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface shadow-sm h-16 max-w-[600px] left-1/2 -translate-x-1/2 flex justify-between items-center px-container-margin">
+<div class="flex items-center gap-unit-2">
+<span class="material-symbols-outlined text-primary" data-icon="menu_book">menu_book</span>
+<h1 class="text-headline-sm font-headline-sm font-bold text-primary">Scholarly</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="A professional close-up studio portrait of a young adult student with a friendly expression. The lighting is soft and even, set against a minimalist light gray background that complements the Scholarly app's clean aesthetic. The focus is sharp on the face, conveying a sense of approachability and readiness for learning in a modern academic environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfAoMXqOmSGQpVpHCSBtEuUWIGN5v3djrRVGHpc1UjoJ4JjMCRWRpTOMek0UVp1_oQO1xMn_Br-XdmGistmtXvXrErTNZkDgcWcJFOPDHjfwBCgfQDindBUHN8sR-5u9OFCDEcS-bLhAG0IiwSIG0Pw_BF2rYUrqELKMuXYZxNWY7Rre4afqU-pM9jgb2ZgiGxqV8w6ucj3JvTb7mxbOqXvuJn7dVn994BVztxaHTxcXwkVLuKm90ERmPHb-T213Oh3jRCl4jeCOEM"/>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow pt-24 pb-28 px-container-margin max-w-[600px] mx-auto w-full">
+<!-- Greeting Section -->
+<section class="mb-unit-8">
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-primary">Hello, Alex!</h2>
+<p class="text-on-surface-variant font-body-md mt-unit-1">Ready for your deep focus session today?</p>
+</section>
+<!-- Top Grid: Streak & Goals -->
+<div class="grid grid-cols-2 gap-unit-4 mb-unit-6">
+<!-- Current Streak Card -->
+<div class="bg-surface-container-lowest p-unit-4 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-on-secondary-container/10 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<span class="text-label-md font-label-md text-on-surface-variant">Streak</span>
+<span class="material-symbols-outlined text-error" data-icon="local_fire_department" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<div>
+<span class="text-headline-lg font-headline-lg text-primary">12</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant block">Days running</span>
+</div>
+</div>
+<!-- Study Progress Wheel -->
+<div class="bg-surface-container-lowest p-unit-4 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-on-secondary-container/10 flex flex-col items-center">
+<div class="relative w-20 h-20">
+<svg class="w-full h-full">
+<circle class="text-surface-container-highest" cx="40" cy="40" fill="transparent" r="32" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-on-secondary-container progress-ring" cx="40" cy="40" fill="transparent" r="32" stroke="currentColor" stroke-dasharray="201" stroke-dashoffset="60" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-label-md font-label-md text-primary">70%</span>
+</div>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant mt-unit-2 text-center">Daily Goal</span>
+</div>
+</div>
+<!-- Next Quiz Reminder -->
+<section class="mb-unit-8">
+<div class="bg-primary-container p-unit-6 rounded-xl shadow-lg relative overflow-hidden">
+<div class="relative z-10">
+<span class="text-label-sm font-label-sm text-on-primary-container">UPCOMING TASK</span>
+<h3 class="text-headline-sm font-headline-sm text-on-primary mt-unit-1">Advanced Microeconomics Quiz</h3>
+<div class="flex items-center gap-unit-2 mt-unit-3">
+<span class="material-symbols-outlined text-on-primary-container text-[18px]" data-icon="timer">timer</span>
+<span class="text-label-md font-label-md text-on-primary">Starts in 45 mins</span>
+</div>
+<button class="mt-unit-6 w-full bg-secondary-container text-on-secondary-container font-label-md text-label-md py-unit-3 rounded-lg hover:opacity-90 transition-opacity">
+                        Quick Review
+                    </button>
+</div>
+<!-- Abstract Decorative Shape -->
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-on-primary-container/10 rounded-full blur-2xl"></div>
+</div>
+</section>
+<!-- Recent Notes & Bookmarks -->
+<section>
+<div class="flex justify-between items-center mb-unit-4">
+<h3 class="text-headline-sm font-headline-sm text-primary">Recent Notes</h3>
+<button class="text-label-md font-label-md text-on-secondary-container">View all</button>
+</div>
+<div class="space-y-unit-4">
+<!-- Note Item 1 -->
+<div class="bg-surface-container-lowest p-unit-4 rounded-xl border border-outline-variant shadow-sm flex items-center gap-unit-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="description">description</span>
+</div>
+<div class="flex-grow">
+<h4 class="text-label-md font-label-md text-primary">Keynesian Theory Overview</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Modified 2 hours ago</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</div>
+<!-- Note Item 2 -->
+<div class="bg-surface-container-lowest p-unit-4 rounded-xl border border-outline-variant shadow-sm flex items-center gap-unit-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="bookmark" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</div>
+<div class="flex-grow">
+<h4 class="text-label-md font-label-md text-primary">Neural Plasticity Research</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Bookmarked yesterday</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</div>
+<!-- Note Item 3 -->
+<div class="bg-surface-container-lowest p-unit-4 rounded-xl border border-outline-variant shadow-sm flex items-center gap-unit-4">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="description">description</span>
+</div>
+<div class="flex-grow">
+<h4 class="text-label-md font-label-md text-primary">Organic Chemistry - Alkanes</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Modified 3 days ago</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface shadow-[0_-4px_12px_rgba(0,0,0,0.04)] max-w-[600px] left-1/2 -translate-x-1/2 rounded-t-xl">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-label-sm font-label-sm">Dashboard</span>
+</a>
+<!-- Focus -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="timer">timer</span>
+<span class="text-label-sm font-label-sm">Focus</span>
+</a>
+<!-- Notes -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="text-label-sm font-label-sm">Notes</span>
+</a>
+<!-- Streak -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="local_fire_department">local_fire_department</span>
+<span class="text-label-sm font-label-sm">Streak</span>
+</a>
+</nav>
+<!-- Contextual FAB for mobile study sessions -->
+<button class="fixed right-6 bottom-24 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center z-40 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</body></html>

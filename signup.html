@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Scholarly - Create Account</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@600;700&amp;family=Lexend:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#4b6954",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#304d39",
+                    "on-background": "#191c1e",
+                    "surface-container-highest": "#e0e3e5",
+                    "outline": "#75777e",
+                    "outline-variant": "#c5c6ce",
+                    "tertiary": "#06172a",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-dim": "#d8dadc",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-container-high": "#e6e8ea",
+                    "background": "#f7f9fb",
+                    "secondary-container": "#c6e8cd",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "primary-container": "#1b2b48",
+                    "on-surface": "#191c1e",
+                    "on-primary-container": "#8393b5",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#44474d",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#b7c7eb",
+                    "surface-bright": "#f7f9fb",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "surface": "#f7f9fb",
+                    "on-primary-fixed-variant": "#374765",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "secondary": "#476550",
+                    "inverse-surface": "#2d3133",
+                    "on-tertiary-container": "#8393ac",
+                    "surface-variant": "#e0e3e5",
+                    "on-secondary-fixed": "#032110",
+                    "secondary-fixed-dim": "#adcfb5",
+                    "tertiary-fixed": "#d3e4fe",
+                    "primary": "#041632",
+                    "on-primary-fixed": "#091b37",
+                    "secondary-fixed": "#c9ebd0",
+                    "primary-fixed-dim": "#b7c7eb",
+                    "surface-container": "#eceef0",
+                    "surface-tint": "#4f5e7e",
+                    "tertiary-container": "#1c2c40",
+                    "primary-fixed": "#d7e2ff",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "unit-6": "24px",
+                    "unit-3": "12px",
+                    "unit-2": "8px",
+                    "unit-8": "32px",
+                    "container-margin": "20px",
+                    "unit-1": "4px",
+                    "base": "4px",
+                    "unit-4": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Literata"],
+                    "body-lg": ["Lexend"],
+                    "label-md": ["Lexend"],
+                    "body-md": ["Lexend"],
+                    "headline-lg": ["Literata"],
+                    "label-sm": ["Lexend"],
+                    "headline-sm": ["Literata"],
+                    "headline-md": ["Literata"],
+                    "body-sm": ["Lexend"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f7f9fb;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface flex flex-col min-h-screen items-center">
+<!-- Top AppBar (Identity Only, No Nav Shell per Relevance Check) -->
+<header class="w-full max-w-[600px] h-16 px-container-margin flex items-center justify-center">
+<div class="flex items-center gap-unit-2">
+<span class="material-symbols-outlined text-primary text-headline-sm" data-icon="menu_book">menu_book</span>
+<h1 class="text-headline-sm font-headline-sm font-bold text-primary">Scholarly</h1>
+</div>
+</header>
+<main class="w-full max-w-[600px] px-container-margin flex-grow flex flex-col justify-center py-unit-8">
+<!-- Welcome Header -->
+<div class="mb-unit-8 text-center">
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-primary mb-unit-2">Begin Your Journey</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">Create a Scholarly account to organize your studies and track your academic progress.</p>
+</div>
+<!-- Signup Bento-style Container -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm p-unit-6 flex flex-col gap-unit-6 border border-surface-variant/50">
+<!-- Full Name Input -->
+<div class="flex flex-col gap-unit-2">
+<label class="text-label-md font-label-md text-on-surface-variant ml-1" for="full_name">Full Name</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-4 text-outline-variant" data-icon="person">person</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md font-body-md focus:outline-none focus:border-secondary transition-colors placeholder:text-outline-variant" id="full_name" placeholder="Alexander Hamilton" type="text"/>
+</div>
+</div>
+<!-- Email Input -->
+<div class="flex flex-col gap-unit-2">
+<label class="text-label-md font-label-md text-on-surface-variant ml-1" for="email">Email Address</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-4 text-outline-variant" data-icon="mail">mail</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md font-body-md focus:outline-none focus:border-secondary transition-colors placeholder:text-outline-variant" id="email" placeholder="name@university.edu" type="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="flex flex-col gap-unit-2">
+<label class="text-label-md font-label-md text-on-surface-variant ml-1" for="password">Password</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-4 text-outline-variant" data-icon="lock">lock</span>
+<input class="w-full pl-12 pr-12 py-3 bg-surface border border-outline-variant rounded-lg text-body-md font-body-md focus:outline-none focus:border-secondary transition-colors placeholder:text-outline-variant" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 text-outline-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+<p class="text-label-sm font-label-sm text-outline ml-1">Must be at least 8 characters.</p>
+</div>
+<!-- Terms of Service -->
+<div class="flex items-start gap-unit-3 px-1 mt-unit-2">
+<div class="flex items-center h-5">
+<input class="h-5 w-5 rounded border-outline-variant text-secondary focus:ring-secondary cursor-pointer" id="terms" type="checkbox"/>
+</div>
+<label class="text-body-sm font-body-sm text-on-surface-variant leading-tight" for="terms">
+                    I agree to the <a class="text-secondary font-medium hover:underline" href="#">Terms of Service</a> and <a class="text-secondary font-medium hover:underline" href="#">Privacy Policy</a>.
+                </label>
+</div>
+<!-- Primary Action -->
+<button class="w-full bg-primary text-on-primary py-4 rounded-full text-label-md font-label-md hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center justify-center gap-unit-2 shadow-md active:scale-95 duration-200">
+                Create Account
+                <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</section>
+<!-- Footer Links -->
+<div class="mt-unit-8 text-center">
+<p class="text-body-md font-body-md text-on-surface-variant">
+                Already have an account? 
+                <a class="text-primary font-bold hover:underline decoration-2 underline-offset-4" href="#">Log in</a>
+</p>
+</div>
+</main>
+<!-- Illustrative Academic Background Element (Soft Gradient/Pattern) -->
+<div class="fixed inset-0 -z-10 opacity-40 pointer-events-none overflow-hidden">
+<div class="absolute top-0 right-0 w-[400px] h-[400px] bg-secondary-container/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+<div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-primary-fixed/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+</div>
+<footer class="w-full max-w-[600px] py-unit-6 px-container-margin text-center">
+<div class="flex flex-wrap justify-center gap-unit-4 opacity-60">
+<span class="text-label-sm font-label-sm text-outline">v2.4.0</span>
+<span class="text-label-sm font-label-sm text-outline">•</span>
+<span class="text-label-sm font-label-sm text-outline">Scholarly Deep Focus System</span>
+</div>
+</footer>
+</body></html>

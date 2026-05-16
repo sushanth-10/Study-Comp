@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Scholarly - Focus Quiz</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400..900;1,400..900&amp;family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#4b6954",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed-variant": "#304d39",
+                      "on-background": "#191c1e",
+                      "surface-container-highest": "#e0e3e5",
+                      "outline": "#75777e",
+                      "outline-variant": "#c5c6ce",
+                      "tertiary": "#06172a",
+                      "inverse-on-surface": "#eff1f3",
+                      "surface-dim": "#d8dadc",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#f2f4f6",
+                      "surface-container-high": "#e6e8ea",
+                      "background": "#f7f9fb",
+                      "secondary-container": "#c6e8cd",
+                      "on-tertiary-fixed-variant": "#38485d",
+                      "primary-container": "#1b2b48",
+                      "on-surface": "#191c1e",
+                      "on-surface-variant": "#44474d",
+                      "on-primary": "#ffffff",
+                      "inverse-primary": "#b7c7eb",
+                      "surface-bright": "#f7f9fb",
+                      "on-tertiary-fixed": "#0b1c30",
+                      "error-container": "#ffdad6",
+                      "on-error-container": "#93000a",
+                      "surface": "#f7f9fb",
+                      "on-primary-fixed-variant": "#374765",
+                      "on-error": "#ffffff",
+                      "tertiary-fixed-dim": "#b7c8e1",
+                      "secondary": "#476550",
+                      "inverse-surface": "#2d3133",
+                      "on-tertiary-container": "#8393ac",
+                      "surface-variant": "#e0e3e5",
+                      "on-secondary-fixed": "#032110",
+                      "secondary-fixed-dim": "#adcfb5",
+                      "tertiary-fixed": "#d3e4fe",
+                      "primary": "#041632",
+                      "on-primary-fixed": "#091b37",
+                      "secondary-fixed": "#c9ebd0",
+                      "primary-fixed-dim": "#b7c7eb",
+                      "surface-container": "#eceef0",
+                      "surface-tint": "#4f5e7e",
+                      "tertiary-container": "#1c2c40",
+                      "primary-fixed": "#d7e2ff",
+                      "surface-container-lowest": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "unit-6": "24px",
+                      "unit-3": "12px",
+                      "unit-2": "8px",
+                      "unit-8": "32px",
+                      "container-margin": "20px",
+                      "unit-1": "4px",
+                      "base": "4px",
+                      "unit-4": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Literata"],
+                      "body-lg": ["Lexend"],
+                      "label-md": ["Lexend"],
+                      "body-md": ["Lexend"],
+                      "headline-lg": ["Literata"],
+                      "label-sm": ["Lexend"],
+                      "headline-sm": ["Literata"],
+                      "headline-md": ["Literata"],
+                      "body-sm": ["Lexend"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                      "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f7f9fb; /* Soft slate background */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md antialiased">
+<!-- Top Navigation Shell -->
+<header class="bg-surface dark:bg-on-background shadow-sm docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-container-margin h-16 max-w-[600px] mx-auto">
+<div class="flex items-center gap-unit-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="menu_book">menu_book</span>
+<span class="text-headline-sm font-headline-sm font-bold text-primary dark:text-primary-fixed">Scholarly</span>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-high border border-outline-variant">
+<img alt="User profile avatar" data-alt="A clean, minimalist portrait illustration of a scholar in a modern digital style. The lighting is soft and even, highlighting the professional and calm demeanor. The background is a solid, muted light slate blue, aligning with the Scholarly brand identity and focus-oriented aesthetic. High-quality vector art style with subtle gradients." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPYnM8OGlvd8qhjqMSIzCxifKMAevWDQY2t95_gTEa3tb8K3lP4tJSvBxbgmcxBUdF_V3V-E9sZO_j9Q8DitsfXGF5YSNKZsWyPzCKSuST9HtXlMgplBEfysMAQ3J1_EOKVq1Zg_Vm5AGZBLAPn9GpewUnHywOOO-l997W3Rf8V-5kdptwBh75SaT_yWU7BmwNkRirIZbPEZaCIv4D0pcfUkPg4qOxQVDKlvyn6OdRl8GDd2Xyxnlw1ECw5ubsWbAfA4SeuOXI6R0s"/>
+</div>
+</div>
+</header>
+<main class="max-w-[600px] mx-auto px-container-margin pt-unit-6 pb-32">
+<!-- Progress Section -->
+<section class="mb-unit-8">
+<div class="flex justify-between items-end mb-unit-2">
+<span class="text-label-md font-label-md text-on-surface-variant">QUESTION 7 OF 12</span>
+<span class="text-label-md font-label-md text-secondary">58% Complete</span>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[58%] rounded-full"></div>
+</div>
+</section>
+<!-- Question Section -->
+<section class="mb-unit-8">
+<div class="bg-surface-container-lowest p-unit-6 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-surface-container-high">
+<h1 class="text-headline-lg-mobile font-headline-lg-mobile text-primary mb-unit-4">
+                    How does the principle of "Active Recall" differ from "Passive Recognition" in long-term memory consolidation?
+                </h1>
+<div class="flex items-center gap-unit-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="psychology">psychology</span>
+<span class="text-label-sm font-label-sm">COGNITIVE SCIENCE</span>
+</div>
+</div>
+</section>
+<!-- Options Grid (Bento-style list) -->
+<section class="space-y-unit-4">
+<!-- Option A -->
+<button class="w-full text-left group">
+<div class="bg-surface-container-lowest p-unit-4 rounded-xl border border-surface-container-high shadow-sm hover:border-secondary transition-all active:scale-[0.98] flex items-start gap-unit-4">
+<div class="flex-shrink-0 w-8 h-8 rounded-lg bg-surface-container-high text-primary font-bold flex items-center justify-center text-label-md group-hover:bg-secondary group-hover:text-on-secondary transition-colors">A</div>
+<p class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors pt-1">
+                        Active recall involves retrieving information from memory without cues, strengthening neural pathways.
+                    </p>
+</div>
+</button>
+<!-- Option B -->
+<button class="w-full text-left group">
+<div class="bg-secondary-container p-unit-4 rounded-xl border-2 border-on-secondary-container shadow-sm flex items-start gap-unit-4">
+<div class="flex-shrink-0 w-8 h-8 rounded-lg bg-on-secondary-container text-white font-bold flex items-center justify-center text-label-md">B</div>
+<div class="flex-1">
+<p class="text-body-md font-body-md text-on-surface pt-1">
+                            Passive recognition is more effective for high-stakes examinations because it requires less mental energy.
+                        </p>
+</div>
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</button>
+<!-- Option C -->
+<button class="w-full text-left group">
+<div class="bg-surface-container-lowest p-unit-4 rounded-xl border border-surface-container-high shadow-sm hover:border-secondary transition-all active:scale-[0.98] flex items-start gap-unit-4">
+<div class="flex-shrink-0 w-8 h-8 rounded-lg bg-surface-container-high text-primary font-bold flex items-center justify-center text-label-md group-hover:bg-secondary group-hover:text-on-secondary transition-colors">C</div>
+<p class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors pt-1">
+                        Recognition builds conceptual depth while recall focuses only on surface-level terminology.
+                    </p>
+</div>
+</button>
+<!-- Option D -->
+<button class="w-full text-left group">
+<div class="bg-surface-container-lowest p-unit-4 rounded-xl border border-surface-container-high shadow-sm hover:border-secondary transition-all active:scale-[0.98] flex items-start gap-unit-4">
+<div class="flex-shrink-0 w-8 h-8 rounded-lg bg-surface-container-high text-primary font-bold flex items-center justify-center text-label-md group-hover:bg-secondary group-hover:text-on-secondary transition-colors">D</div>
+<p class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors pt-1">
+                        Both methods are identical in terms of synaptic plasticity and neurogenesis in the hippocampus.
+                    </p>
+</div>
+</button>
+</section>
+</main>
+<!-- Bottom Action Shell -->
+<footer class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[600px] bg-surface dark:bg-on-background z-50 p-container-margin shadow-[0_-8px_24px_rgba(0,0,0,0.06)] rounded-t-xl">
+<div class="flex gap-unit-4">
+<button class="flex-1 py-4 px-unit-6 rounded-full bg-surface-container-high text-on-surface font-label-md hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-unit-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="skip_next">skip_next</span>
+                Skip
+            </button>
+<button class="flex-[2] py-4 px-unit-6 rounded-full bg-primary text-on-primary font-label-md hover:opacity-90 transition-all active:scale-95 flex items-center justify-center gap-unit-2 shadow-lg">
+                Submit Answer
+                <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</footer>
+<!-- Bottom Navigation Shell (Persistent Context) -->
+<!-- Hidden because it is a "Task-Focused" screen according to the Shell Visibility Rule -->
+</body></html>
