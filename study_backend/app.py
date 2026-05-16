@@ -12,7 +12,7 @@ from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
-from study_backend.ai_service import chat as ai_chat
+from ai_service import chat as ai_chat
 from notes_service import delete_pdf, get_pdf_path, get_pdf_record, list_pdfs, save_pdf
 from study_backend.auth import attach_session, clear_session, get_current_user, google_login_url, maybe_current_user, upsert_google_user, verify_password, hash_password
 from study_backend.config import ROOT

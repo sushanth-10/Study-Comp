@@ -22,6 +22,8 @@ app.secret_key = os.environ.get("SECRET_KEY", "scholarly-dev-secret-change-me")
 # Pages that require login
 PROTECTED = {
     "dashboard": "dashboard.html",
+    "analytics": "analytics.html",
+    "planner": "planner.html",
     "focus": "focus.html",
     "notes": "notes.html",
     "streak": "streak.html",
@@ -102,6 +104,18 @@ def logout():
 @login_required
 def dashboard():
     return send_page("dashboard.html")
+
+
+@app.route("/analytics")
+@login_required
+def analytics():
+    return send_page("analytics.html")
+
+
+@app.route("/planner")
+@login_required
+def planner():
+    return send_page("planner.html")
 
 
 @app.route("/focus")

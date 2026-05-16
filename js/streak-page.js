@@ -2,8 +2,6 @@
   const streakValueEl = document.getElementById('streak-value');
   const streakTitleEl = document.getElementById('streak-title');
   const streakSubtitleEl = document.getElementById('streak-subtitle');
-  const hoursEl = document.getElementById('streak-hours');
-  const rankEl = document.getElementById('streak-rank');
   const calendarEl = document.getElementById('streak-calendar');
   const achievementsEl = document.getElementById('streak-achievements');
 
@@ -15,8 +13,6 @@
       streakValueEl.textContent = String(data.currentStreak);
       if (streakTitleEl) streakTitleEl.textContent = data.currentStreak + ' Day Streak!';
       if (streakSubtitleEl) streakSubtitleEl.textContent = 'Momentum is building across your recent study sessions.';
-      if (hoursEl) hoursEl.textContent = data.totalStudyHours + 'h';
-      if (rankEl) rankEl.textContent = '#' + data.rank;
 
       if (calendarEl) {
         Array.from(calendarEl.querySelectorAll('[data-day]')).forEach(function (cell) {
