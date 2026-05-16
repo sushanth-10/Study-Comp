@@ -212,19 +212,6 @@
 
   function installProfileButton() {
     ensureProfileModal();
-    const topbar = document.querySelector('.desktop-topbar');
-    if (topbar) {
-      topbar.querySelectorAll('img[alt*="User"], img[alt*="Profile"], .w-10.h-10.rounded-full').forEach(function (node) {
-        const wrapper = node.closest('.w-10.h-10.rounded-full') || node;
-        if (!wrapper.classList.contains('scholarly-profile-button')) wrapper.remove();
-      });
-      const button = makeProfileButton('profile-topbar-button');
-      const target = topbar.querySelector('.flex.justify-between') || topbar;
-      target.appendChild(button);
-    } else if (!document.querySelector('.profile-floating-button')) {
-      const button = makeProfileButton('profile-floating-button');
-      document.body.appendChild(button);
-    }
     renderProfileButtons();
 
     fetch('/api/session')
@@ -239,7 +226,7 @@
           renderProfileButtons();
         }
       })
-      .catch(function () {});
+      .catch(function () { });
   }
 
   function buildSidebar(currentPage, dark) {

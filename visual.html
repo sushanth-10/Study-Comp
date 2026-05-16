@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html class="light" lang="en">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Scholarly - Mind Map</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;600;700&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Literata:wght@400;600;700&family=Lexend:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
@@ -35,29 +39,41 @@
         }
     </script>
     <style>
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        body { background-color: #f7f9fb; color: #191c1e; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            background-color: #f7f9fb;
+            color: #191c1e;
+        }
     </style>
 </head>
+
 <body class="app-layout flex flex-col min-h-screen font-body-md text-body-md">
-    <header class="px-8 py-4 bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between">
+    <header
+        class="px-8 py-4 bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between">
         <div class="flex items-center gap-4">
-            <a href="/dashboard" class="material-symbols-outlined text-on-surface hover:text-primary transition-colors cursor-pointer text-[24px] no-underline">arrow_back</a>
+            <a href="/dashboard"
+                class="material-symbols-outlined text-on-surface hover:text-primary transition-colors cursor-pointer text-[24px] no-underline">arrow_back</a>
             <h1 class="text-headline-sm font-headline-sm font-bold text-primary">Topic Mind Map</h1>
         </div>
     </header>
 
-    <main class="flex-grow p-8 flex flex-col items-center justify-center">
-        <div class="w-full max-w-4xl bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg p-8 relative min-h-[500px] flex flex-col">
-            <div id="loading" class="absolute inset-0 flex flex-col items-center justify-center bg-surface-container-lowest/90 z-10 rounded-xl">
+    <main class="flex-grow p-6 md:p-8 flex flex-col items-center justify-center">
+        <div
+            class="w-full max-w-7xl bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-lg p-6 md:p-10 relative min-h-[720px] flex flex-col">
+            <div id="loading"
+                class="absolute inset-0 flex flex-col items-center justify-center bg-surface-container-lowest/90 z-10 rounded-xl">
                 <span class="material-symbols-outlined animate-spin text-[48px] text-primary mb-4">sync</span>
                 <p class="text-body-md text-on-surface-variant font-medium">Generating structured study map...</p>
             </div>
             <div class="mb-6 border-b border-outline-variant pb-4">
                 <h2 id="topic-title" class="text-2xl font-headline-sm text-primary font-bold">Topic</h2>
-                <p class="text-on-surface-variant mt-2 text-sm">A structured plan on how to study and master this subject.</p>
+                <p class="text-on-surface-variant mt-2 text-sm md:text-base">A structured roadmap built from the topic
+                    and AI-backed guidance.</p>
             </div>
-            <div id="mindmap-container" class="flex-grow w-full flex items-center justify-center overflow-auto">
+            <div id="mindmap-container" class="flex-grow w-full flex items-stretch justify-center overflow-auto">
                 <pre id="mermaid-code" class="mermaid hidden"></pre>
             </div>
         </div>
@@ -78,7 +94,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ topic: safeTopic, notes: '' })
                 });
-                
+
                 if (response.ok) {
                     const data = await response.json();
                     if (data && data.nodes && data.nodes.length > 0) {
@@ -134,7 +150,7 @@ mindmap
                     if (svg) {
                         svg.style.maxWidth = '100%';
                         svg.style.height = 'auto';
-                        svg.style.minHeight = '400px';
+                        svg.style.minHeight = '640px';
                         svgPanZoom(svg, {
                             zoomEnabled: true,
                             controlIconsEnabled: true,
@@ -151,4 +167,5 @@ mindmap
         });
     </script>
 </body>
+
 </html>

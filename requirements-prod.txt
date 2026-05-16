@@ -1,0 +1,39 @@
+# Production Dependencies for Scholarly Study Companion
+# Use: pip install -r requirements-prod.txt
+
+# ===== WEB FRAMEWORK =====
+Flask==2.3.3
+Werkzeug==2.3.7
+Jinja2==3.1.2
+python-multipart==0.0.20
+
+# ===== PRODUCTION SERVER =====
+gunicorn==21.2.0
+
+# ===== DATABASE =====
+SQLAlchemy==2.0.36
+psycopg2-binary==2.9.9
+python-dotenv==1.0.0
+
+# ===== AUTHENTICATION & SECURITY =====
+PyJWT==2.9.0
+google-auth==2.39.0
+werkzeug>=2.3.0
+
+# ===== AI & SEARCH SERVICES =====
+duckduckgo-search==6.0.0
+wikipedia==1.4.0
+PyPDF2==3.0.0
+requests==2.31.0
+
+# ===== OPTIONAL: CORS SUPPORT =====
+Flask-CORS==4.0.0
+
+# ===== OPTIONAL: RATE LIMITING =====
+Flask-Limiter==3.5.0
+
+# ===== OPTIONAL: BETTER LOGGING =====
+python-json-logger==2.0.7
+
+# ===== DEVELOPMENT (remove in production if needed) =====
+python-dotenv==1.0.0

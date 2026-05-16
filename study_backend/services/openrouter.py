@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import os
+import re
 import time
 import urllib.error
 import urllib.request
@@ -143,19 +145,93 @@ def _heuristic_payload(task: str, payload: dict[str, Any]) -> dict[str, Any]:
             "revision_prompts": [f"Explain: {payload['title']}", "Teach this concept in your own words."],
         }
     if task == "concept_map":
-        topic = payload["topic"]
-        return {
-            "nodes": [
-                {"id": topic, "label": topic, "type": "core"},
-                {"id": "foundations", "label": "Foundations", "type": "support"},
-                {"id": "applications", "label": "Applications", "type": "support"},
-            ],
-            "edges": [
-                {"source": "foundations", "target": topic, "label": "supports"},
-                {"source": topic, "target": "applications", "label": "applies to"},
-            ],
-        }
+        topic = str(payload.get("topic", "Topic")).strip() or "Topic"
+        lower_topic = topic.lower()
+        if any(word in lower_topic for word in ["math", "algebra", "calculus", "geometry", "statistics"]):
+            branches = ["Core formulas", "Worked examples", "Problem solving", "Common errors", "Revision loop"]
+        elif any(word in lower_topic for word in ["physics", "chemistry", "biology", "medicine", "anatomy", "photo", "plant"]):
+            branches = ["Key concepts", "Processes", "Diagrams", "Experiments", "Review questions"]
+        elif any(word in lower_topic for word in ["history", "world war", "war", "economics", "politics", "psychology", "sociology"]):
+            branches = ["Causes", "Major events", "Key figures", "Consequences", "Revision questions"]
+        elif any(word in lower_topic for word in ["programming", "coding", "computer", "algorithm", "data"]):
+            branches = ["Syntax", "Core structures", "Examples", "Debugging", "Projects"]
+        else:
+            tokens = [
+                token
+                for token in re.findall(r"[A-Za-z][A-Za-z0-9+-]{2,}", topic)
+                if token.lower() not in {"the", "and", "for", "with", "from", "about", "into", "unit", "topic"}
+            ]
+            seed = tokens[:3] or [topic]
+            branches = [
+                f"{seed[0]} basics",
+                f"{seed[-1]} examples",
+                f"{topic} practice",
+                f"{topic} review",
+                f"{seed[0]} questions",
+            ]
+
+        clean_topic = re.sub(r"\s+", " ", topic).strip()
+        node_ids = ["core"] + [f"branch_{i}" for i in range(len(branches))]
+        nodes = [{"id": "core", "label": clean_topic, "type": "core"}]
+        nodes.extend(
+            {"id": node_ids[i + 1], "label": label, "type": "support" if i < 2 else "branch"}
+            for i, label in enumerate(branches)
+        )
+        edges = [
+            {"source": "core", "target": node_ids[1], "label": "start here"},
+            {"source": "core", "target": node_ids[2], "label": "build on"},
+            {"source": node_ids[1], "target": node_ids[3], "label": "practice"},
+            {"source": node_ids[2], "target": node_ids[4], "label": "apply"},
+            {"source": node_ids[4], "target": node_ids[5], "label": "review"},
+        ]
+        if len(node_ids) > 6:
+            edges.append({"source": node_ids[3], "target": node_ids[6], "label": "extend"})
+        return {"nodes": nodes, "edges": edges}
     return {}
+
+
+def _call_openai_model(task: str, prompt: str, schema_hint: str, payload: dict[str, Any]) -> dict[str, Any] | None:
+    api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+    if not api_key:
+        return None
+
+    body = {
+        "model": os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+        "messages": [
+            {
+                "role": "system",
+                "content": (
+                    "You are an adaptive study intelligence engine. "
+                    "Respond with valid JSON only, matching the requested structure."
+                ),
+            },
+            {"role": "user", "content": f"{prompt}\n\nSchema:\n{schema_hint}\n\nInput:\n{json.dumps(payload)}"},
+        ],
+        "temperature": 0.3,
+    }
+    request = urllib.request.Request(
+        "https://api.openai.com/v1/chat/completions",
+        data=json.dumps(body).encode(),
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(request, timeout=45) as response:
+                response_data = json.loads(response.read().decode())
+            content = response_data["choices"][0]["message"]["content"].strip()
+            if content.startswith("```"):
+                content = content.strip("`")
+                content = content.replace("json", "", 1).strip()
+            return json.loads(content)
+        except (urllib.error.URLError, TimeoutError, ValueError, KeyError, json.JSONDecodeError):
+            if attempt == 2:
+                break
+            time.sleep(1.2 * (attempt + 1))
+    return None
 
 
 def _call_model(task: str, prompt: str, schema_hint: str, payload: dict[str, Any]) -> dict[str, Any] | None:
@@ -212,6 +288,10 @@ def structured_completion(task: str, prompt: str, schema_hint: str, payload: dic
     if cached:
         return cached
 
-    result = _call_model(task, prompt, schema_hint, payload) or _heuristic_payload(task, payload)
+    result = (
+        _call_model(task, prompt, schema_hint, payload)
+        or _call_openai_model(task, prompt, schema_hint, payload)
+        or _heuristic_payload(task, payload)
+    )
     _set_cached(key, result)
     return result

@@ -13,6 +13,68 @@ def _clamp_count(count: int) -> int:
     return max(10, min(30, int(count)))
 
 
+def _normalize_text(text: str) -> str:
+    return re.sub(r"\s+", " ", str(text or "")).strip().lower()
+
+
+def _dedupe_preserve_order(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for item in items:
+        normalized = _normalize_text(item)
+        if not normalized or normalized in seen:
+            continue
+        seen.add(normalized)
+        result.append(str(item).strip())
+    return result
+
+
+def _unique_options(correct: str, candidates: list[str], topic: str = "") -> list[str]:
+    options = [str(correct).strip()] + [str(candidate).strip() for candidate in candidates]
+    options = _dedupe_preserve_order(options)
+
+    fillers = _dedupe_preserve_order([
+        f"A key idea connected to {topic or 'the topic'}.",
+        f"A supporting example from {topic or 'the topic'}.",
+        f"An important detail about {topic or 'the topic'}.",
+        f"A common misconception about {topic or 'the topic'}.",
+        "A broader concept that is not the best answer here.",
+    ])
+    while len(options) < 4 and fillers:
+        candidate = fillers.pop(0)
+        if _normalize_text(candidate) not in {_normalize_text(item) for item in options}:
+            options.append(candidate)
+
+    return options[:4]
+
+
+def _finalize_questions(items: list[dict[str, Any]], count: int) -> list[dict[str, Any]]:
+    seen_questions: set[str] = set()
+    seen_signatures: set[tuple[str, tuple[str, ...]]] = set()
+    output: list[dict[str, Any]] = []
+    for item in items:
+        question = str(item.get("question", "")).strip()
+        options = _dedupe_preserve_order([str(opt) for opt in item.get("options", []) if str(opt).strip()])
+        if len(options) < 4 or not question:
+            continue
+        if item.get("correct_index", 0) >= len(options):
+            continue
+        signature = (_normalize_text(question), tuple(_normalize_text(option) for option in options))
+        if signature in seen_signatures or _normalize_text(question) in seen_questions:
+            continue
+        seen_questions.add(_normalize_text(question))
+        seen_signatures.add(signature)
+        output.append({
+            "question": question,
+            "options": options[:4],
+            "correct_index": int(item.get("correct_index", 0)),
+            "explanation": str(item.get("explanation", "")).strip(),
+        })
+        if len(output) >= count:
+            break
+    return output
+
+
 def _wiki_material(topic: str) -> tuple[str, list[str]]:
     try:
         import wikipedia
@@ -38,9 +100,10 @@ def _wiki_material(topic: str) -> tuple[str, list[str]]:
 
 
 def _distractors(correct: str, pool: list[str], n: int = 3) -> list[str]:
-    candidates = [s for s in pool if s != correct and len(s) > 20]
+    correct_norm = _normalize_text(correct)
+    candidates = [s for s in pool if _normalize_text(s) != correct_norm and len(s) > 20]
     random.shuffle(candidates)
-    picks = candidates[:n]
+    picks = _dedupe_preserve_order(candidates)[:n]
     while len(picks) < n:
         picks.append(
             random.choice(
@@ -122,14 +185,13 @@ def _questions_from_wikipedia(
 
         if difficulty == "hard" and len(questions) % 3 == 2:
             wrong = _negate_sentence(sent)
-            options = [wrong, sent] + _distractors(sent, pool, 2)
+            options = _unique_options(wrong, [sent] + _distractors(sent, pool, 2), title)
             question_text = f"Which statement about {title} is incorrect?"
             random.shuffle(options)
             correct_index = options.index(wrong)
         else:
             question_text = random.choice(tmpl).format(title=title)
-            options = [sent] + _distractors(sent, pool, 3)
-            correct_index = 0
+            options = _unique_options(sent, _distractors(sent, pool, 3), title)
             random.shuffle(options)
             correct_index = options.index(sent)
 
@@ -154,9 +216,7 @@ def _questions_from_wikipedia(
         blanked = sent.replace(term, "______", 1)
         if blanked == sent:
             continue
-        options = [term] + [w for w in words if w != term][:3]
-        while len(options) < 4:
-            options.append("None of the above")
+        options = _unique_options(term, [w for w in words if _normalize_text(w) != _normalize_text(term)], title)
         random.shuffle(options)
         questions.append(
             {
@@ -185,34 +245,38 @@ def _questions_from_context(topic: str, difficulty: str, count: int, context: st
         return []
     random.shuffle(sentences)
     questions: list[dict[str, Any]] = []
+    used: set[str] = set()
     cursor = 0
     while len(questions) < count and cursor < count * 2:
         sent = sentences[cursor % len(sentences)]
         cursor += 1
+        if _normalize_text(sent) in used:
+            continue
+        used.add(_normalize_text(sent))
         words = [
             w for w in re.findall(r"\b[A-Za-z][A-Za-z\-]{4,}\b", sent)
             if w.lower() not in {"which", "their", "there", "about", "these", "those", "because", "should"}
         ]
+        focus_words = [w for w in words if len(w) > 5][:4]
         if difficulty == "easy" and words:
             term = random.choice(words[:8])
             blanked = sent.replace(term, "______", 1)
-            options = [term] + [w for w in words if w != term][:3]
-            while len(options) < 4:
-                options.append(random.choice(["concept", "process", "example", "definition"]))
+            options = _unique_options(term, [w for w in words if _normalize_text(w) != _normalize_text(term)], topic)
             random.shuffle(options)
             questions.append({
-                "question": f"From the uploaded material on {topic}, fill in the blank: {blanked}" + (f" ({len(questions) + 1})" if cursor > len(sentences) else ""),
+                "question": f"From the uploaded material on {topic}, which term best completes this point: {blanked}",
                 "options": options[:4],
                 "correct_index": options[:4].index(term),
                 "explanation": f"The uploaded document states this point using the term {term}.",
             })
-        else:
-            options = [sent] + _distractors(sent, sentences, 3)
+        elif focus_words:
+            anchor = random.choice(focus_words)
+            options = _unique_options(anchor, [w for w in focus_words if _normalize_text(w) != _normalize_text(anchor)], topic)
             random.shuffle(options)
             questions.append({
-                "question": f"According to the uploaded material, which statement about {topic} is most accurate?" + (f" ({len(questions) + 1})" if cursor > len(sentences) else ""),
+                "question": f"According to the uploaded material, which statement about {topic} is most accurate?",
                 "options": options[:4],
-                "correct_index": options[:4].index(sent),
+                "correct_index": options[:4].index(anchor),
                 "explanation": "This answer is taken from the uploaded document context.",
             })
     return questions[:count]
@@ -242,7 +306,8 @@ Return ONLY a JSON array (no markdown fences). Each element:
 Rules:
 - Exactly 4 options per question, all plausible
 - correct_index is 0-based index of the correct option
-- Questions must be distinct and about {topic}
+- Questions must be distinct, directly about {topic}, and must not repeat wording or answer choices
+- Prefer source material from the uploaded context when provided; do not invent unrelated topics
 - Match {difficulty} difficulty throughout"""
 
     payload = {
@@ -285,11 +350,15 @@ def _normalize_questions(items: list, count: int) -> list[dict[str, Any]]:
         opts = item.get("options") or []
         if len(opts) < 4:
             continue
-        opts = [str(o) for o in opts[:4]]
+        opts = _dedupe_preserve_order([str(o) for o in opts[:4]])
+        if len(opts) < 4:
+            continue
         ci = int(item.get("correct_index", 0))
         ci = max(0, min(3, ci))
         q = str(item.get("question", "")).strip()
         if not q:
+            continue
+        if _normalize_text(q) in {_normalize_text(existing["question"]) for existing in out}:
             continue
         out.append(
             {
@@ -301,7 +370,7 @@ def _normalize_questions(items: list, count: int) -> list[dict[str, Any]]:
         )
         if len(out) >= count:
             break
-    return out
+    return _finalize_questions(out, count)
 
 
 def _generic_questions(topic: str, difficulty: str, count: int) -> list[dict[str, Any]]:
@@ -356,33 +425,38 @@ def generate_quiz(topic: str, difficulty: str, count: int = 15, context: str = "
 
     count = _clamp_count(count)
 
-    questions = _generate_llm(topic, difficulty, count, context)
-    source = "ai"
+    questions: list[dict[str, Any]] = []
+    source = "template"
 
-    if context.strip() and (not questions or len(questions) < 10):
+    if context.strip():
         context_q = _questions_from_context(topic, difficulty, count, context)
-        if context_q:
-            questions = context_q
-            source = "document"
+        questions = context_q[:]
+        source = "document"
+        if len(questions) < count:
+            llm_q = _generate_llm(topic, difficulty, count, context) or []
+            questions = _finalize_questions(questions + llm_q, count)
+            if llm_q:
+                source = "document+ai"
+        if len(questions) < 10:
+            generic = _generic_questions(topic, difficulty, count - len(questions))
+            questions = _finalize_questions(questions + generic, count)
+            if generic:
+                source = "document+fallback"
+    else:
+        questions = _generate_llm(topic, difficulty, count, context) or []
+        source = "ai" if questions else "template"
+        if len(questions) < 10:
+            wiki_q = _questions_from_wikipedia(topic, difficulty, count)
+            questions = _finalize_questions(questions + wiki_q, count)
+            if wiki_q:
+                source = "wikipedia" if not questions else "mixed"
+        if len(questions) < 10:
+            generic = _generic_questions(topic, difficulty, count - len(questions))
+            questions = _finalize_questions(questions + generic, count)
+            if generic:
+                source = "mixed"
 
-    if not questions or len(questions) < 10:
-        wiki_q = _questions_from_wikipedia(topic, difficulty, count)
-        if len(wiki_q) >= 10:
-            questions = wiki_q
-            source = "wikipedia"
-        elif questions:
-            questions = questions + wiki_q
-            questions = questions[:count]
-            source = "mixed"
-        else:
-            questions = wiki_q
-
-    if len(questions) < 10:
-        generic = _generic_questions(topic, difficulty, count - len(questions))
-        questions = (questions or []) + generic
-        source = "mixed" if questions else "template"
-
-    questions = questions[:count]
+    questions = _finalize_questions(questions, count)
     random.shuffle(questions)
 
     return {

@@ -19,6 +19,7 @@ from ai_service import chat as ai_chat
 from ai_service import scan_file_for_topic
 from notes_service import delete_pdf, get_pdf_path, get_pdf_record, list_pdfs, save_pdf
 from quiz_service import generate_quiz
+from study_backend.services.quiz import concept_map
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "scholarly-dev-secret-change-me")
@@ -260,24 +261,13 @@ def api_ai_scan_file():
 def api_concept_map_generate():
     data = request.get_json(silent=True) or {}
     topic = (data.get("topic") or "Study Topic").strip()
-    clean = re.sub(r"[^A-Za-z0-9 ]+", "", topic)
-    parts = [
-        ("core", clean or "Topic"),
-        ("terms", "Key terms"),
-        ("why", "Why it matters"),
-        ("practice", "Practice questions"),
-        ("review", "Review plan"),
-        ("weak", "Common weak points"),
-    ]
-    nodes = [{"id": key, "label": label, "type": "core" if key == "core" else "branch"} for key, label in parts]
-    edges = [
-        {"source": "core", "target": "terms", "label": "define"},
-        {"source": "core", "target": "why", "label": "understand"},
-        {"source": "core", "target": "practice", "label": "apply"},
-        {"source": "practice", "target": "review", "label": "improve"},
-        {"source": "review", "target": "weak", "label": "target"},
-    ]
-    return jsonify({"nodes": nodes, "edges": edges})
+    notes = (data.get("notes") or "").strip()
+    if len(topic) < 2:
+        return jsonify({"error": "Topic is required."}), 400
+    try:
+        return jsonify(concept_map(topic, notes))
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
 
 
 @app.route("/api/streak")
