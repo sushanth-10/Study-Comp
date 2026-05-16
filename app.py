@@ -11,9 +11,10 @@ try:
 except ImportError:
     pass
 
-from flask import Flask, jsonify, redirect, request, send_from_directory, session, url_for
+from flask import Flask, jsonify, redirect, request, send_from_directory, send_file, session, url_for
 
 from ai_service import chat as ai_chat
+from notes_service import delete_pdf, get_pdf_path, get_pdf_record, list_pdfs, save_pdf
 from quiz_service import generate_quiz
 
 app = Flask(__name__)
@@ -40,6 +41,16 @@ def login_required(f):
     def wrapped(*args, **kwargs):
         if not session.get("logged_in"):
             return redirect(url_for("login"))
+        return f(*args, **kwargs)
+
+    return wrapped
+
+
+def api_login_required(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        if not session.get("logged_in"):
+            return jsonify({"error": "Login required."}), 401
         return f(*args, **kwargs)
 
     return wrapped
@@ -132,6 +143,54 @@ def quiz():
 @login_required
 def ai_page():
     return send_page("AI_page.html")
+
+
+def _session_email():
+    return session.get("email") or "local@scholarly.app"
+
+
+@app.route("/api/notes/list")
+@api_login_required
+def api_notes_list():
+    query = (request.args.get("q") or "").strip()
+    return jsonify({"pdfs": list_pdfs(_session_email(), query)})
+
+
+@app.route("/api/notes/upload", methods=["POST"])
+@api_login_required
+def api_notes_upload():
+    file = request.files.get("file")
+    try:
+        record = save_pdf(_session_email(), file)
+        return jsonify({"pdf": record}), 201
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+@app.route("/api/notes/pdf/<pdf_id>")
+@api_login_required
+def api_notes_pdf(pdf_id):
+    email = _session_email()
+    record = get_pdf_record(pdf_id, email)
+    path = get_pdf_path(pdf_id, email)
+    if not record or not path:
+        return jsonify({"error": "PDF not found."}), 404
+    return send_file(
+        path,
+        mimetype="application/pdf",
+        as_attachment=False,
+        download_name=record.get("filename", "document.pdf"),
+    )
+
+
+@app.route("/api/notes/<pdf_id>", methods=["DELETE"])
+@api_login_required
+def api_notes_delete(pdf_id):
+    if delete_pdf(pdf_id, _session_email()):
+        return jsonify({"ok": True})
+    return jsonify({"error": "PDF not found."}), 404
 
 
 @app.route("/api/quiz/generate", methods=["POST"])

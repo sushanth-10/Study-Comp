@@ -246,6 +246,31 @@
   cursor: not-allowed;
 }
 
+/* Notes PDF drop zone */
+.notes-drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  border: 2px dashed #c5c6ce;
+  border-radius: 16px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.notes-drop-zone:hover,
+.notes-drop-zone.notes-drop-hover {
+  border-color: #476550;
+  background: #f2f4f6;
+}
+
+.notes-drop-zone.notes-drop-active {
+  border-color: #041632;
+  background: #eceef0;
+}
+
 /* Dark focus session */
 body[data-theme="dark"].app-layout .app-content {
   background: transparent;
