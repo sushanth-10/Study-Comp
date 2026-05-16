@@ -8,6 +8,15 @@
   const upcomingTimeEl = document.getElementById('dashboard-upcoming-time');
   const notesListEl = document.getElementById('dashboard-notes-list');
   const plannerListEl = document.getElementById('dashboard-planner-list');
+<<<<<<< HEAD
+=======
+  
+  const searchInput = document.getElementById('mindmap-search');
+  const searchBtn = document.getElementById('mindmap-btn');
+  const suggestionsBox = document.getElementById('mindmap-suggestions');
+  const topicsListEl = document.getElementById('mindmap-topics-list');
+
+>>>>>>> 63c77cd662760215a0f2d869c9fd21ed4e73f976
   const RECENT_NOTES_KEY = 'scholarly_recent_opened_notes';
   const PLANNER_KEY = 'scholarly_planner_tasks';
 
@@ -204,4 +213,66 @@
     .catch(function () {
       renderNotes([]);
     });
+<<<<<<< HEAD
+=======
+
+  // Mind map search logic
+  if (searchInput && searchBtn && suggestionsBox && topicsListEl) {
+    const defaultTopics = [
+      "Keynesian Theory", "Neural Plasticity", "Organic Chemistry", "Microeconomics", "Data Structures"
+    ];
+
+    function renderSuggestions(query) {
+      const q = (query || '').toLowerCase().trim();
+      const filtered = defaultTopics.filter(t => t.toLowerCase().includes(q));
+      
+      topicsListEl.innerHTML = filtered.length ? filtered.map(t => 
+        `<li class="px-4 py-2 hover:bg-surface-container-high cursor-pointer text-body-md text-on-surface transition-colors" data-topic="${escapeHtml(t)}">
+          <span class="material-symbols-outlined text-[18px] text-on-surface-variant align-middle mr-2">history</span>${escapeHtml(t)}
+        </li>`
+      ).join('') : `<li class="px-4 py-2 text-on-surface-variant text-body-sm">No recent topics found. Hit search to generate mind map.</li>`;
+    }
+
+    searchInput.addEventListener('focus', function() {
+      suggestionsBox.classList.remove('hidden');
+      renderSuggestions(searchInput.value);
+    });
+
+    searchInput.addEventListener('input', function() {
+      renderSuggestions(searchInput.value);
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target) && !searchBtn.contains(e.target)) {
+        suggestionsBox.classList.add('hidden');
+      }
+    });
+
+    topicsListEl.addEventListener('click', function(e) {
+      const li = e.target.closest('li[data-topic]');
+      if (li) {
+        const topic = li.getAttribute('data-topic');
+        searchInput.value = topic;
+        suggestionsBox.classList.add('hidden');
+        window.location.href = '/visual?topic=' + encodeURIComponent(topic);
+      }
+    });
+
+    searchBtn.addEventListener('click', function() {
+      const topic = searchInput.value.trim();
+      if (topic) {
+        window.location.href = '/visual?topic=' + encodeURIComponent(topic);
+      }
+    });
+
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const topic = searchInput.value.trim();
+        if (topic) {
+          window.location.href = '/visual?topic=' + encodeURIComponent(topic);
+        }
+      }
+    });
+  }
+>>>>>>> 63c77cd662760215a0f2d869c9fd21ed4e73f976
 })();

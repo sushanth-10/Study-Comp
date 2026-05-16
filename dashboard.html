@@ -122,12 +122,28 @@
 <link href="/css/desktop.css" rel="stylesheet"/>
   </head>
 <body class="app-layout flex flex-col min-h-screen font-body-md text-body-md" data-page="dashboard">
-<header class="desktop-topbar">
+<header class="desktop-topbar flex items-center justify-between relative">
 <div class="flex items-center gap-unit-2">
 <span class="material-symbols-outlined text-primary" data-icon="menu_book">menu_book</span>
 <h1 class="text-headline-sm font-headline-sm font-bold text-primary">Scholarly</h1>
 </div>
-<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant">
+
+<div class="hidden md:flex flex-grow max-w-md mx-8 relative">
+    <div class="w-full flex items-center bg-surface-container-lowest border border-outline-variant rounded-full px-4 py-2 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all shadow-sm">
+        <span class="material-symbols-outlined text-on-surface-variant text-[20px]">search</span>
+        <input type="text" id="mindmap-search" class="w-full bg-transparent border-none focus:outline-none focus:ring-0 ml-2 text-body-md text-on-surface placeholder-on-surface-variant" placeholder="Search topics or generate mind map..." autocomplete="off">
+        <button id="mindmap-btn" class="ml-2 flex items-center justify-center p-1 rounded-full hover:bg-surface-container-high text-primary transition-colors" title="Generate Mind Map">
+            <span class="material-symbols-outlined text-[22px]">account_tree</span>
+        </button>
+    </div>
+    <div id="mindmap-suggestions" class="absolute top-full left-0 right-0 mt-2 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg hidden z-50 overflow-hidden">
+        <div class="px-4 py-2 text-label-sm text-on-surface-variant bg-surface-container-low border-b border-outline-variant">Previous Topics</div>
+        <ul id="mindmap-topics-list" class="max-h-60 overflow-y-auto">
+        </ul>
+    </div>
+</div>
+
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant flex-shrink-0">
 <img alt="User avatar" class="w-full h-full object-cover" data-alt="A professional close-up studio portrait of a young adult student with a friendly expression. The lighting is soft and even, set against a minimalist light gray background that complements the Scholarly app's clean aesthetic. The focus is sharp on the face, conveying a sense of approachability and readiness for learning in a modern academic environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfAoMXqOmSGQpVpHCSBtEuUWIGN5v3djrRVGHpc1UjoJ4JjMCRWRpTOMek0UVp1_oQO1xMn_Br-XdmGistmtXvXrErTNZkDgcWcJFOPDHjfwBCgfQDindBUHN8sR-5u9OFCDEcS-bLhAG0IiwSIG0Pw_BF2rYUrqELKMuXYZxNWY7Rre4afqU-pM9jgb2ZgiGxqV8w6ucj3JvTb7mxbOqXvuJn7dVn994BVztxaHTxcXwkVLuKm90ERmPHb-T213Oh3jRCl4jeCOEM"/>
 </div>
 </header>

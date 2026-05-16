@@ -50,6 +50,7 @@ PROTECTED_PAGES = {
     "/streak": "streak.html",
     "/quiz": "quiz.html",
     "/ai": "AI_page.html",
+    "/visual": "visual.html",
 }
 PUBLIC_PAGES = {"/login": "login.html", "/signup": "signup.html"}
 RATE_BUCKETS: dict[str, deque] = defaultdict(deque)
