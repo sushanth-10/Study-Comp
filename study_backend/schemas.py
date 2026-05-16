@@ -40,6 +40,7 @@ class QuizGenerateRequest(BaseModel):
     count: int = Field(default=15, ge=10, le=30)
     subject: str = "General"
     weak_topics: list[str] = Field(default_factory=list)
+    context: str = ""
 
 
 class QuizQuestion(BaseModel):

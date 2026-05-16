@@ -170,7 +170,7 @@ def _questions_from_wikipedia(
     return questions[:count]
 
 
-def _generate_llm(topic: str, difficulty: str, count: int) -> list[dict[str, Any]] | None:
+def _generate_llm(topic: str, difficulty: str, count: int, context: str = "") -> list[dict[str, Any]] | None:
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
     if not api_key:
         return None
@@ -183,8 +183,10 @@ def _generate_llm(topic: str, difficulty: str, count: int) -> list[dict[str, Any
 
     import urllib.request
 
+    context_block = f"\n\nSource Material / Context to base questions on:\n{context[:3000]}\n" if context.strip() else ""
+
     prompt = f"""Create exactly {count} multiple-choice questions for a university student studying "{topic}".
-Difficulty: {difficulty} — {diff_guide}.
+Difficulty: {difficulty} — {diff_guide}.{context_block}
 
 Return ONLY a JSON array (no markdown fences). Each element:
 {{"question": "string", "options": ["A","B","C","D"], "correct_index": 0-3, "explanation": "brief"}}
@@ -295,7 +297,7 @@ def _generic_questions(topic: str, difficulty: str, count: int) -> list[dict[str
     return questions
 
 
-def generate_quiz(topic: str, difficulty: str, count: int = 15) -> dict[str, Any]:
+def generate_quiz(topic: str, difficulty: str, count: int = 15, context: str = "") -> dict[str, Any]:
     topic = (topic or "").strip()
     if len(topic) < 2:
         raise ValueError("Topic must be at least 2 characters.")
@@ -306,7 +308,7 @@ def generate_quiz(topic: str, difficulty: str, count: int = 15) -> dict[str, Any
 
     count = _clamp_count(count)
 
-    questions = _generate_llm(topic, difficulty, count)
+    questions = _generate_llm(topic, difficulty, count, context)
     source = "ai"
 
     if not questions or len(questions) < 10:

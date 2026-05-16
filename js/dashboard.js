@@ -8,15 +8,11 @@
   const upcomingTimeEl = document.getElementById('dashboard-upcoming-time');
   const notesListEl = document.getElementById('dashboard-notes-list');
   const plannerListEl = document.getElementById('dashboard-planner-list');
-<<<<<<< HEAD
-=======
-  
   const searchInput = document.getElementById('mindmap-search');
   const searchBtn = document.getElementById('mindmap-btn');
   const suggestionsBox = document.getElementById('mindmap-suggestions');
   const topicsListEl = document.getElementById('mindmap-topics-list');
 
->>>>>>> 63c77cd662760215a0f2d869c9fd21ed4e73f976
   const RECENT_NOTES_KEY = 'scholarly_recent_opened_notes';
   const PLANNER_KEY = 'scholarly_planner_tasks';
 
@@ -52,7 +48,7 @@
   }
 
   async function fetchJson(url) {
-    const res = await fetch(url);
+    const res = await fetch(url, { cache: 'no-store' });
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || 'Request failed');
     return data;
@@ -213,8 +209,6 @@
     .catch(function () {
       renderNotes([]);
     });
-<<<<<<< HEAD
-=======
 
   // Mind map search logic
   if (searchInput && searchBtn && suggestionsBox && topicsListEl) {
@@ -274,5 +268,4 @@
       }
     });
   }
->>>>>>> 63c77cd662760215a0f2d869c9fd21ed4e73f976
 })();

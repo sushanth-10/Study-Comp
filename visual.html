@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;600;700&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ startOnLoad: false, theme: 'base', themeVariables: { primaryColor: '#d7e2ff', primaryTextColor: '#041632', primaryBorderColor: '#041632', lineColor: '#4f5e7e', secondaryColor: '#c6e8cd', tertiaryColor: '#ffdad6' } });
@@ -69,7 +70,35 @@
             document.getElementById('topic-title').textContent = topic;
 
             const safeTopic = topic.replace(/[()]/g, '');
-            const mermaidCode = `
+            let mermaidCode = '';
+
+            try {
+                const response = await fetch('/api/concept-map/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic: safeTopic, notes: '' })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.nodes && data.nodes.length > 0) {
+                        mermaidCode = 'graph TD;\n';
+                        data.nodes.forEach(n => {
+                            const shape = n.type === 'core' ? `(${n.label})` : `["${n.label}"]`;
+                            mermaidCode += `  ${n.id}${shape}\n`;
+                        });
+                        data.edges.forEach(e => {
+                            const label = e.label ? `|${e.label}|` : '';
+                            mermaidCode += `  ${e.source} -->${label} ${e.target}\n`;
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to fetch concept map", err);
+            }
+
+            if (!mermaidCode) {
+                mermaidCode = `
 mindmap
   root((` + safeTopic + `))
     Core Concepts
@@ -88,7 +117,8 @@ mindmap
       Practice Problems
       Real-world Examples
       Mock Tests
-            `;
+                `;
+            }
 
             const mermaidEl = document.getElementById('mermaid-code');
             mermaidEl.textContent = mermaidCode;
@@ -100,10 +130,24 @@ mindmap
                     await window.mermaid.run({
                         nodes: [mermaidEl]
                     });
+                    const svg = mermaidEl.querySelector('svg');
+                    if (svg) {
+                        svg.style.maxWidth = '100%';
+                        svg.style.height = 'auto';
+                        svg.style.minHeight = '400px';
+                        svgPanZoom(svg, {
+                            zoomEnabled: true,
+                            controlIconsEnabled: true,
+                            fit: true,
+                            center: true,
+                            minZoom: 0.1,
+                            maxZoom: 10
+                        });
+                    }
                 } catch (e) {
                     console.error('Mermaid render error:', e);
                 }
-            }, 1000);
+            }, 100);
         });
     </script>
 </body>

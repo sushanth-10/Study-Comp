@@ -282,6 +282,20 @@ def ai_chat_route(payload: dict, request: Request, user: User = Depends(_api_use
     return ai_chat(message)
 
 
+@app.post("/api/ai/scan-file")
+async def ai_scan_file(file: UploadFile = File(...), user: User = Depends(_api_user)):
+    from ai_service import scan_file_for_topic
+    try:
+        content = await file.read()
+        mime_type = file.content_type or "application/octet-stream"
+        context_text, topic = scan_file_for_topic(content, mime_type)
+        return {"topic": topic, "context": context_text}
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    finally:
+        await file.close()
+
+
 @app.post("/api/analytics/update")
 def analytics_update(payload: AnalyticsUpdateRequest, request: Request, user: User = Depends(_api_user), db: Session = Depends(get_db)):
     _rate_limit(request, user, limit=50, per_minutes=5)

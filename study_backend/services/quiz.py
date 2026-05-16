@@ -24,7 +24,7 @@ def generate_adaptive_quiz(db: Session, user: User, request: QuizGenerateRequest
     elif state and state.fatigue_level > 0.55 and difficulty == "hard":
         difficulty = "moderate"
 
-    quiz = legacy_generate_quiz(request.topic, difficulty, request.count)
+    quiz = legacy_generate_quiz(request.topic, difficulty, request.count, getattr(request, 'context', ''))
     for question in quiz["questions"]:
         question["confidence"] = round((state.confidence_level if state else 0.72), 2)
 

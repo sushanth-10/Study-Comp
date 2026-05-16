@@ -37,7 +37,7 @@
   if (!els.greeting) return;
 
   function fetchJson(url) {
-    return fetch(url).then(function (res) {
+    return fetch(url, { cache: 'no-store' }).then(function (res) {
       return res.json().then(function (data) {
         if (!res.ok) throw new Error(data.detail || 'Request failed');
         return data;

@@ -174,6 +174,52 @@
     show('results');
   }
 
+  let documentContext = "";
+  const attachBtn = document.getElementById('quiz-attach-btn');
+  const fileInput = document.getElementById('quiz-file-input');
+  const scanStatus = document.getElementById('quiz-scan-status');
+
+  if (attachBtn && fileInput) {
+    attachBtn.addEventListener('click', function() {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', async function() {
+      if (!this.files || !this.files[0]) return;
+      
+      const file = this.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      scanStatus.classList.remove('hidden');
+      attachBtn.disabled = true;
+      topicInput.disabled = true;
+      generateBtn.disabled = true;
+      setupError.classList.add('hidden');
+      
+      try {
+        const res = await fetch('/api/ai/scan-file', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || data.error || 'Failed to scan document.');
+        
+        topicInput.value = data.topic;
+        documentContext = data.context;
+      } catch (err) {
+        setupError.textContent = err.message;
+        setupError.classList.remove('hidden');
+      } finally {
+        scanStatus.classList.add('hidden');
+        attachBtn.disabled = false;
+        topicInput.disabled = false;
+        generateBtn.disabled = false;
+        fileInput.value = '';
+      }
+    });
+  }
+
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     setupError.classList.add('hidden');
@@ -192,7 +238,7 @@
       const res = await fetch('/api/quiz/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic, difficulty, count }),
+        body: JSON.stringify({ topic, difficulty, count, context: documentContext }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Could not generate quiz');

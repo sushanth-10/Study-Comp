@@ -131,8 +131,18 @@
 <p class="text-body-md text-on-surface-variant mb-unit-8">Enter a topic, pick a difficulty, and generate 10-30 multiple-choice questions.</p>
 <form id="quiz-form" class="space-y-unit-6">
 <div>
-<label class="text-label-md font-label-md text-on-surface-variant block mb-unit-2" for="quiz-topic">Topic</label>
-<input id="quiz-topic" type="text" required minlength="2" placeholder="e.g. Photosynthesis, World War II, Calculus" class="w-full px-unit-4 py-unit-3 rounded-xl border border-outline-variant bg-surface-container-lowest text-body-md focus:ring-2 focus:ring-secondary focus:border-secondary outline-none"/>
+<label class="text-label-md font-label-md text-on-surface-variant block mb-unit-2" for="quiz-topic">Topic or Document</label>
+<div class="relative flex items-center">
+    <input id="quiz-topic" type="text" required minlength="2" placeholder="e.g. Photosynthesis, World War II, Calculus" class="w-full pl-unit-4 pr-12 py-unit-3 rounded-xl border border-outline-variant bg-surface-container-lowest text-body-md focus:ring-2 focus:ring-secondary focus:border-secondary outline-none"/>
+    <button type="button" id="quiz-attach-btn" class="absolute right-2 p-2 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors flex items-center justify-center" title="Attach PDF or Image">
+        <span class="material-symbols-outlined text-[20px]">attach_file</span>
+    </button>
+    <input type="file" id="quiz-file-input" accept="application/pdf, image/*" class="hidden" />
+</div>
+<div id="quiz-scan-status" class="hidden mt-2 text-label-sm text-secondary flex items-center gap-1">
+    <span class="material-symbols-outlined text-[16px] animate-spin">refresh</span>
+    <span>Scanning document...</span>
+</div>
 </div>
 <div>
 <span class="text-label-md font-label-md text-on-surface-variant block mb-unit-3">Difficulty</span>

@@ -260,3 +260,68 @@ def chat(message: str) -> dict[str, Any]:
         "youtube": youtube,
         "search_results": search_results,
     }
+
+def scan_file_for_topic(file_bytes: bytes, mime_type: str) -> tuple[str, str]:
+    """Scans a file (PDF or image) and returns the extracted context and a detected topic."""
+    context_text = ""
+    
+    if mime_type == "application/pdf":
+        try:
+            import PyPDF2
+            import io
+            reader = PyPDF2.PdfReader(io.BytesIO(file_bytes))
+            for page in reader.pages[:10]:  # Limit to first 10 pages for scanning
+                context_text += (page.extract_text() or "") + "\n"
+        except Exception as e:
+            context_text = f"Failed to extract text from PDF: {e}"
+    elif mime_type.startswith("image/"):
+        import base64
+        import json
+        import urllib.request
+        api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+        if not api_key:
+            return "Image provided, but no API key to process it.", "Uploaded Image"
+            
+        b64_image = base64.b64encode(file_bytes).decode('utf-8')
+        payload = {
+            "model": "gpt-4o-mini",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "Extract the main text from this image and provide a concise summary or transcript. Also, at the very end, add a new line with 'TOPIC: <main topic>'."},
+                        {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{b64_image}"}}
+                    ]
+                }
+            ],
+            "max_tokens": 1000
+        }
+        try:
+            req = urllib.request.Request(
+                "https://api.openai.com/v1/chat/completions",
+                data=json.dumps(payload).encode(),
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                data = json.loads(resp.read().decode())
+                context_text = data["choices"][0]["message"]["content"].strip()
+        except Exception as e:
+            context_text = f"Failed to extract text from Image: {e}"
+
+    if not context_text.strip():
+        return "No text extracted.", "Uploaded File"
+        
+    api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+    topic = "Uploaded Document"
+    if api_key:
+        if "TOPIC:" in context_text:
+            parts = context_text.split("TOPIC:")
+            topic = parts[-1].strip().split('\n')[0].strip(' *"')
+        else:
+            prompt = f"Identify the single most specific main topic (1-4 words) from the following text. Only output the topic, no other text:\n\n{context_text[:2000]}"
+            llm_reply = _optional_llm(prompt, "")
+            if llm_reply:
+                topic = llm_reply.strip(' *"')
+    
+    return context_text, topic
