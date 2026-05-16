@@ -13,7 +13,7 @@ try:
 except ImportError:
     pass
 
-from flask import Flask, jsonify, redirect, request, send_file, send_from_directory, session, url_for
+from flask import Flask, jsonify, redirect, request, send_file, send_from_directory, session, url_for, make_response
 
 from ai_service import chat as ai_chat
 from ai_service import scan_file_for_topic
@@ -55,6 +55,14 @@ def login_required(f):
 
 def send_page(filename):
     return send_from_directory(ROOT, filename)
+
+
+@app.route("/favicon.ico")
+def favicon():
+    svg = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#041632"/><path d="M16 8l-8 4.5 8 4.5 8-4.5L16 8zM8 14.5v5l8 4.5 8-4.5v-5L16 19l-8-4.5z" fill="#476550"/></svg>"""
+    response = make_response(svg)
+    response.headers["Content-Type"] = "image/svg+xml"
+    return response
 
 
 @app.route("/")
@@ -167,9 +175,55 @@ def api_session():
         "user": {
             "name": session.get("name") or "Scholar",
             "email": session.get("email", ""),
-            "avatarUrl": "",
+            "avatarUrl": session.get("avatar_url") or "",
         }
     })
+
+
+@app.route("/api/profile/update", methods=["POST"])
+@login_required
+def api_profile_update():
+    data = request.get_json(silent=True) or {}
+    name = data.get("name")
+    avatar_url = data.get("avatarUrl")
+    
+    if name:
+        session["name"] = name.strip()
+    if avatar_url is not None:
+        session["avatar_url"] = avatar_url.strip()
+        
+    return jsonify({
+        "ok": True,
+        "user": {
+            "name": session.get("name"),
+            "avatarUrl": session.get("avatar_url")
+        }
+    })
+
+
+@app.route("/api/profile/upload-avatar", methods=["POST"])
+@login_required
+def api_profile_upload_avatar():
+    file = request.files.get("avatar")
+    if not file:
+        return jsonify({"error": "No file provided."}), 400
+    
+    filename = f"avatar_{session.get('email', 'user')}_{int(datetime.now().timestamp())}.png"
+    save_dir = os.path.join(ROOT, "storage", "avatars")
+    os.makedirs(save_dir, exist_ok=True)
+    
+    save_path = os.path.join(save_dir, filename)
+    file.save(save_path)
+    
+    avatar_url = f"/storage/avatars/{filename}"
+    session["avatar_url"] = avatar_url
+    
+    return jsonify({"ok": True, "avatarUrl": avatar_url})
+
+
+@app.route("/storage/avatars/<filename>")
+def serve_avatar(filename):
+    return send_from_directory(os.path.join(ROOT, "storage", "avatars"), filename)
 
 
 @app.route("/api/dashboard/overview")

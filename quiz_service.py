@@ -48,34 +48,8 @@ def _unique_options(correct: str, candidates: list[str], topic: str = "") -> lis
     return options[:4]
 
 
-def _finalize_questions(items: list[dict[str, Any]], count: int) -> list[dict[str, Any]]:
-    seen_questions: set[str] = set()
-    seen_signatures: set[tuple[str, tuple[str, ...]]] = set()
-    output: list[dict[str, Any]] = []
-    for item in items:
-        question = str(item.get("question", "")).strip()
-        options = _dedupe_preserve_order([str(opt) for opt in item.get("options", []) if str(opt).strip()])
-        if len(options) < 4 or not question:
-            continue
-        if item.get("correct_index", 0) >= len(options):
-            continue
-        signature = (_normalize_text(question), tuple(_normalize_text(option) for option in options))
-        if signature in seen_signatures or _normalize_text(question) in seen_questions:
-            continue
-        seen_questions.add(_normalize_text(question))
-        seen_signatures.add(signature)
-        output.append({
-            "question": question,
-            "options": options[:4],
-            "correct_index": int(item.get("correct_index", 0)),
-            "explanation": str(item.get("explanation", "")).strip(),
-        })
-        if len(output) >= count:
-            break
-    return output
-
-
 def _wiki_material(topic: str) -> tuple[str, list[str]]:
+
     try:
         import wikipedia
 
@@ -282,45 +256,86 @@ def _questions_from_context(topic: str, difficulty: str, count: int, context: st
     return questions[:count]
 
 
+def _to_new_format(questions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Converts questions to the format requested by the user."""
+    new_questions = []
+    labels = ["A", "B", "C", "D"]
+    for q in questions:
+        # Handle both old and new format during transition if needed
+        if isinstance(q.get("options"), dict):
+            new_questions.append(q)
+            continue
+            
+        opts = q.get("options", [])
+        if len(opts) < 4:
+            continue
+        new_opts = {labels[i]: opts[i] for i in range(4)}
+        
+        # Determine correct letter
+        if "correct" in q:
+            correct_letter = q["correct"]
+        else:
+            correct_idx = q.get("correct_index", 0)
+            correct_letter = labels[correct_idx] if 0 <= correct_idx < 4 else "A"
+            
+        new_questions.append({
+            "question": q["question"],
+            "options": new_opts,
+            "correct": correct_letter
+        })
+    return new_questions
+
+
 def _generate_llm(topic: str, difficulty: str, count: int, context: str = "") -> list[dict[str, Any]] | None:
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
     if not api_key:
         return None
 
-    diff_guide = {
-        "easy": "basic definitions, key terms, and straightforward facts suitable for beginners",
-        "moderate": "application, comparisons, and relationships between concepts",
-        "hard": "analysis, edge cases, exceptions, and multi-step reasoning",
-    }[difficulty]
+    context_block = f"\n\nTopic Content/Context:\n{context[:4000]}\n" if context.strip() else ""
 
-    import urllib.request
-
-    context_block = f"\n\nSource Material / Context to base questions on:\n{context[:3000]}\n" if context.strip() else ""
-
-    prompt = f"""Create exactly {count} multiple-choice questions for a university student studying "{topic}".
-Difficulty: {difficulty} — {diff_guide}.{context_block}
-
-Return ONLY a JSON array (no markdown fences). Each element:
-{{"question": "string", "options": ["A","B","C","D"], "correct_index": 0-3, "explanation": "brief"}}
+    prompt = f"""Generate exactly {count} multiple-choice questions for the topic: "{topic}".
+Difficulty: {difficulty}
 
 Rules:
-- Exactly 4 options per question, all plausible
-- correct_index is 0-based index of the correct option
-- Questions must be distinct, directly about {topic}, and must not repeat wording or answer choices
-- Prefer source material from the uploaded context when provided; do not invent unrelated topics
-- Match {difficulty} difficulty throughout"""
+- Questions must test subject knowledge, not study habits or learning strategies.
+- Stay strictly within the topic content.
+- Do NOT ask about "best way to study", "learning methods", "study techniques", or general educational advice.
+- Questions should involve concepts, definitions, formulas, applications, or problem-solving from the topic.
+- Each question must have exactly 4 options (A, B, C, D).
+- Only one correct answer.
+- Include the correct answer separately.
+- Return JSON only.
+
+{context_block}
+
+Format:
+{{
+  "questions": [
+    {{
+      "question": "...",
+      "options": {{
+        "A":"...",
+        "B":"...",
+        "C":"...",
+        "D":"..."
+      }},
+      "correct":"B"
+    }}
+  ]
+}}"""
 
     payload = {
         "model": os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
         "messages": [
-            {"role": "system", "content": "You output valid JSON only for educational quizzes."},
+            {"role": "system", "content": "You are a subject matter expert. You output valid JSON quizzes based on the requested rules."},
             {"role": "user", "content": prompt},
         ],
-        "max_tokens": min(8000, 180 * count + 400),
-        "temperature": 0.7,
+        "max_tokens": min(12000, 250 * count + 500),
+        "temperature": 0.5,
     }
 
     try:
+        import urllib.request
         req = urllib.request.Request(
             "https://api.openai.com/v1/chat/completions",
             data=json.dumps(payload).encode(),
@@ -336,63 +351,40 @@ Rules:
         if content.startswith("```"):
             content = re.sub(r"^```\w*\n?", "", content)
             content = re.sub(r"\n?```$", "", content)
-        items = json.loads(content)
-        return _normalize_questions(items, count)
+        
+        parsed = json.loads(content)
+        if isinstance(parsed, dict) and "questions" in parsed:
+            items = parsed["questions"]
+        elif isinstance(parsed, list):
+            items = parsed
+        else:
+            return None
+            
+        return _to_new_format(items[:count])
     except Exception:
         return None
 
 
-def _normalize_questions(items: list, count: int) -> list[dict[str, Any]]:
-    out: list[dict[str, Any]] = []
-    for item in items:
-        if not isinstance(item, dict):
-            continue
-        opts = item.get("options") or []
-        if len(opts) < 4:
-            continue
-        opts = _dedupe_preserve_order([str(o) for o in opts[:4]])
-        if len(opts) < 4:
-            continue
-        ci = int(item.get("correct_index", 0))
-        ci = max(0, min(3, ci))
-        q = str(item.get("question", "")).strip()
-        if not q:
-            continue
-        if _normalize_text(q) in {_normalize_text(existing["question"]) for existing in out}:
-            continue
-        out.append(
-            {
-                "question": q,
-                "options": opts,
-                "correct_index": ci,
-                "explanation": str(item.get("explanation", "")).strip(),
-            }
-        )
-        if len(out) >= count:
-            break
-    return _finalize_questions(out, count)
-
-
 def _generic_questions(topic: str, difficulty: str, count: int) -> list[dict[str, Any]]:
-    """Last-resort questions when Wikipedia has little content."""
+    """Last-resort questions that adhere to subject knowledge rules."""
     base = [
         (
-            f"What is the primary focus when studying {topic}?",
+            f"Which of the following is a fundamental concept related to {topic}?",
             [
-                f"Understanding core concepts and principles of {topic}",
-                f"Memorizing unrelated historical dates only",
-                f"Avoiding all practice problems",
-                f"Skipping review entirely",
+                f"The core principles defining {topic}",
+                "A concept completely unrelated to the field",
+                "A generic statement with no scientific basis",
+                "None of the above",
             ],
             0,
         ),
         (
-            f"Which study strategy is most effective for {topic} at {difficulty} level?",
+            f"What is a primary characteristic of {topic}?",
             [
-                "Active recall and spaced practice",
-                "Only re-reading notes without testing",
-                "Cramming once with no review",
-                "Ignoring difficult sections",
+                f"Its unique properties and functional role",
+                "It has no identifiable characteristics",
+                "It is always identical to other unrelated topics",
+                "It only exists in theoretical discussions",
             ],
             0,
         ),
@@ -405,10 +397,10 @@ def _generic_questions(topic: str, difficulty: str, count: int) -> list[dict[str
         correct = tpl[1][tpl[2]]
         questions.append(
             {
-                "question": tpl[0] + (f" (Q{i + 1})" if i >= len(base) else ""),
+                "question": tpl[0],
                 "options": opts,
                 "correct_index": opts.index(correct),
-                "explanation": f"Effective study of {topic} requires active engagement.",
+                "explanation": f"This covers basic knowledge of {topic}.",
             }
         )
     return questions
@@ -429,35 +421,33 @@ def generate_quiz(topic: str, difficulty: str, count: int = 15, context: str = "
     source = "template"
 
     if context.strip():
-        context_q = _questions_from_context(topic, difficulty, count, context)
-        questions = context_q[:]
-        source = "document"
-        if len(questions) < count:
-            llm_q = _generate_llm(topic, difficulty, count, context) or []
-            questions = _finalize_questions(questions + llm_q, count)
-            if llm_q:
-                source = "document+ai"
-        if len(questions) < 10:
-            generic = _generic_questions(topic, difficulty, count - len(questions))
-            questions = _finalize_questions(questions + generic, count)
-            if generic:
-                source = "document+fallback"
+        # Document scanning
+        llm_q = _generate_llm(topic, difficulty, count, context)
+        if llm_q:
+            questions = llm_q
+            source = "document+ai"
+        else:
+            context_q = _questions_from_context(topic, difficulty, count, context)
+            questions = _to_new_format(context_q)
+            source = "document"
     else:
-        questions = _generate_llm(topic, difficulty, count, context) or []
-        source = "ai" if questions else "template"
-        if len(questions) < 10:
+        # General AI search
+        llm_q = _generate_llm(topic, difficulty, count, context)
+        if llm_q:
+            questions = llm_q
+            source = "ai"
+        else:
             wiki_q = _questions_from_wikipedia(topic, difficulty, count)
-            questions = _finalize_questions(questions + wiki_q, count)
-            if wiki_q:
-                source = "wikipedia" if not questions else "mixed"
-        if len(questions) < 10:
-            generic = _generic_questions(topic, difficulty, count - len(questions))
-            questions = _finalize_questions(questions + generic, count)
-            if generic:
-                source = "mixed"
+            questions = _to_new_format(wiki_q)
+            source = "wikipedia"
 
-    questions = _finalize_questions(questions, count)
+    if len(questions) < 5:
+        generic = _generic_questions(topic, difficulty, count - len(questions))
+        questions = questions + _to_new_format(generic)
+        source = "fallback"
+
     random.shuffle(questions)
+    questions = questions[:count]
 
     return {
         "topic": topic,
@@ -466,3 +456,4 @@ def generate_quiz(topic: str, difficulty: str, count: int = 15, context: str = "
         "source": source,
         "questions": questions,
     }
+

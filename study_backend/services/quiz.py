@@ -140,9 +140,32 @@ def smart_notes(db: Session, user: User, request: SmartNotesRequest) -> dict:
 
 
 def concept_map(topic: str, notes: str) -> dict:
+    prompt = f"""Generate a high-level hierarchical study roadmap for: "{topic}".
+
+Rules:
+- Output a nested JSON tree.
+- Include 10-15 essential nodes only.
+- 5 levels: 1:Fundamentals (Root), 2:Core, 3:Intermediate, 4:Advanced, 5:Practice.
+- Keep labels very short (1-3 words).
+- Focus only on {topic} subject matter.
+- Return ONLY valid JSON.
+
+Schema:
+{{
+  "id": "root",
+  "label": "string",
+  "type": "level1",
+  "description": "short string",
+  "children": [
+    {{ "id": "s1", "label": "string", "type": "level2", "children": [] }}
+  ]
+}}
+"""
     return structured_completion(
         "concept_map",
-        "Build a compact concept map with nodes and edges.",
-        '{"nodes":[{"id":"string","label":"string","type":"core|support"}],"edges":[{"source":"string","target":"string","label":"string"}]}',
+        prompt,
+        '{"id":"root","label":"Topic","type":"level1","children":[]}',
         {"topic": topic, "notes": notes},
     )
+
+

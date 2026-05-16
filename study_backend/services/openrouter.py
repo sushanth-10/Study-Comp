@@ -146,47 +146,38 @@ def _heuristic_payload(task: str, payload: dict[str, Any]) -> dict[str, Any]:
         }
     if task == "concept_map":
         topic = str(payload.get("topic", "Topic")).strip() or "Topic"
-        lower_topic = topic.lower()
-        if any(word in lower_topic for word in ["math", "algebra", "calculus", "geometry", "statistics"]):
-            branches = ["Core formulas", "Worked examples", "Problem solving", "Common errors", "Revision loop"]
-        elif any(word in lower_topic for word in ["physics", "chemistry", "biology", "medicine", "anatomy", "photo", "plant"]):
-            branches = ["Key concepts", "Processes", "Diagrams", "Experiments", "Review questions"]
-        elif any(word in lower_topic for word in ["history", "world war", "war", "economics", "politics", "psychology", "sociology"]):
-            branches = ["Causes", "Major events", "Key figures", "Consequences", "Revision questions"]
-        elif any(word in lower_topic for word in ["programming", "coding", "computer", "algorithm", "data"]):
-            branches = ["Syntax", "Core structures", "Examples", "Debugging", "Projects"]
-        else:
-            tokens = [
-                token
-                for token in re.findall(r"[A-Za-z][A-Za-z0-9+-]{2,}", topic)
-                if token.lower() not in {"the", "and", "for", "with", "from", "about", "into", "unit", "topic"}
-            ]
-            seed = tokens[:3] or [topic]
-            branches = [
-                f"{seed[0]} basics",
-                f"{seed[-1]} examples",
-                f"{topic} practice",
-                f"{topic} review",
-                f"{seed[0]} questions",
-            ]
-
-        clean_topic = re.sub(r"\s+", " ", topic).strip()
-        node_ids = ["core"] + [f"branch_{i}" for i in range(len(branches))]
-        nodes = [{"id": "core", "label": clean_topic, "type": "core"}]
-        nodes.extend(
-            {"id": node_ids[i + 1], "label": label, "type": "support" if i < 2 else "branch"}
-            for i, label in enumerate(branches)
-        )
-        edges = [
-            {"source": "core", "target": node_ids[1], "label": "start here"},
-            {"source": "core", "target": node_ids[2], "label": "build on"},
-            {"source": node_ids[1], "target": node_ids[3], "label": "practice"},
-            {"source": node_ids[2], "target": node_ids[4], "label": "apply"},
-            {"source": node_ids[4], "target": node_ids[5], "label": "review"},
+        levels = [
+            ["Fundamentals", f"{topic} Basics", "Key Terms"],
+            ["Core Concepts", "Main Principles", "Working Mechanics"],
+            ["Intermediate", "Applied Methods", "Contextual Analysis"],
+            ["Advanced", "Optimization", "Edge Cases"],
+            ["Projects", "Real-world Project", "Case Study"]
         ]
-        if len(node_ids) > 6:
-            edges.append({"source": node_ids[3], "target": node_ids[6], "label": "extend"})
+        
+        nodes = []
+        edges = []
+        node_count = 0
+        
+        for i, level_topics in enumerate(levels):
+            level_id = i + 1
+            for j, label in enumerate(level_topics):
+                node_id = f"n{node_count}"
+                nodes.append({
+                    "id": node_id,
+                    "label": label,
+                    "type": f"level{level_id}"
+                })
+                if node_count > 0:
+                    # Simple chain for heuristic
+                    edges.append({
+                        "source": f"n{node_count-1}",
+                        "target": node_id,
+                        "label": "next" if j == 0 else "includes"
+                    })
+                node_count += 1
+                
         return {"nodes": nodes, "edges": edges}
+
     return {}
 
 

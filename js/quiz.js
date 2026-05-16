@@ -106,8 +106,9 @@
     submitBtn.disabled = false;
     submitBtn.textContent = 'Submit Answer';
 
-    q.options.forEach(function (opt, i) {
-      const letter = String.fromCharCode(65 + i);
+    const labels = ["A", "B", "C", "D"];
+    labels.forEach(function (label, i) {
+      const opt = q.options[label];
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'w-full text-left group quiz-option';
@@ -117,7 +118,7 @@
         optionBase +
         '">' +
         '<div class="flex-shrink-0 w-8 h-8 rounded-lg bg-surface-container-high text-primary font-bold flex items-center justify-center text-label-md group-hover:bg-secondary group-hover:text-on-secondary transition-colors">' +
-        letter +
+        label +
         '</div>' +
         '<p class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface transition-colors pt-1 flex-1">' +
         escapeHtml(opt) +
@@ -137,11 +138,13 @@
   function markAnswer(correct) {
     state.answered = true;
     const q = state.questions[state.index];
+    const labels = ["A", "B", "C", "D"];
+    const correctIdx = labels.indexOf(q.correct);
     const buttons = optionsEl.querySelectorAll('.quiz-option');
 
     buttons.forEach(function (btn, i) {
       const inner = btn.querySelector('div');
-      if (i === q.correct_index) inner.className = optionCorrect;
+      if (i === correctIdx) inner.className = optionCorrect;
       else if (state.selected === i) inner.className = optionWrong;
     });
 
@@ -305,7 +308,9 @@
         return;
       }
       const q = state.questions[state.index];
-      markAnswer(state.selected === q.correct_index);
+      const labels = ["A", "B", "C", "D"];
+      const correctIdx = labels.indexOf(q.correct);
+      markAnswer(state.selected === correctIdx);
       return;
     }
 

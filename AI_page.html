@@ -117,16 +117,16 @@
         }
     </style>
 <link href="/css/desktop.css?v=profile1" rel="stylesheet"/>
-  </head>
+      <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+</head>
 <body class="app-layout font-body-md text-on-surface" data-page="ai">
 <header class="desktop-topbar">
 <div class="flex items-center gap-unit-3">
 <span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="menu_book">menu_book</span>
 <h1 class="text-headline-sm font-headline-sm font-bold text-primary dark:text-primary-fixed">Scholarly</h1>
 </div>
-<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
-<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a young student with a warm expression, photographed in a brightly lit modern library environment. The aesthetic is clean and academic, utilizing soft natural lighting that highlights the scholarly atmosphere. The image features high contrast with deep navy accents in the background, matching a modern light-mode interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqRm_d1P39m8-CVlykNDkx3CWaO1e2rjXy8Tj6xKczqYqcergq-JvOc0pLBJIYFkkWWHrfrl126YCQaMxKNS96I-s-gMVwggBwX8urHoLkLW8KyoFF-yAIr9MopRIhj2VxZqs_J-cznnpWOwOz6J2W6FS9U-JaqMPJkO-6eS0aqqykxoGmIrCykBJ226X5q5vkzNPibaEpJJokiyzRFfT3LrFZSiDmaqch9oB7Mdtk878LwqnJOM89gnLPIS2aKrCnA6FSnWATlnMx"/>
-</div>
+
+    <div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant flex-shrink-0 cursor-pointer hover:ring-2 hover:ring-primary transition-all ml-4" data-profile="avatar" data-action="open-profile"></div>
 </header>
 <main class="app-content-inner ai-chat-main">
 <div class="ai-chat-scroll">
@@ -164,4 +164,6 @@
 </main>
 <script src="/js/app.js?v=profile2" defer></script>
 <script src="/js/ai-assistant.js?v=ai-intent1" defer></script>
+<script src="/js/profile.js" defer></script>
+<script src="/js/profile_modal.js" defer></script>
 </body></html>

@@ -107,7 +107,8 @@
         }
     </script>
 <link href="/css/desktop.css?v=profile1" rel="stylesheet"/>
-  </head>
+      <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+</head>
 <body class="app-layout bg-surface text-on-surface min-h-screen flex flex-col font-body-md" data-page="notes">
 <header class="desktop-topbar">
 <div class="flex justify-between items-center w-full">
@@ -115,10 +116,9 @@
 <span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="menu_book">menu_book</span>
 <h1 class="text-headline-sm font-headline-sm font-bold text-primary dark:text-primary-fixed">Scholarly</h1>
 </div>
-<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant">
-<img alt="User Profile" class="w-full h-full object-cover" data-alt="A close-up portrait of a thoughtful student in a modern library setting. The lighting is soft and natural, emphasizing a calm, academic atmosphere. The background shows blurred bookshelves and warm wood textures, aligning with a scholarly, high-end professional aesthetic. The subject wears minimalist attire in neutral tones like navy and cream." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdd_SsvxugYXz3xZ7o_gT6Bj7FnvGXG8H4ETZm1076SmZNETqc8EAFL3B5WMVcXdyPCjg6Ae2UdCXbx1p8XKeUmUBnWRWS5O7oDvtcedtBLpyr7uYPesnOboAYr9ixtXhKUmC6RzYY34PvXC5eg4WYPwjQOYwWNxm_MPdctyhttAqRsU14Gp-DeVrVyw-KKrJGWCQ6uft3KelYIBb5YWhb43J-4fFSdl-Awgx5MNPkW2Vg2P5lN0R7FqRlwKOKQNqDXxfgOx5VaFzD"/>
+
 </div>
-</div>
+    <div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant flex-shrink-0 cursor-pointer hover:ring-2 hover:ring-primary transition-all ml-4" data-profile="avatar" data-action="open-profile"></div>
 </header>
 <main class="app-content-inner flex-1 py-unit-6">
 <div class="mb-unit-6">
@@ -160,4 +160,6 @@
 </button>
 <script src="/js/app.js?v=profile2" defer></script>
 <script src="/js/notes.js" defer></script>
+<script src="/js/profile.js" defer></script>
+<script src="/js/profile_modal.js" defer></script>
 </body></html>

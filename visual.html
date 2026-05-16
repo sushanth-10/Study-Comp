@@ -1,170 +1,317 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Scholarly - Mind Map</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Literata:wght@400;600;700&family=Lexend:wght@400;500;600&display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
-    <script type="module">
-        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({ startOnLoad: false, theme: 'base', themeVariables: { primaryColor: '#d7e2ff', primaryTextColor: '#041632', primaryBorderColor: '#041632', lineColor: '#4f5e7e', secondaryColor: '#c6e8cd', tertiaryColor: '#ffdad6' } });
-        window.mermaid = mermaid;
-    </script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#041632",
-                        "secondary": "#476550",
-                        "on-surface": "#191c1e",
-                        "surface-container-lowest": "#ffffff",
-                        "surface-container": "#eceef0",
-                        "outline-variant": "#c5c6ce"
-                    },
-                    fontFamily: {
-                        "headline-sm": ["Literata"],
-                        "body-md": ["Lexend"]
-                    }
-                }
-            }
-        }
-    </script>
+    <title>Scholarly - Interactive Roadmap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        :root {
+            --bg-dark: #0f172a;
+            --surface: #1e293b;
+            --primary: #3b82f6;
+            --text: #f8fafc;
+            --line: #334155;
         }
 
         body {
-            background-color: #f7f9fb;
-            color: #191c1e;
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Lexend', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #roadmap-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(var(--line) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        #roadmap-canvas:active { cursor: grabbing; }
+
+        #roadmap-content {
+            transform-origin: center;
+            will-change: transform;
+            transition: transform 0.1s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Tree Structure */
+        .tree-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .node-box {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            padding: 16px 24px;
+            border-radius: 12px;
+            min-width: 180px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+        }
+
+        .node-box:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .node-label { font-weight: 600; font-size: 0.95rem; }
+        
+        .children-container {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+            position: relative;
+        }
+
+        /* Connecting Lines */
+        .children-container::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            width: 2px;
+            height: 20px;
+            background: var(--line);
+            transform: translateX(-50%);
+        }
+
+        .node-box::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            width: 2px;
+            height: 20px;
+            background: var(--line);
+            transform: translateX(-50%);
+            display: none;
+        }
+
+        .has-children > .node-box::after { display: block; }
+
+        .child-node::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            width: calc(100% + 40px);
+            height: 2px;
+            background: var(--line);
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+
+        .child-node:first-child::before { width: 50%; left: 50%; }
+        .child-node:last-child::before { width: 50%; left: 0; transform: none; }
+        .child-node:only-child::before { display: none; }
+
+        /* Controls */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .control-btn {
+            width: 48px;
+            height: 48px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text);
+        }
+
+        .control-btn:hover { background: var(--line); transform: scale(1.05); }
+
+        header {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+        }
+
+        .hidden-node { display: none !important; }
+        .collapsed .children-container { display: none !important; }
+        .collapsed .node-box::after { background: var(--primary); height: 10px; width: 10px; border-radius: 50%; bottom: -15px; }
+
+        #loading {
+            position: fixed; inset: 0; background: var(--bg-dark); z-index: 1000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
     </style>
 </head>
 
-<body class="app-layout flex flex-col min-h-screen font-body-md text-body-md">
-    <header
-        class="px-8 py-4 bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between">
-        <div class="flex items-center gap-4">
-            <a href="/dashboard"
-                class="material-symbols-outlined text-on-surface hover:text-primary transition-colors cursor-pointer text-[24px] no-underline">arrow_back</a>
-            <h1 class="text-headline-sm font-headline-sm font-bold text-primary">Topic Mind Map</h1>
+<body>
+    <div id="loading">
+        <div class="w-12 h-12 border-4 border-slate-700 border-t-blue-500 rounded-full animate-spin mb-4"></div>
+        <p class="text-slate-400 font-medium">Building your roadmap...</p>
+    </div>
+
+    <header>
+        <a href="/dashboard" class="material-symbols-outlined text-slate-400 hover:text-white no-underline">arrow_back</a>
+        <div>
+            <h1 id="topic-title" class="text-lg font-bold">Roadmap</h1>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Interactive Path</p>
         </div>
+        <div class="w-8 h-8 rounded-full border border-slate-700 cursor-pointer overflow-hidden ml-2" data-profile="avatar" data-action="open-profile"></div>
     </header>
 
-    <main class="flex-grow p-6 md:p-8 flex flex-col items-center justify-center">
-        <div
-            class="w-full max-w-7xl bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-lg p-6 md:p-10 relative min-h-[720px] flex flex-col">
-            <div id="loading"
-                class="absolute inset-0 flex flex-col items-center justify-center bg-surface-container-lowest/90 z-10 rounded-xl">
-                <span class="material-symbols-outlined animate-spin text-[48px] text-primary mb-4">sync</span>
-                <p class="text-body-md text-on-surface-variant font-medium">Generating structured study map...</p>
-            </div>
-            <div class="mb-6 border-b border-outline-variant pb-4">
-                <h2 id="topic-title" class="text-2xl font-headline-sm text-primary font-bold">Topic</h2>
-                <p class="text-on-surface-variant mt-2 text-sm md:text-base">A structured roadmap built from the topic
-                    and AI-backed guidance.</p>
-            </div>
-            <div id="mindmap-container" class="flex-grow w-full flex items-stretch justify-center overflow-auto">
-                <pre id="mermaid-code" class="mermaid hidden"></pre>
-            </div>
-        </div>
-    </main>
+    <div id="roadmap-canvas">
+        <div id="roadmap-content"></div>
+    </div>
 
+    <div class="controls">
+        <button class="control-btn" id="zoom-in"><span class="material-symbols-outlined">add</span></button>
+        <button class="control-btn" id="zoom-out"><span class="material-symbols-outlined">remove</span></button>
+        <button class="control-btn" id="reset-view"><span class="material-symbols-outlined">restart_alt</span></button>
+    </div>
+
+    <script src="/js/profile.js"></script>
+    <script src="/js/profile_modal.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const topic = urlParams.get('topic') || 'General Study Strategy';
-            document.getElementById('topic-title').textContent = topic;
+        const state = {
+            scale: 1,
+            x: 0,
+            y: 0,
+            isDragging: false,
+            startX: 0,
+            startY: 0
+        };
 
-            const safeTopic = topic.replace(/[()]/g, '');
-            let mermaidCode = '';
+        const canvas = document.getElementById('roadmap-canvas');
+        const content = document.getElementById('roadmap-content');
+
+        function updateTransform() {
+            content.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.scale})`;
+        }
+
+        // Panning
+        canvas.onmousedown = (e) => {
+            if (e.target.closest('.node-box')) return;
+            state.isDragging = true;
+            state.startX = e.clientX - state.x;
+            state.startY = e.clientY - state.y;
+        };
+
+        window.onmousemove = (e) => {
+            if (!state.isDragging) return;
+            state.x = e.clientX - state.startX;
+            state.y = e.clientY - state.startY;
+            updateTransform();
+        };
+
+        window.onmouseup = () => state.isDragging = false;
+
+        // Zooming
+        canvas.onwheel = (e) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            state.scale = Math.min(Math.max(state.scale * delta, 0.3), 3);
+            updateTransform();
+        };
+
+        document.getElementById('zoom-in').onclick = () => { state.scale = Math.min(state.scale * 1.2, 3); updateTransform(); };
+        document.getElementById('zoom-out').onclick = () => { state.scale = Math.max(state.scale / 1.2, 0.3); updateTransform(); };
+        document.getElementById('reset-view').onclick = () => { state.scale = 1; state.x = 0; state.y = 0; updateTransform(); };
+
+        // Data Rendering
+        async function loadRoadmap() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const topic = urlParams.get('topic') || 'Study Topic';
+            document.getElementById('topic-title').textContent = topic;
 
             try {
                 const response = await fetch('/api/concept-map/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ topic: safeTopic, notes: '' })
+                    body: JSON.stringify({ topic: topic.replace(/[()]/g, ''), notes: '' })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    if (data && data.nodes && data.nodes.length > 0) {
-                        mermaidCode = 'graph TD;\n';
-                        data.nodes.forEach(n => {
-                            const shape = n.type === 'core' ? `(${n.label})` : `["${n.label}"]`;
-                            mermaidCode += `  ${n.id}${shape}\n`;
-                        });
-                        data.edges.forEach(e => {
-                            const label = e.label ? `|${e.label}|` : '';
-                            mermaidCode += `  ${e.source} -->${label} ${e.target}\n`;
-                        });
-                    }
+                    renderTree(data, content);
+                } else {
+                    content.innerHTML = `<p class="text-red-400">Failed to generate roadmap. Please try again.</p>`;
                 }
             } catch (err) {
-                console.error("Failed to fetch concept map", err);
-            }
-
-            if (!mermaidCode) {
-                mermaidCode = `
-mindmap
-  root((` + safeTopic + `))
-    Core Concepts
-      Definitions & Terminology
-      Fundamental Principles
-      Historical Context
-    Study Techniques
-      Feynman Technique
-      Active Recall
-      Spaced Repetition
-    Resources
-      Textbooks
-      Online Courses
-      Research Papers
-    Application
-      Practice Problems
-      Real-world Examples
-      Mock Tests
-                `;
-            }
-
-            const mermaidEl = document.getElementById('mermaid-code');
-            mermaidEl.textContent = mermaidCode;
-            mermaidEl.classList.remove('hidden');
-
-            setTimeout(async () => {
+                console.error(err);
+                content.innerHTML = `<p class="text-red-400">Connection error. Check your backend.</p>`;
+            } finally {
                 document.getElementById('loading').classList.add('hidden');
-                try {
-                    await window.mermaid.run({
-                        nodes: [mermaidEl]
-                    });
-                    const svg = mermaidEl.querySelector('svg');
-                    if (svg) {
-                        svg.style.maxWidth = '100%';
-                        svg.style.height = 'auto';
-                        svg.style.minHeight = '640px';
-                        svgPanZoom(svg, {
-                            zoomEnabled: true,
-                            controlIconsEnabled: true,
-                            fit: true,
-                            center: true,
-                            minZoom: 0.1,
-                            maxZoom: 10
-                        });
-                    }
-                } catch (e) {
-                    console.error('Mermaid render error:', e);
-                }
-            }, 100);
-        });
+            }
+        }
+
+        function renderTree(node, parentEl) {
+            const nodeDiv = document.createElement('div');
+            nodeDiv.className = 'tree-node' + (node.children && node.children.length ? ' has-children' : '');
+            
+            const box = document.createElement('div');
+            box.className = 'node-box';
+            box.innerHTML = `<div class="node-label">${node.label}</div>`;
+            
+            box.onclick = (e) => {
+                e.stopPropagation();
+                nodeDiv.classList.toggle('collapsed');
+            };
+
+            nodeDiv.appendChild(box);
+
+            if (node.children && node.children.length) {
+                const childrenContainer = document.createElement('div');
+                childrenContainer.className = 'children-container';
+                node.children.forEach(child => {
+                    const childWrap = document.createElement('div');
+                    childWrap.className = 'child-node';
+                    renderTree(child, childWrap);
+                    childrenContainer.appendChild(childWrap);
+                });
+                nodeDiv.appendChild(childrenContainer);
+            }
+
+            parentEl.appendChild(nodeDiv);
+        }
+
+        loadRoadmap();
     </script>
 </body>
 
