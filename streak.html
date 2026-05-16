@@ -139,12 +139,12 @@
 <div class="absolute inset-0 bg-secondary-container blur-3xl opacity-30 rounded-full animate-pulse"></div>
 <div class="relative bg-white rounded-full p-unit-8 shadow-lg border border-secondary-container flex flex-col items-center justify-center w-48 h-48">
 <span class="material-symbols-outlined text-[80px] text-on-secondary-container leading-none" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
-<span class="text-headline-md font-headline-md text-primary mt-unit-2">12</span>
+<span id="streak-value" class="text-headline-md font-headline-md text-primary mt-unit-2">12</span>
 </div>
 </div>
 <div class="text-center">
-<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-primary">12 Day Streak!</h2>
-<p class="text-body-md font-body-md text-on-surface-variant">You're in the top 5% this week.</p>
+<h2 id="streak-title" class="text-headline-lg-mobile font-headline-lg-mobile text-primary">12 Day Streak!</h2>
+<p id="streak-subtitle" class="text-body-md font-body-md text-on-surface-variant">You're in the top 5% this week.</p>
 </div>
 </section>
 <!-- Calendar Study View -->
@@ -156,7 +156,7 @@
 <span class="text-label-sm font-label-sm text-on-surface-variant">Studied</span>
 </div>
 </div>
-<div class="grid grid-cols-7 gap-unit-2 text-center">
+<div id="streak-calendar" class="grid grid-cols-7 gap-unit-2 text-center">
 <!-- Calendar Header -->
 <div class="text-label-sm font-label-sm text-on-surface-variant py-unit-1">M</div>
 <div class="text-label-sm font-label-sm text-on-surface-variant py-unit-1">T</div>
@@ -166,64 +166,64 @@
 <div class="text-label-sm font-label-sm text-on-surface-variant py-unit-1">S</div>
 <div class="text-label-sm font-label-sm text-on-surface-variant py-unit-1">S</div>
 <!-- Week days - Mocking specific highlighted days for the streak -->
-<div class="p-unit-2 text-body-sm font-body-sm opacity-20">28</div>
-<div class="p-unit-2 text-body-sm font-body-sm opacity-20">29</div>
-<div class="p-unit-2 text-body-sm font-body-sm opacity-20">30</div>
-<div class="p-unit-2 text-body-sm font-body-sm opacity-20">31</div>
-<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">1</div>
-<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">2</div>
-<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">3</div>
-<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">4</div>
-<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">5</div>
-<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">6</div>
-<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">7</div>
-<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">8</div>
-<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">9</div>
-<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">10</div>
-<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full">11</div>
-<div class="p-unit-2 text-body-sm font-body-sm bg-secondary text-on-secondary rounded-full border-2 border-on-secondary-container">12</div>
-<div class="p-unit-2 text-body-sm font-body-sm text-on-surface">13</div>
-<div class="p-unit-2 text-body-sm font-body-sm text-on-surface">14</div>
-<div class="p-unit-2 text-body-sm font-body-sm text-on-surface">15</div>
-<div class="p-unit-2 text-body-sm font-body-sm text-on-surface">16</div>
-<div class="p-unit-2 text-body-sm font-body-sm text-on-surface">17</div>
+<div data-day data-date="2026-04-28" class="p-unit-2 text-body-sm font-body-sm opacity-20">28</div>
+<div data-day data-date="2026-04-29" class="p-unit-2 text-body-sm font-body-sm opacity-20">29</div>
+<div data-day data-date="2026-04-30" class="p-unit-2 text-body-sm font-body-sm opacity-20">30</div>
+<div data-day data-date="2026-05-01" class="p-unit-2 text-body-sm font-body-sm opacity-20">31</div>
+<div data-day data-date="2026-05-02" class="p-unit-2 text-body-sm font-body-sm">1</div>
+<div data-day data-date="2026-05-03" class="p-unit-2 text-body-sm font-body-sm">2</div>
+<div data-day data-date="2026-05-04" class="p-unit-2 text-body-sm font-body-sm">3</div>
+<div data-day data-date="2026-05-05" class="p-unit-2 text-body-sm font-body-sm">4</div>
+<div data-day data-date="2026-05-06" class="p-unit-2 text-body-sm font-body-sm">5</div>
+<div data-day data-date="2026-05-07" class="p-unit-2 text-body-sm font-body-sm">6</div>
+<div data-day data-date="2026-05-08" class="p-unit-2 text-body-sm font-body-sm">7</div>
+<div data-day data-date="2026-05-09" class="p-unit-2 text-body-sm font-body-sm">8</div>
+<div data-day data-date="2026-05-10" class="p-unit-2 text-body-sm font-body-sm">9</div>
+<div data-day data-date="2026-05-11" class="p-unit-2 text-body-sm font-body-sm">10</div>
+<div data-day data-date="2026-05-12" class="p-unit-2 text-body-sm font-body-sm">11</div>
+<div data-day data-date="2026-05-13" data-is-today="true" class="p-unit-2 text-body-sm font-body-sm">12</div>
+<div data-day data-date="2026-05-14" class="p-unit-2 text-body-sm font-body-sm text-on-surface">13</div>
+<div data-day data-date="2026-05-15" class="p-unit-2 text-body-sm font-body-sm text-on-surface">14</div>
+<div data-day data-date="2026-05-16" class="p-unit-2 text-body-sm font-body-sm text-on-surface">15</div>
+<div data-day data-date="2026-05-17" class="p-unit-2 text-body-sm font-body-sm text-on-surface">16</div>
+<div data-day data-date="2026-05-18" class="p-unit-2 text-body-sm font-body-sm text-on-surface">17</div>
 </div>
 </section>
 <!-- Achievements Section -->
 <section class="space-y-unit-4">
 <h3 class="text-headline-sm font-headline-sm text-primary">Achievements</h3>
-<div class="grid grid-cols-2 gap-unit-4">
+<div id="streak-achievements" class="grid grid-cols-2 gap-unit-4">
 <!-- Achievement 1 -->
-<div class="bg-surface-container-lowest rounded-xl p-unit-4 border border-outline-variant flex flex-col items-center text-center space-y-unit-2">
+<div data-achievement class="bg-surface-container-lowest rounded-xl p-unit-4 border border-outline-variant flex flex-col items-center text-center space-y-unit-2">
 <div class="w-16 h-16 rounded-full bg-secondary-fixed flex items-center justify-center shadow-md">
 <span class="material-symbols-outlined text-[32px] text-on-secondary-fixed" style="font-variation-settings: 'FILL' 1;">speed</span>
 </div>
-<span class="text-label-md font-label-md text-primary">7 Day Sprint</span>
-<span class="text-body-sm font-body-sm text-on-surface-variant">Consistent work for a full week.</span>
+<span data-achievement-title class="text-label-md font-label-md text-primary">7 Day Sprint</span>
+<span data-achievement-desc class="text-body-sm font-body-sm text-on-surface-variant">Consistent work for a full week.</span>
 </div>
 <!-- Achievement 2 -->
-<div class="bg-surface-container-lowest rounded-xl p-unit-4 border border-outline-variant flex flex-col items-center text-center space-y-unit-2">
+<div data-achievement class="bg-surface-container-lowest rounded-xl p-unit-4 border border-outline-variant flex flex-col items-center text-center space-y-unit-2">
 <div class="w-16 h-16 rounded-full bg-tertiary-fixed flex items-center justify-center shadow-md">
 <span class="material-symbols-outlined text-[32px] text-on-tertiary-fixed" style="font-variation-settings: 'FILL' 1;">quiz</span>
 </div>
-<span class="text-label-md font-label-md text-primary">Quiz Master</span>
-<span class="text-body-sm font-body-sm text-on-surface-variant">Aced 10 practice tests in a row.</span>
+<span data-achievement-title class="text-label-md font-label-md text-primary">Quiz Master</span>
+<span data-achievement-desc class="text-body-sm font-body-sm text-on-surface-variant">Aced 10 practice tests in a row.</span>
 </div>
 <!-- Achievement 3 -->
-<div class="bg-surface-container-lowest rounded-xl p-unit-4 border border-outline-variant flex flex-col items-center text-center space-y-unit-2">
+<div data-achievement class="bg-surface-container-lowest rounded-xl p-unit-4 border border-outline-variant flex flex-col items-center text-center space-y-unit-2">
 <div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center shadow-md">
 <span class="material-symbols-outlined text-[32px] text-on-primary-fixed" style="font-variation-settings: 'FILL' 1;">menu_book</span>
 </div>
-<span class="text-label-md font-label-md text-primary">Night Owl</span>
-<span class="text-body-sm font-body-sm text-on-surface-variant">3 sessions after 10 PM.</span>
+<span data-achievement-title class="text-label-md font-label-md text-primary">Night Owl</span>
+<span data-achievement-desc class="text-body-sm font-body-sm text-on-surface-variant">3 sessions after 10 PM.</span>
 </div>
 <!-- Achievement 4 -->
-<div class="bg-surface-container-low rounded-xl p-unit-4 border border-dashed border-outline-variant flex flex-col items-center text-center space-y-unit-2 opacity-60">
+<div data-achievement class="bg-surface-container-low rounded-xl p-unit-4 border border-dashed border-outline-variant flex flex-col items-center text-center space-y-unit-2 opacity-60">
 <div class="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center">
 <span class="material-symbols-outlined text-[32px] text-outline">lock</span>
 </div>
-<span class="text-label-md font-label-md text-on-surface-variant">Scholarly Elite</span>
-<span class="text-body-sm font-body-sm text-on-surface-variant">Keep going to unlock!</span>
+<span data-achievement-title class="text-label-md font-label-md text-on-surface-variant">Scholarly Elite</span>
+<span data-achievement-desc class="text-body-sm font-body-sm text-on-surface-variant">Keep going to unlock!</span>
 </div>
 </div>
 </section>
@@ -232,14 +232,14 @@
 <div class="bg-primary text-on-primary rounded-xl p-unit-6 flex flex-col justify-between aspect-square">
 <span class="material-symbols-outlined text-primary-fixed">military_tech</span>
 <div>
-<span class="text-headline-md font-headline-md block">#12</span>
+<span id="streak-rank" class="text-headline-md font-headline-md block">#12</span>
 <span class="text-label-sm font-label-sm">Class Rank</span>
 </div>
 </div>
 <div class="bg-secondary-container text-on-secondary-container rounded-xl p-unit-6 flex flex-col justify-between aspect-square">
 <span class="material-symbols-outlined">schedule</span>
 <div>
-<span class="text-headline-md font-headline-md block">42h</span>
+<span id="streak-hours" class="text-headline-md font-headline-md block">42h</span>
 <span class="text-label-sm font-label-sm">Total Study Time</span>
 </div>
 </div>
@@ -250,4 +250,5 @@
 </section>
 </main>
 <script src="/js/app.js" defer></script>
+<script src="/js/streak-page.js" defer></script>
 </body></html>

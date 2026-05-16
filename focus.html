@@ -125,8 +125,8 @@
 <span class="material-symbols-outlined text-[18px] text-secondary-fixed">auto_awesome</span>
 <span class="font-label-md text-label-md text-secondary-fixed uppercase tracking-widest">Deep Work</span>
 </div>
-<h1 class="font-headline-md text-headline-md text-center text-primary-fixed">Organic Chemistry Finals</h1>
-<p class="font-body-sm text-body-sm text-on-primary-container opacity-80">Module 4: Carbon Synthesis</p>
+<h1 id="focus-title" class="font-headline-md text-headline-md text-center text-primary-fixed">Organic Chemistry Finals</h1>
+<p id="focus-subtitle" class="font-body-sm text-body-sm text-on-primary-container opacity-80">Module 4: Carbon Synthesis</p>
 </header>
 <!-- Main Timer Area -->
 <main class="flex-grow flex flex-col items-center justify-center w-full max-w-4xl relative">
@@ -136,12 +136,12 @@
 <svg class="absolute inset-0 w-full h-full -rotate-90" viewbox="0 0 100 100">
 <circle class="text-primary-container" cx="50" cy="50" fill="transparent" r="46" stroke="currentColor" stroke-width="2"></circle>
 <!-- Active Progress Ring (Sage Green Accent) -->
-<circle class="timer-glow transition-all duration-1000" cx="50" cy="50" fill="transparent" r="46" stroke="#adcfb5" stroke-dasharray="289" stroke-dashoffset="80" stroke-linecap="round" stroke-width="2.5"></circle>
+<circle id="focus-ring" class="timer-glow transition-all duration-1000" cx="50" cy="50" fill="transparent" r="46" stroke="#adcfb5" stroke-dasharray="289" stroke-dashoffset="80" stroke-linecap="round" stroke-width="2.5"></circle>
 </svg>
 <!-- Timer Text -->
 <div class="flex flex-col items-center">
-<span class="font-headline-lg-mobile text-headline-lg-mobile text-[64px] sm:text-[72px] text-primary-fixed leading-none tracking-tight">24:42</span>
-<span class="font-label-md text-label-md text-on-primary-container mt-unit-1 opacity-60">minutes remaining</span>
+<span id="focus-time" class="font-headline-lg-mobile text-headline-lg-mobile text-[64px] sm:text-[72px] text-primary-fixed leading-none tracking-tight">24:42</span>
+<span id="focus-phase" class="font-label-md text-label-md text-on-primary-container mt-unit-1 opacity-60">minutes remaining</span>
 </div>
 </div>
 <!-- Quote / Focus Prompt -->
@@ -164,13 +164,13 @@
 </div>
 <!-- Primary Actions -->
 <div class="flex items-center justify-center space-x-unit-6 w-full">
-<button class="flex flex-col items-center space-y-unit-1 group">
+<button id="focus-pause" class="flex flex-col items-center space-y-unit-1 group">
 <div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shadow-lg group-active:scale-95 transition-transform duration-150">
 <span class="material-symbols-outlined text-[32px]" data-icon="pause">pause</span>
 </div>
-<span class="font-label-md text-label-md text-on-primary-container group-hover:text-primary-fixed">Pause</span>
+<span id="focus-pause-label" class="font-label-md text-label-md text-on-primary-container group-hover:text-primary-fixed">Pause</span>
 </button>
-<a class="flex flex-col items-center space-y-unit-1 group no-underline" href="/dashboard">
+<a id="focus-end" class="flex flex-col items-center space-y-unit-1 group no-underline" href="/dashboard">
 <div class="w-16 h-16 rounded-full border-2 border-error/40 flex items-center justify-center text-error hover:bg-error/10 transition-colors group-active:scale-95 transition-transform duration-150">
 <span class="material-symbols-outlined text-[28px]" data-icon="close">close</span>
 </div>
@@ -184,4 +184,5 @@
 <div class="absolute bottom-[-5%] right-[-5%] w-[30%] h-[30%] bg-tertiary-fixed-dim blur-[100px] rounded-full"></div>
 </div>
 <script src="/js/app.js" defer></script>
+<script src="/js/focus-session.js" defer></script>
 </body></html>

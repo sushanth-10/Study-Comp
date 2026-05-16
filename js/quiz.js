@@ -153,6 +153,24 @@
       '). ' +
       (state.skipped ? state.skipped + ' skipped. ' : '') +
       'Keep practicing to improve retention!';
+    fetch('/api/analytics/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventType: 'quiz_result',
+        subject: state.topic,
+        topic: state.topic,
+        quizScore: state.score,
+        totalQuestions: total,
+        confidenceAvg: Math.min(0.95, Math.max(0.45, pct / 100)),
+        responseTimeAvg: 16 + state.skipped * 2,
+        metadata: {
+          difficulty: state.difficulty,
+          weak_topics: state.skipped ? [state.topic + ' retention'] : [],
+          skipped: state.skipped,
+        },
+      }),
+    }).catch(function () {});
     show('results');
   }
 

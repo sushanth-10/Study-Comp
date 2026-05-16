@@ -125,17 +125,17 @@
 <div class="mb-unit-8">
 <div class="relative group">
 <span class="material-symbols-outlined absolute left-unit-4 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
-<input class="w-full bg-surface-container-low border-none rounded-xl py-unit-4 pl-unit-8 pr-unit-4 text-body-md text-on-surface focus:ring-2 focus:ring-secondary transition-all placeholder:text-outline" placeholder="Search your knowledge..." type="text"/>
+<input id="notes-search" class="w-full bg-surface-container-low border-none rounded-xl py-unit-4 pl-unit-8 pr-unit-4 text-body-md text-on-surface focus:ring-2 focus:ring-secondary transition-all placeholder:text-outline" placeholder="Search your knowledge..." type="text"/>
 </div>
 </div>
 <!-- Filter Chips (Bonus for scholarly UI) -->
-<div class="flex gap-unit-2 overflow-x-auto pb-unit-4 no-scrollbar mb-unit-6">
+<div id="notes-filters" class="flex gap-unit-2 overflow-x-auto pb-unit-4 no-scrollbar mb-unit-6">
 <span class="bg-primary text-on-primary px-unit-4 py-unit-1 rounded-full text-label-sm font-label-sm whitespace-nowrap">All Notes</span>
 <span class="bg-surface-container-high text-on-surface-variant px-unit-4 py-unit-1 rounded-full text-label-sm font-label-sm whitespace-nowrap">Biology</span>
 <span class="bg-surface-container-high text-on-surface-variant px-unit-4 py-unit-1 rounded-full text-label-sm font-label-sm whitespace-nowrap">History</span>
 <span class="bg-surface-container-high text-on-surface-variant px-unit-4 py-unit-1 rounded-full text-label-sm font-label-sm whitespace-nowrap">Drafts</span>
 </div>
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-unit-4">
+<div id="notes-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-unit-4">
 <!-- Note Card 1 -->
 <div class="bg-surface-container-lowest p-unit-6 rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-outline-variant/30 hover:border-secondary transition-all cursor-pointer">
 <div class="flex justify-between items-start mb-unit-2">
@@ -198,4 +198,5 @@
 <span class="material-symbols-outlined text-[32px]">add</span>
 </button>
 <script src="/js/app.js" defer></script>
+<script src="/js/notes-page.js" defer></script>
 </body></html>
