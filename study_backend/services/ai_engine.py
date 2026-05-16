@@ -249,11 +249,19 @@ def chat(message: str) -> dict[str, Any]:
         elif search_results:
             reply = f"Here are web results for **{query}**:"
         else:
-            reply = (
-                f"I could not find detailed information on \"{query}\" right now. "
-                "Try rephrasing, using a more specific topic name, or ask me to "
-                "*find videos on [topic]* or *search for [topic]*."
-            )
+            api_key = os.environ.get("OPENAI_API_KEY") or os.environ.get("OPENROUTER_API_KEY")
+            if not api_key:
+                reply = (
+                    f"I couldn't research \"{query}\" because no AI API keys are configured. "
+                    "If you are the administrator, please set the **OPENAI_API_KEY** or **OPENROUTER_API_KEY** "
+                    "environment variables in your deployment dashboard."
+                )
+            else:
+                reply = (
+                    f"I could not find detailed information on \"{query}\" right now. "
+                    "This can happen if the search tools are blocked or the topic is too obscure. "
+                    "Try rephrasing or using a more specific subject name."
+                )
 
     if intent == "plan" and not tags:
         tags = ["Study plan", "Spaced repetition", "Active recall"]
